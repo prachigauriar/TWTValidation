@@ -1,0 +1,420 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4CA7C90018E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
+		4CA7C90518E662CE00A434B6 /* TWTValidation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4CA7C90418E662CE00A434B6 /* TWTValidation.h */; };
+		4CA7C90718E662CE00A434B6 /* TWTValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C90618E662CE00A434B6 /* TWTValidation.m */; };
+		4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C90D18E662CE00A434B6 /* XCTest.framework */; };
+		4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
+		4CA7C91118E662CE00A434B6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C91018E662CE00A434B6 /* UIKit.framework */; };
+		4CA7C91418E662CE00A434B6 /* libTWTValidation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FC18E662CE00A434B6 /* libTWTValidation.a */; };
+		4CA7C91A18E662CE00A434B6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CA7C91818E662CE00A434B6 /* InfoPlist.strings */; };
+		4CA7C91C18E662CE00A434B6 /* TWTValidationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C91B18E662CE00A434B6 /* TWTValidationTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4CA7C91218E662CE00A434B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CA7C8F418E662CE00A434B6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CA7C8FB18E662CE00A434B6;
+			remoteInfo = TWTValidation;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4CA7C8FA18E662CE00A434B6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				4CA7C90518E662CE00A434B6 /* TWTValidation.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4CA7C8FC18E662CE00A434B6 /* libTWTValidation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTWTValidation.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CA7C8FF18E662CE00A434B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		4CA7C90318E662CE00A434B6 /* TWTValidation-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TWTValidation-Prefix.pch"; sourceTree = "<group>"; };
+		4CA7C90418E662CE00A434B6 /* TWTValidation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TWTValidation.h; sourceTree = "<group>"; };
+		4CA7C90618E662CE00A434B6 /* TWTValidation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TWTValidation.m; sourceTree = "<group>"; };
+		4CA7C90C18E662CE00A434B6 /* TWTValidationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TWTValidationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CA7C90D18E662CE00A434B6 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		4CA7C91018E662CE00A434B6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		4CA7C91718E662CE00A434B6 /* TWTValidationTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TWTValidationTests-Info.plist"; sourceTree = "<group>"; };
+		4CA7C91918E662CE00A434B6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4CA7C91B18E662CE00A434B6 /* TWTValidationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TWTValidationTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4CA7C8F918E662CE00A434B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CA7C90018E662CE00A434B6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CA7C90918E662CE00A434B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */,
+				4CA7C91118E662CE00A434B6 /* UIKit.framework in Frameworks */,
+				4CA7C91418E662CE00A434B6 /* libTWTValidation.a in Frameworks */,
+				4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4CA7C8F318E662CE00A434B6 = {
+			isa = PBXGroup;
+			children = (
+				4CA7C90118E662CE00A434B6 /* TWTValidation */,
+				4CA7C91518E662CE00A434B6 /* TWTValidationTests */,
+				4CA7C8FE18E662CE00A434B6 /* Frameworks */,
+				4CA7C8FD18E662CE00A434B6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4CA7C8FD18E662CE00A434B6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C8FC18E662CE00A434B6 /* libTWTValidation.a */,
+				4CA7C90C18E662CE00A434B6 /* TWTValidationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4CA7C8FE18E662CE00A434B6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C8FF18E662CE00A434B6 /* Foundation.framework */,
+				4CA7C90D18E662CE00A434B6 /* XCTest.framework */,
+				4CA7C91018E662CE00A434B6 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4CA7C90118E662CE00A434B6 /* TWTValidation */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C90418E662CE00A434B6 /* TWTValidation.h */,
+				4CA7C90618E662CE00A434B6 /* TWTValidation.m */,
+				4CA7C90218E662CE00A434B6 /* Supporting Files */,
+			);
+			path = TWTValidation;
+			sourceTree = "<group>";
+		};
+		4CA7C90218E662CE00A434B6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C90318E662CE00A434B6 /* TWTValidation-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CA7C91518E662CE00A434B6 /* TWTValidationTests */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C91B18E662CE00A434B6 /* TWTValidationTests.m */,
+				4CA7C91618E662CE00A434B6 /* Supporting Files */,
+			);
+			path = TWTValidationTests;
+			sourceTree = "<group>";
+		};
+		4CA7C91618E662CE00A434B6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4CA7C91718E662CE00A434B6 /* TWTValidationTests-Info.plist */,
+				4CA7C91818E662CE00A434B6 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4CA7C8FB18E662CE00A434B6 /* TWTValidation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CA7C91F18E662CE00A434B6 /* Build configuration list for PBXNativeTarget "TWTValidation" */;
+			buildPhases = (
+				4CA7C8F818E662CE00A434B6 /* Sources */,
+				4CA7C8F918E662CE00A434B6 /* Frameworks */,
+				4CA7C8FA18E662CE00A434B6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TWTValidation;
+			productName = TWTValidation;
+			productReference = 4CA7C8FC18E662CE00A434B6 /* libTWTValidation.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		4CA7C90B18E662CE00A434B6 /* TWTValidationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CA7C92218E662CE00A434B6 /* Build configuration list for PBXNativeTarget "TWTValidationTests" */;
+			buildPhases = (
+				4CA7C90818E662CE00A434B6 /* Sources */,
+				4CA7C90918E662CE00A434B6 /* Frameworks */,
+				4CA7C90A18E662CE00A434B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4CA7C91318E662CE00A434B6 /* PBXTargetDependency */,
+			);
+			name = TWTValidationTests;
+			productName = TWTValidationTests;
+			productReference = 4CA7C90C18E662CE00A434B6 /* TWTValidationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4CA7C8F418E662CE00A434B6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Two Toasters, LLC";
+			};
+			buildConfigurationList = 4CA7C8F718E662CE00A434B6 /* Build configuration list for PBXProject "TWTValidation" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 4CA7C8F318E662CE00A434B6;
+			productRefGroup = 4CA7C8FD18E662CE00A434B6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4CA7C8FB18E662CE00A434B6 /* TWTValidation */,
+				4CA7C90B18E662CE00A434B6 /* TWTValidationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4CA7C90A18E662CE00A434B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CA7C91A18E662CE00A434B6 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4CA7C8F818E662CE00A434B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CA7C90718E662CE00A434B6 /* TWTValidation.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CA7C90818E662CE00A434B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CA7C91C18E662CE00A434B6 /* TWTValidationTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4CA7C91318E662CE00A434B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CA7C8FB18E662CE00A434B6 /* TWTValidation */;
+			targetProxy = 4CA7C91218E662CE00A434B6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4CA7C91818E662CE00A434B6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CA7C91918E662CE00A434B6 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4CA7C91D18E662CE00A434B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		4CA7C91E18E662CE00A434B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4CA7C92018E662CE00A434B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/TWTValidation.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidation/TWTValidation-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		4CA7C92118E662CE00A434B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/TWTValidation.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidation/TWTValidation-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		4CA7C92318E662CE00A434B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidation/TWTValidation-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "TWTValidationTests/TWTValidationTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		4CA7C92418E662CE00A434B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidation/TWTValidation-Prefix.pch";
+				INFOPLIST_FILE = "TWTValidationTests/TWTValidationTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4CA7C8F718E662CE00A434B6 /* Build configuration list for PBXProject "TWTValidation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CA7C91D18E662CE00A434B6 /* Debug */,
+				4CA7C91E18E662CE00A434B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4CA7C91F18E662CE00A434B6 /* Build configuration list for PBXNativeTarget "TWTValidation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CA7C92018E662CE00A434B6 /* Debug */,
+				4CA7C92118E662CE00A434B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4CA7C92218E662CE00A434B6 /* Build configuration list for PBXNativeTarget "TWTValidationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CA7C92318E662CE00A434B6 /* Debug */,
+				4CA7C92418E662CE00A434B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4CA7C8F418E662CE00A434B6 /* Project object */;
+}
