@@ -6,8 +6,14 @@
 //  Copyright (c) 2014 Two Toasters, LLC. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
-@interface TWTValidation : NSObject
+#import <TWTValidation/TWTValidator.h>
 
-@end
+#import <TWTValidation/TWTBlockValidator.h>
+
+#import <TWTValidation/TWTCompoundValidator.h>
+
+#import <TWTValidation/TWTValueValidator.h>
+#import <TWTValidation/TWTNumberValidator.h>
+#import <TWTValidation/TWTStringValidator.h>
