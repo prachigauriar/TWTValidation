@@ -9,6 +9,7 @@
 @import Foundation;
 
 #import <TWTValidation/TWTValidator.h>
+#import <TWTValidation/TWTValidationErrors.h>
 
 #import <TWTValidation/TWTBlockValidator.h>
 
@@ -18,4 +19,8 @@
 #import <TWTValidation/TWTNumberValidator.h>
 #import <TWTValidation/TWTStringValidator.h>
 
-#import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTCollectionValidator.h>
+#import <TWTValidation/TWTKeyedCollectionValidator.h>
+#import <TWTValidation/TWTKeyValuePairValidator.h>
+
+#import <TWTValidation/TWTValidatingObject.h>
