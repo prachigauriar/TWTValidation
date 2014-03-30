@@ -9,6 +9,7 @@
 #import <TWTValidation/TWTCollectionValidator.h>
 
 #import <TWTValidation/TWTCompoundValidator.h>
+#import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTNumberValidator.h>
 
 @interface TWTCollectionValidator ()
@@ -18,18 +19,6 @@
 
 @end
 
-
-#pragma mark
-
-@interface TWTKeyedCollectionValidator ()
-
-@property (nonatomic, copy, readwrite) NSArray *keyValidators;
-@property (nonatomic, copy, readwrite) NSArray *keyValuePairValidators;
-
-@end
-
-
-#pragma mark
 
 @implementation TWTCollectionValidator
 
@@ -91,12 +80,40 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    NSMutableArray *errors = outError ? [[NSMutableArray alloc] init] : nil;
+    NSError *countValidationError = nil;
+    BOOL countValidated = [self.countValidator validateValue:@([value count]) error:outError ? &countValidationError : NULL];
     
-    NSError *error = nil;
-    BOOL validated = [self.countValidator validateValue:@([value count]) error:outError ? &error : NULL];
-    if (error) {
-        [errors addObject:error];
+    BOOL elementsValidated = YES;
+    NSMutableArray *elementValidationErrors = outError ? [[NSMutableArray alloc] init] : nil;
+    for (id element in value) {
+        NSError *elementValidationError = nil;
+        if (![self.elementAndValidator validateValue:element error:outError ? &elementValidationError : NULL]) {
+            elementsValidated = NO;
+            
+            if (elementValidationError.twt_underlyingErrors.count) {
+                [elementValidationErrors addObjectsFromArray:elementValidationError.twt_underlyingErrors];
+            }
+        }
+    }
+    
+    BOOL validated = countValidated && elementsValidated;
+    if (!validated && outError) {
+        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
+        userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"collection is invalid", @"TWTValidationErrorCodeCollectionValidatorError error message");
+
+        if (value) {
+            userInfo[TWTValidationValidatedValueKey] = value;
+        }
+        
+        if (!countValidated && countValidationError) {
+            userInfo[TWTValidationCountValidationErrorKey] = countValidationError;
+        }
+        
+        if (!elementsValidated && elementValidationErrors.count) {
+            userInfo[TWTValidationElementValidationErrorsKey] = [elementValidationErrors copy];
+        }
+        
+        *outError = [NSError errorWithDomain:TWTValidationErrorDomain code:TWTValidationErrorCodeCollectionValidatorError userInfo:[userInfo copy]];
     }
     
     return validated;

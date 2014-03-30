@@ -62,7 +62,7 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
 }
 
 
-- (NSError *)twt_countValidatorError
+- (NSError *)twt_countValidationError
 {
     return self.userInfo[TWTValidationCountValidationErrorKey];
 }

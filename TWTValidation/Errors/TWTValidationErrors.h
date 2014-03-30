@@ -31,13 +31,10 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeLengthLessThanMinimum,
     TWTValidationErrorCodeLengthGreaterThanMaximum,
     
-    TWTValidationErrorCodeSubvalidatorError,
+    TWTValidationErrorCodeCompoundValidatorError,
     
-    TWTValidationErrorCodeCountValidatorError,
-    TWTValidationErrorCodeElementValidatorError,
-    
-    TWTValidationErrorCodeKeyValidatorError,
-    TWTValidationErrorCodeKeyValuePairValidatorError
+    TWTValidationErrorCodeCollectionValidatorError,
+    TWTValidationErrorCodeKeyedCollectionValidatorError,
 };
 
 
@@ -49,7 +46,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 - (id)twt_validatedValue;
 - (NSArray *)twt_underlyingErrors;
 
-- (NSError *)twt_countValidatorError;
+- (NSError *)twt_countValidationError;
 - (NSArray *)twt_elementValidationErrors;
 
 - (NSArray *)twt_keyValidationErrors;

@@ -110,19 +110,19 @@
             switch (self.compoundValidatorType) {
                 case TWTCompoundValidatorTypeAnd:
                     description = NSLocalizedString(@"one or more subvalidators fail",
-                                                    @"TWTValidationErrorCodeSubvalidatorError and error message");
+                                                    @"TWTValidationErrorCodeCompoundValidatorError and error message");
                     break;
                 case TWTCompoundValidatorTypeOr:
                     description = NSLocalizedString(@"all subvalidators fail",
-                                                    @"TWTValidationErrorCodeSubvalidatorError or error message");
+                                                    @"TWTValidationErrorCodeCompoundValidatorError or error message");
                     break;
                 case TWTCompoundValidatorTypeMutualExclusion:
                     description = NSLocalizedString(@"number of passing subvalidators is not one",
-                                                    @"TWTValidationErrorCodeSubvalidatorError mutual exclusion error message");
+                                                    @"TWTValidationErrorCodeCompoundValidatorError mutual exclusion error message");
                     break;
             }
             
-            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeSubvalidatorError
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeCompoundValidatorError
                                                        value:value
                                         localizedDescription:description
                                             underlyingErrors:errors];
