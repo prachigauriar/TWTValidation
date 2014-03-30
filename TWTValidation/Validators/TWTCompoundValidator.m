@@ -41,7 +41,7 @@
     self = [super init];
     if (self) {
         _compoundValidatorType = type;
-        _subvalidators = subvalidators ? [subvalidators copy] : @[ ];
+        _subvalidators = [subvalidators copy];
     }
 
     return self;

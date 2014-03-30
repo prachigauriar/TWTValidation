@@ -44,21 +44,21 @@
 
 /*!
  @abstract Returns whether the specified object is equal to the receiver.
- @discussion The base implementation returns whether the specified object is an instance of the receiver’s class.
-     Subclasses can safely invoke the base implementation from their own isEqual: methods.
- @param object The object to equality-test against the receiver.
+ @discussion The base implementation returns whether the specified object is an instance of the receiver’s
+     class. Subclasses can safely invoke the base implementation from their own isEqual: implementations.
+ @param object The object to equality-test against the receiver. 
  @result Whether the specified object is equal to the receiver.
  */
 - (BOOL)isEqual:(id)object;
 
 /*!
  @abstract Returns whether the specified value is valid.
- @discussion This is the primary interface that validators use to perform validations. The base implementation 
-     always returns YES. Subclasses should override this method to validate the specified value and return an
-     error indirectly that describes any validation failures. The error’s userInfo dictionary should minimally
-     include the NSLocalizedDescriptionKey and TWTValidationValidatedValueKey keys. The former has the typical
-     meaning; the latter is the value that did not pass validation. See TWTValidationErrors.h for more 
-     information.
+ @discussion This is the primary interface that validators use to perform validations. The base
+     implementation always returns YES. Subclasses should override this method to validate the specified
+     value and return an error indirectly that describes any validation failures. The error’s userInfo
+     dictionary should minimally include the NSLocalizedDescriptionKey and TWTValidationValidatedValueKey
+     keys. The former has the typical meaning; the latter is the value that did not pass validation. See
+     TWTValidationErrors.h for more information.
  @param value The value to validate.
  @param outError A pointer to an error object to return indirectly. If NULL, no error should be returned.
  @result Whether the specified value is valid.

@@ -36,16 +36,19 @@ typedef BOOL (^TWTValidationBlock)(id value, NSError *__autoreleasing *outError)
 
 
 /*!
- TWTBlockValidators validate objects using a validation block. They are primarily useful when validation 
- logic is easier to express in code than by composing one or more validators, but is too unique to warrant
- creating a TWTValidator subclass.
+ TWTBlockValidators validate objects using a validation block. They are primarily useful when validation logic
+ is easier to express in code than by composing one or more validators, but is too unique to warrant creating
+ a TWTValidator subclass.
  
  Block validators are immutable objects. As such, sending -copy or -copyWithZone: to a block validator will
  simply return the validator itself.
  */
 @interface TWTBlockValidator : TWTValidator <NSCopying>
 
-/*! The validation block. If nil, the receiver will successfully validate all values. */
+/*! 
+ @abstract The instance’s validation block. 
+ @discussion If nil, the instance will successfully validate all values. 
+ */
 @property (nonatomic, copy, readonly) TWTValidationBlock block;
 
 /*!
