@@ -14,10 +14,10 @@
 
 @implementation TWTValidatingObject
 
-+ (NSArray *)validatorsForKey:(NSString *)key
++ (NSSet *)validatorsForKey:(NSString *)key
 {
     SEL selector = NSSelectorFromString([NSString stringWithFormat:@"validatorsFor%@", key.capitalizedString]);
-    NSArray *validators = objc_getAssociatedObject(self, selector);
+    NSSet *validators = objc_getAssociatedObject(self, selector);
     if (validators) {
         return validators;
     }
@@ -44,12 +44,12 @@
 
 - (BOOL)validateValue:(inout __autoreleasing id *)ioValue forKey:(NSString *)inKey error:(out NSError *__autoreleasing *)outError
 {
-    NSArray *validators = [[self class] validatorsForKey:inKey];
+    NSSet *validators = [[self class] validatorsForKey:inKey];
     if (!validators.count) {
         return [super validateValue:ioValue forKey:inKey error:outError];
     }
     
-    TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
+    TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:[validators allObjects]];
     return [andValidator validateValue:(ioValue ? *ioValue : nil) error:outError];
 }
 

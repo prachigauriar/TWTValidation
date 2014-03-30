@@ -10,7 +10,7 @@
 
 @interface TWTValidatingObject : NSObject
 
-+ (NSArray *)validatorsForKey:(NSString *)key;
++ (NSSet *)validatorsForKey:(NSString *)key;
 - (BOOL)validateValueForKey:(NSString *)key error:(out NSError *__autoreleasing *)outError;
 
 @end
