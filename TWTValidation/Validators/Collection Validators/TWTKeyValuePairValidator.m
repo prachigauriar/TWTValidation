@@ -73,7 +73,13 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    return self.valueValidator ? [self.valueValidator validateValue:value error:outError] : YES;
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.valueValidator) {
+        return YES;
+    }
+    
+    return [self.valueValidator validateValue:value error:outError];
 }
 
 @end
