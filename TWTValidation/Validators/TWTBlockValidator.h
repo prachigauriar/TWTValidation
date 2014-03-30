@@ -14,8 +14,7 @@ typedef BOOL (^TWTValidationBlock)(id object, NSError *__autoreleasing *outError
 
 @property (nonatomic, copy, readonly) TWTValidationBlock block;
 
-+ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block;
-
 - (instancetype)initWithBlock:(TWTValidationBlock)block;
++ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block;
 
 @end

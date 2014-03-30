@@ -9,8 +9,8 @@
 #import <TWTValidation/TWTCollectionValidator.h>
 
 #import <TWTValidation/TWTCompoundValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTNumberValidator.h>
+#import <TWTValidation/TWTValidationErrors.h>
 
 @interface TWTCollectionValidator ()
 
@@ -49,15 +49,15 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     typeof(self) copy = [super copyWithZone:zone];
-    copy.countValidator = self.countValidator;
-    copy.elementAndValidator = self.elementAndValidator;
-    return self;
+    copy.countValidator = [self.countValidator copy];
+    copy.elementAndValidator = [self.elementAndValidator copy];
+    return copy;
 }
 
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ [self.countValidator hash] ^ [self.elementAndValidator hash];
+    return [super hash] ^ self.countValidator.hash ^ self.elementAndValidator.hash;
 }
 
 
@@ -78,21 +78,18 @@
 }
 
 
-- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+- (BOOL)validateValue:(id)collection error:(out NSError *__autoreleasing *)outError
 {
     NSError *countValidationError = nil;
-    BOOL countValidated = [self.countValidator validateValue:@([value count]) error:outError ? &countValidationError : NULL];
+    BOOL countValidated = [self.countValidator validateValue:@([collection count]) error:outError ? &countValidationError : NULL];
     
     BOOL elementsValidated = YES;
     NSMutableArray *elementValidationErrors = outError ? [[NSMutableArray alloc] init] : nil;
-    for (id element in value) {
-        NSError *elementValidationError = nil;
-        if (![self.elementAndValidator validateValue:element error:outError ? &elementValidationError : NULL]) {
+    for (id element in collection) {
+        NSError *error = nil;
+        if (![self.elementAndValidator validateValue:element error:outError ? &error : NULL]) {
             elementsValidated = NO;
-            
-            if (elementValidationError.twt_underlyingErrors.count) {
-                [elementValidationErrors addObjectsFromArray:elementValidationError.twt_underlyingErrors];
-            }
+            [elementValidationErrors addObjectsFromArray:error.twt_underlyingErrors];
         }
     }
     
@@ -101,8 +98,8 @@
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
         userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"collection is invalid", @"TWTValidationErrorCodeCollectionValidatorError error message");
 
-        if (value) {
-            userInfo[TWTValidationValidatedValueKey] = value;
+        if (collection) {
+            userInfo[TWTValidationValidatedValueKey] = collection;
         }
         
         if (!countValidated && countValidationError) {

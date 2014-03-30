@@ -19,10 +19,10 @@ typedef NS_ENUM(NSUInteger, TWTCompoundValidatorType) {
 @property (nonatomic, assign, readonly) TWTCompoundValidatorType compoundValidatorType;
 @property (nonatomic, copy, readonly) NSArray *subvalidators;
 
+- (instancetype)initWithType:(TWTCompoundValidatorType)type subvalidators:(NSArray *)subvalidators;
+
 + (instancetype)andValidatorWithSubvalidators:(NSArray *)subvalidators;
 + (instancetype)orValidatorWithSubvalidators:(NSArray *)subvalidators;
 + (instancetype)mutualExclusionValidatorWithSubvalidators:(NSArray *)subvalidators;
-
-- (instancetype)initWithType:(TWTCompoundValidatorType)type subvalidators:(NSArray *)subvalidators;
 
 @end

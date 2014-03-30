@@ -24,11 +24,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    typeof(self) copy = [super copyWithZone:zone];
-    copy.valueClass = self.valueClass;
-    copy.allowsNil = self.allowsNil;
-    copy.allowsNull = self.allowsNull;
-    return copy;
+    return [[self class] valueValidatorWithClass:self.valueClass allowsNil:self.allowsNil allowsNull:self.allowsNull];
 }
 
 

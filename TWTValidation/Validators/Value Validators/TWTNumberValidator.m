@@ -22,12 +22,6 @@
 
 @implementation TWTNumberValidator
 
-+ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum
-{
-    return [[self alloc] initWithMinimum:minimum maximum:maximum];
-}
-
-
 - (instancetype)init
 {
     return [self initWithMinimum:nil maximum:nil];
@@ -47,6 +41,12 @@
     }
 
     return self;
+}
+
+
++ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum
+{
+    return [[self alloc] initWithMinimum:minimum maximum:maximum];
 }
 
 

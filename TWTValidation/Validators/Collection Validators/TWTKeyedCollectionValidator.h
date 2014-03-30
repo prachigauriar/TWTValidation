@@ -7,9 +7,8 @@
 //
 
 #import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTCollectionValidator.h>
 
-@interface TWTKeyedCollectionValidator : TWTCollectionValidator <NSCopying>
+@interface TWTKeyedCollectionValidator : TWTValidator <NSCopying>
 
 @property (nonatomic, copy, readonly) NSArray *keyValidators;
 @property (nonatomic, copy, readonly) NSArray *valueValidators;
@@ -24,14 +23,5 @@
                                             keyValidators:(NSArray *)keyValidators
                                           valueValidators:(NSArray *)valueValidators
                                    keyValuePairValidators:(NSArray *)keyValuePairValidators;
-
-
-@end
-
-
-@interface TWTKeyValuePairValidator : TWTValueValidator <NSCopying>
-
-@property (nonatomic, strong, readonly) id key;
-@property (nonatomic, strong, readonly) TWTValidator *valueValidator;
 
 @end
