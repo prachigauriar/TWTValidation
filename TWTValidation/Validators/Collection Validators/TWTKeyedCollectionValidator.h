@@ -28,6 +28,7 @@
 
 @interface TWTKeyedCollectionValidator : TWTValidator <NSCopying>
 
+@property (nonatomic, strong, readonly) TWTValidator *countValidator;
 @property (nonatomic, copy, readonly) NSArray *keyValidators;
 @property (nonatomic, copy, readonly) NSArray *valueValidators;
 @property (nonatomic, copy, readonly) NSArray *keyValuePairValidators;

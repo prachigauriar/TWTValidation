@@ -66,12 +66,6 @@
 }
 
 
-- (instancetype)copyWithZone:(NSZone *)zone
-{
-    return [[[self class] alloc] initWithType:self.compoundValidatorType subvalidators:self.subvalidators];
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ self.compoundValidatorType ^ self.subvalidators.hash;

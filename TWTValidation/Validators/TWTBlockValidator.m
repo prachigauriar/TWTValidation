@@ -58,12 +58,6 @@
 }
 
 
-- (instancetype)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ [self.block hash];

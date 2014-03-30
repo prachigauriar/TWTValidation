@@ -99,18 +99,6 @@
 }
 
 
-- (instancetype)copyWithZone:(NSZone *)zone
-{
-    typeof(self) copy = [super copyWithZone:zone];
-    copy.countValidator = [self.countValidator copy];
-    copy.keyAndValidator = [self.keyAndValidator copy];
-    copy.valueAndValidator = [self.valueAndValidator copy];
-    copy.keyValuePairValidators = [self.keyValuePairValidators copy];
-    copy.keyValuePairAndValidators = [self.keyValuePairAndValidators copy];
-    return copy;
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ self.countValidator.hash ^ self.keyAndValidator.hash ^ self.valueAndValidator.hash ^ self.keyValuePairAndValidators.hash;

@@ -47,8 +47,10 @@
 		4CA7C97F18E66B4E00A434B6 /* TWTValueValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */; };
 		4CD62FB518E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */; };
 		4CD62FB618E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */; };
-		4CD62FB818E87BEA007F7EF3 /* TWTValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB718E87BEA007F7EF3 /* TWTValidatorTests.m */; };
-		4CD62FBB18E88534007F7EF3 /* TWTValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB718E87BEA007F7EF3 /* TWTValidatorTests.m */; };
+		4CD62FC218E88EC0007F7EF3 /* TWTBlockValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */; };
+		4CD62FC418E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */; };
+		4CD62FC518E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */; };
+		4CD62FC718E8B27E007F7EF3 /* TWTBlockValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */; };
 		B9307643C67943DAA69E5116 /* libPods-TWTValidation Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C971DF7F512A48E1ADE1CAAF /* libPods-TWTValidation Tests.a */; };
 /* End PBXBuildFile section */
 
@@ -119,7 +121,8 @@
 		4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValueValidator.m; sourceTree = "<group>"; };
 		4CD62FB318E85C86007F7EF3 /* TWTRandomizedTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTRandomizedTestCase.h; sourceTree = "<group>"; };
 		4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTRandomizedTestCase.m; sourceTree = "<group>"; };
-		4CD62FB718E87BEA007F7EF3 /* TWTValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValidatorTests.m; sourceTree = "<group>"; };
+		4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTBlockValidatorTests.m; sourceTree = "<group>"; };
+		4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValidatorTests.m; sourceTree = "<group>"; };
 		7378FC729B664261BFE5C678 /* Pods-libTWTValidation-libTWTValidation Tests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libTWTValidation-libTWTValidation Tests.xcconfig"; path = "Pods/Pods-libTWTValidation-libTWTValidation Tests.xcconfig"; sourceTree = "<group>"; };
 		C971DF7F512A48E1ADE1CAAF /* libPods-TWTValidation Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TWTValidation Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -301,9 +304,18 @@
 		4CD62FB218E85C33007F7EF3 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
-				4CD62FB718E87BEA007F7EF3 /* TWTValidatorTests.m */,
+				4CD62FBF18E88E96007F7EF3 /* Validators */,
 			);
 			path = "Unit Tests";
+			sourceTree = "<group>";
+		};
+		4CD62FBF18E88E96007F7EF3 /* Validators */ = {
+			isa = PBXGroup;
+			children = (
+				4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */,
+				4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */,
+			);
+			path = Validators;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -550,8 +562,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CD62FBB18E88534007F7EF3 /* TWTValidatorTests.m in Sources */,
+				4CD62FC718E8B27E007F7EF3 /* TWTBlockValidatorTests.m in Sources */,
 				4CD62FB618E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */,
+				4CD62FC518E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,8 +590,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CD62FB818E87BEA007F7EF3 /* TWTValidatorTests.m in Sources */,
+				4CD62FC218E88EC0007F7EF3 /* TWTBlockValidatorTests.m in Sources */,
 				4CD62FB518E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */,
+				4CD62FC418E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
