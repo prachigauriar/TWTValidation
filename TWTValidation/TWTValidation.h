@@ -17,3 +17,5 @@
 #import <TWTValidation/TWTValueValidator.h>
 #import <TWTValidation/TWTNumberValidator.h>
 #import <TWTValidation/TWTStringValidator.h>
+
+#import <TWTValidation/TWTValidationErrors.h>

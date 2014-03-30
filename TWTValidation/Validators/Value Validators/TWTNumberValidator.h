@@ -16,4 +16,6 @@
 
 + (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
 
+- (instancetype)initWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
+
 @end

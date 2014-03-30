@@ -8,6 +8,8 @@
 
 #import <TWTValidation/TWTNumberValidator.h>
 
+#import <TWTValidation/TWTValidationErrors.h>
+
 @interface TWTNumberValidator ()
 
 @property (nonatomic, strong, readwrite) NSNumber *minimum;
@@ -16,7 +18,15 @@
 @end
 
 
+#pragma mark
+
 @implementation TWTNumberValidator
+
++ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum
+{
+    return [[self alloc] initWithMinimum:minimum maximum:maximum];
+}
+
 
 - (instancetype)init
 {
@@ -37,12 +47,6 @@
     }
 
     return self;
-}
-
-
-+ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum
-{
-    return [[self alloc] initWithMinimum:minimum maximum:maximum];
 }
 
 
@@ -118,7 +122,7 @@
             }
         }
 
-        *outError = [NSError errorWithDomain:TWTValidatorErrorDomain code:errorCode userInfo:@{ NSLocalizedDescriptionKey : description }];
+        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
     }
     
     return NO;

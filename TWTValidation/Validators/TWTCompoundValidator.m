@@ -8,6 +8,8 @@
 
 #import <TWTValidation/TWTCompoundValidator.h>
 
+#import <TWTValidation/TWTValidationErrors.h>
+
 @implementation TWTCompoundValidator
 
 - (instancetype)init
@@ -100,27 +102,31 @@
     }
     
     if (!validated && outError) {
-        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-        switch (self.compoundValidatorType) {
-            case TWTCompoundValidatorTypeAnd:
-                userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"one or more subvalidators failed",
-                                                                        @"TWTValidationErrorCodeSubvalidatorError and error message");
-                break;
-            case TWTCompoundValidatorTypeOr:
-                userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"all subvalidators failed",
-                                                                        @"TWTValidationErrorCodeSubvalidatorError or error message");
-                break;
-            case TWTCompoundValidatorTypeMutualExclusion:
-                userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"more than one subvalidator passed",
-                                                                        @"TWTValidationErrorCodeSubvalidatorError mutual exclusion error message");
-                break;
+        // If there's only one error and we’re not a mutual exclusion validator, just return the error
+        if (errors.count == 1 && self.compoundValidatorType != TWTCompoundValidatorTypeMutualExclusion) {
+            *outError = errors.firstObject;
+        } else {
+            NSString *description = nil;
+            switch (self.compoundValidatorType) {
+                case TWTCompoundValidatorTypeAnd:
+                    description = NSLocalizedString(@"one or more subvalidators fail",
+                                                    @"TWTValidationErrorCodeSubvalidatorError and error message");
+                    break;
+                case TWTCompoundValidatorTypeOr:
+                    description = NSLocalizedString(@"all subvalidators fail",
+                                                    @"TWTValidationErrorCodeSubvalidatorError or error message");
+                    break;
+                case TWTCompoundValidatorTypeMutualExclusion:
+                    description = NSLocalizedString(@"number of passing subvalidators is not one",
+                                                    @"TWTValidationErrorCodeSubvalidatorError mutual exclusion error message");
+                    break;
+            }
+            
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeSubvalidatorError
+                                                       value:value
+                                        localizedDescription:description
+                                            underlyingErrors:errors];
         }
-        
-        if (errors.count) {
-            userInfo[TWTValidatorUnderlyingErrorsKey] = [errors copy];
-        }
-
-        *outError = [NSError errorWithDomain:TWTValidatorErrorDomain code:TWTValidationErrorCodeSubvalidatorError userInfo:[userInfo copy]];
     }
 
     return validated;

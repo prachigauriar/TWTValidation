@@ -8,14 +8,6 @@
 
 #import <TWTValidation/TWTValidator.h>
 
-#pragma mark Constants
-
-NSString *const TWTValidatorErrorDomain = @"TWTValidatorErrorDomain";
-NSString *const TWTValidatorUnderlyingErrorsKey = @"TWTValidatorUnderlyingErrorsKey";
-
-
-#pragma mark
-
 @implementation TWTValidator
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -26,7 +18,8 @@ NSString *const TWTValidatorUnderlyingErrorsKey = @"TWTValidatorUnderlyingErrors
 
 - (NSUInteger)hash
 {
-    return 0;
+    // An arbitrary large prime number
+    return 2796203;
 }
 
 

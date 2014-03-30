@@ -16,4 +16,6 @@ typedef BOOL (^TWTValidationBlock)(id object, NSError *__autoreleasing *outError
 
 + (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block;
 
+- (instancetype)initWithBlock:(TWTValidationBlock)block;
+
 @end

@@ -17,6 +17,12 @@
 
 @implementation TWTBlockValidator
 
++ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block
+{
+    return [[self alloc] initWithBlock:block];
+}
+
+
 - (instancetype)init
 {
     return [self initWithBlock:nil];
@@ -31,12 +37,6 @@
     }
     
     return self;
-}
-
-
-+ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block
-{
-    return [[self alloc] initWithBlock:block];
 }
 
 

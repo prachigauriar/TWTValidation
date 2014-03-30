@@ -8,6 +8,8 @@
 
 #import <TWTValidation/TWTStringValidator.h>
 
+#import <TWTValidation/TWTValidationErrors.h>
+
 @interface TWTBoundedLengthStringValidator ()
 
 @property (nonatomic, assign, readwrite) NSUInteger minimumLength;
@@ -26,7 +28,7 @@
 @end
 
 
-#pragma mark -
+#pragma mark
 
 @implementation TWTStringValidator
 
@@ -146,7 +148,7 @@
             }
         }
 
-        *outError = [NSError errorWithDomain:TWTValidatorErrorDomain code:errorCode userInfo:@{ NSLocalizedDescriptionKey : description }];
+        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
     }
     
     return NO;
@@ -217,9 +219,7 @@
         NSString *descriptionFormat = NSLocalizedString(@"string does not match regular expression (%1$@)",
                                                         @"TWTValidationErrorCodeValueDoesNotMatchFormat error message");
         NSString *description = [NSString stringWithFormat:descriptionFormat, [self.regularExpression pattern]];
-        *outError = [NSError errorWithDomain:TWTValidatorErrorDomain
-                                        code:TWTValidationErrorCodeValueDoesNotMatchFormat
-                                    userInfo:@{ NSLocalizedDescriptionKey : description }];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat value:value localizedDescription:description];
     }
 
     return NO;

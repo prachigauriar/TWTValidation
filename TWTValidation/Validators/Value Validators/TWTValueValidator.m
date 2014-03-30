@@ -8,6 +8,8 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
+#import <TWTValidation/TWTValidationErrors.h>
+
 @implementation TWTValueValidator
 
 + (instancetype)valueValidatorWithClass:(Class)valueClass allowsNil:(BOOL)allowsNil allowsNull:(BOOL)allowsNull
@@ -89,7 +91,7 @@
             }
         }
 
-        *outError = [NSError errorWithDomain:TWTValidatorErrorDomain code:errorCode userInfo:@{ NSLocalizedDescriptionKey : description }];
+        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
     }
     
     return NO;
