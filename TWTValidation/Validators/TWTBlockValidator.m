@@ -45,7 +45,7 @@
 {
     self = [super init];
     if (self) {
-        _block = block;
+        _block = [block copy];
     }
     
     return self;
@@ -60,9 +60,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    typeof(self) copy = [super copyWithZone:zone];
-    copy.block = self.block;
-    return copy;
+    return self;
 }
 
 
@@ -76,6 +74,8 @@
 {
     if (![super isEqual:object]) {
         return NO;
+    } else if (self == object) {
+        return YES;
     }
     
     typeof(self) other = object;

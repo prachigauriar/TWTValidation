@@ -88,6 +88,8 @@
 {
     if (![super isEqual:object]) {
         return NO;
+    } else if (self == object) {
+        return YES;
     }
     
     typeof(self) other = object;
