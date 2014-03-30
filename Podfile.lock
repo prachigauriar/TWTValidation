@@ -1,0 +1,13 @@
+PODS:
+  - OCMock (2.2.3)
+  - URLMock/TestHelpers (1.1.1):
+    - OCMock (~> 2.0)
+
+DEPENDENCIES:
+  - URLMock/TestHelpers (~> 1.1.1)
+
+SPEC CHECKSUMS:
+  OCMock: 74e4ddbcef134170dcc844f91c691f13868075d7
+  URLMock: 58755b77105ceba0f21f3a00cf1d84219e8954e1
+
+COCOAPODS: 0.29.0

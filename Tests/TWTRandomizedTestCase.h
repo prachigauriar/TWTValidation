@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
-//  TWTValidation
+//  TWTRandomizedTestCase.h
+//  Toast
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 1/13/14.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,25 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import <XCTest/XCTest.h>
+#import <URLMock/UMKTestUtilities.h>
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
+/*!
+ TWTRandomizedTestCases simply override +setUp to call srandomdev() and -setUp to generate and log a
+ random seed value before calling srandom(). Subclasses that override +setUp or -setUp should invoke
+ the superclass implementation.
+ */
+@interface TWTRandomizedTestCase : XCTestCase
+@end
 
-#import <TWTValidation/TWTBlockValidator.h>
 
-#import <TWTValidation/TWTCompoundValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
-
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
-
-#import <TWTValidation/TWTValidatingObject.h>
+/*!
+ @abstract XCTAsserts that the given expression evaluates to YES before the given timeout interval elapses.
+ @param timeoutInterval An NSTimeInterval containing the amount of time to wait for the expression to evaluate to YES.
+ @param expression The boolean expression to evaluate.
+ @param format An NSString object that contains a printf-style string containing an error message describing the failure
+     condition and placeholders for the arguments.
+ @param ... The arguments displayed in the format string.
+ */
+#define UMKAssertTrueBeforeTimeout(timeoutInterval, expression, format...) \
+    XCTAssertTrue(UMKWaitForCondition((timeoutInterval), ^BOOL{ return (expression); }), ## format)

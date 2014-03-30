@@ -1,8 +1,8 @@
 //
-//  TWTValidator.m
+//  TWTValidatorTests.m
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/27/2014.
+//  Created by Prachi Gauriar on 3/30/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +24,57 @@
 //  THE SOFTWARE.
 //
 
+#import "TWTRandomizedTestCase.h"
+
 #import <TWTValidation/TWTValidator.h>
 
-@implementation TWTValidator
+@interface TWTValidatorTests : TWTRandomizedTestCase
 
-- (instancetype)copyWithZone:(NSZone *)zone
+@property (nonatomic, strong) TWTValidator *validator;
+
+- (void)testInit;
+- (void)testCopy;
+- (void)testHashAndIsEqual;
+- (void)testValidateValueError;
+
+@end
+
+
+@implementation TWTValidatorTests
+
+- (void)setUp
 {
-    return self;
+    [super setUp];
+    self.validator = [[TWTValidator alloc] init];
+}
+
+- (void)testInit
+{
+    XCTAssertNotNil(self.validator, @"returns nil");
 }
 
 
-- (NSUInteger)hash
+- (void)testCopy
 {
-    // An arbitrary large prime number
-    return 2796203;
+    TWTValidator *copy = [self.validator copy];
+    XCTAssertEqual(copy, self.validator, @"copy returns different object");
 }
 
 
-- (BOOL)isEqual:(id)object
+- (void)testHashAndIsEqual
 {
-    return [object isKindOfClass:[self class]];
+    TWTValidator *otherValidator = [[TWTValidator alloc] init];
+    XCTAssertEqual(self.validator.hash, otherValidator.hash, @"hashes are different for equal objects");
+    XCTAssertEqualObjects(self.validator, otherValidator, @"equal objects are not equal");
 }
 
 
-- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+- (void)testValidateValueError
 {
-    return YES;
+    id value = UMKRandomBoolean() ? UMKRandomUnicodeStringWithLength(10) : UMKRandomUnsignedNumber();
+    NSError *error = nil;
+    XCTAssertTrue([self.validator validateValue:value error:&error], @"returns NO");
+    XCTAssertNil(error, @"modifies error");
 }
 
 @end

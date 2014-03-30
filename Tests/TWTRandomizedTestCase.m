@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
-//  TWTValidation
+//  TWTRandomizedTestCase.m
+//  Toast
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 1/8/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,23 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import "TWTRandomizedTestCase.h"
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
+@implementation TWTRandomizedTestCase
 
-#import <TWTValidation/TWTBlockValidator.h>
++ (void)setUp
+{
+    [super setUp];
+    srandomdev();
+}
 
-#import <TWTValidation/TWTCompoundValidator.h>
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+- (void)setUp
+{
+    [super setUp];
+    unsigned seed = (unsigned)random();
+    NSLog(@"Using seed %d", seed);
+    srandom(seed);
+}
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
-
-#import <TWTValidation/TWTValidatingObject.h>
+@end
