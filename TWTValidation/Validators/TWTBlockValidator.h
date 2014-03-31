@@ -53,6 +53,7 @@ typedef BOOL (^TWTValidationBlock)(id value, NSError *__autoreleasing *outError)
 
 /*!
  @abstract Initializes a newly created block validator with the specified validation block.
+ @discussion This is the class’s designated initializer.
  @param block The validation block. If nil, the resulting validator will successfully validate all values.
  @result An initialized block validator with the specified validation block.
  */

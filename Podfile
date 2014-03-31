@@ -1,5 +1,6 @@
 target 'TWTValidation Tests'.to_sym do
-  pod 'URLMock/TestHelpers', '~> 1.1.1'  
+  pod 'URLMock/TestHelpers', '~> 1.1.1' 
+  pod 'OCMock', '~> 2.0'
 end
 
 target :libTWTValidation, exclusive: false do
@@ -7,6 +8,7 @@ target :libTWTValidation, exclusive: false do
 
   target 'libTWTValidation Tests'.to_sym do
       pod 'URLMock/TestHelpers', '~> 1.1.1'  
+      pod 'OCMock', '~> 2.0'
   end
 end
 

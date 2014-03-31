@@ -55,22 +55,27 @@ typedef NS_ENUM(NSUInteger, TWTCompoundValidatorType) {
  */
 @interface TWTCompoundValidator : TWTValidator <NSCopying>
 
-/*! The instance’s compound validator type. */
+/*! 
+ @abstract The instance’s compound validator type. 
+ @discussion TWTCompoundValidatorTypeAnd by default.
+ */
 @property (nonatomic, assign, readonly) TWTCompoundValidatorType compoundValidatorType;
 
 /*! 
  @abstract The instance’s subvalidators. 
  @discussion If nil or empty, And validators will successfully validate all values, and Or and Mutual Exclusion
-     validators will never successfully validate a value.
+     validators will never successfully validate a value. nil by default.
  */
 @property (nonatomic, copy, readonly) NSArray *subvalidators;
 
 /*!
  @abstract Initializes a newly created compound validator with the specified type and subvalidators.
- @discussion And validators consider a value valid only if all of its subvalidators also consider the value
-     valid. At least one of an Or validator’s subvalidators must validate a value for it to also validate the
-     value. Mutual Exclusion validators only validate a value if exactly one of its subvalidators validates
-     the value.
+ @discussion This is the class’s designated initializer.
+ 
+     And validators consider a value valid only if all of its subvalidators also consider the value valid
+     At least one of an Or validator’s subvalidators must validate a value for it to also validate the value.
+     Mutual Exclusion validators only validate a value if exactly one of its subvalidators validates the
+     value.
  @param type The type of compound validator.
  @param subvalidators The instance’s subvalidators. If nil or empty, And validators will successfully
      validate all values, and Or and Mutual Exclusion validators will never successfully validate a value.

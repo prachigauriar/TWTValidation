@@ -32,7 +32,7 @@
 
 - (instancetype)init
 {
-    return [self initWithType:TWTCompoundValidatorTypeAnd subvalidators:@[ ]];
+    return [self initWithType:TWTCompoundValidatorTypeAnd subvalidators:nil];
 }
 
 

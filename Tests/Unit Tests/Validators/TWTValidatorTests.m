@@ -74,7 +74,6 @@
     id value = UMKRandomBoolean() ? UMKRandomUnicodeStringWithLength(10) : UMKRandomUnsignedNumber();
     NSError *error = nil;
     XCTAssertTrue([self.validator validateValue:value error:&error], @"returns NO");
-    XCTAssertNil(error, @"modifies error");
 }
 
 @end

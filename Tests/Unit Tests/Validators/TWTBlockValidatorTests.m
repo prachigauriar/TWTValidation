@@ -56,12 +56,6 @@
 }
 
 
-- (NSError *)randomError
-{
-    return [NSError errorWithDomain:UMKRandomUnicodeStringWithLength(10) code:random() userInfo:UMKRandomDictionaryOfStringsWithElementCount(5)];
-}
-
-
 - (void)testInit
 {
     TWTBlockValidator *validator = [[TWTBlockValidator alloc] init];
@@ -107,9 +101,7 @@
     // Nil block tests
     TWTBlockValidator *validator = [[TWTBlockValidator alloc] init];
     XCTAssertTrue([validator validateValue:nil error:&error], @"validator with nil block returns NO");
-    XCTAssertNil(error, @"modifies error");
     XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"validator with nil block returns NO");
-    XCTAssertNil(error, @"modifies error");
 
     NSUInteger randomLength = 1 + random() % 10;
     NSError *randomError = [self randomError];
@@ -120,7 +112,6 @@
     error = nil;
     XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength) error:NULL], @"validator returns NO");
     XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength) error:&error], @"validator returns NO");
-    XCTAssertNil(error, @"modifies error");
 
     // Validation fails
     error = nil;

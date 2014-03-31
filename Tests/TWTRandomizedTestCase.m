@@ -26,6 +26,9 @@
 
 #import "TWTRandomizedTestCase.h"
 
+#import <OCMock/OCMock.h>
+#import <TWTValidation/TWTValidator.h>
+
 @implementation TWTRandomizedTestCase
 
 + (void)setUp
@@ -41,6 +44,28 @@
     unsigned seed = (unsigned)random();
     NSLog(@"Using seed %d", seed);
     srandom(seed);
+}
+
+
+- (NSError *)randomError
+{
+    return [NSError errorWithDomain:UMKRandomUnicodeStringWithLength(10) code:random() userInfo:UMKRandomDictionaryOfStringsWithElementCount(5)];
+}
+
+
+- (id)mockPassingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError
+{
+    id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
+    [[[mockValidator stub] andReturnValue:@YES] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:nil] : NULL];
+    return mockValidator;
+}
+
+
+- (id)mockFailingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError error:(NSError *)error
+{
+    id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
+    [[[mockValidator stub] andReturnValue:@NO] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:nil] : NULL];
+    return mockValidator;
 }
 
 @end
