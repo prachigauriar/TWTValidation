@@ -27,6 +27,7 @@
 #import "TWTRandomizedTestCase.h"
 
 #import <TWTValidation/TWTCompoundValidator.h>
+#import <TWTValidation/TWTValidationErrors.h>
 
 @interface TWTCompoundValidatorTests : TWTRandomizedTestCase
 
@@ -34,12 +35,24 @@
 - (void)testCopy;
 - (void)testHashAndIsEqual;
 
-- (void)testValidateValueErrorAnd;
-- (void)testValidateValueErrorOr;
-- (void)testValidateValueErrorMutualExclusion;
+- (void)testValidateValueErrorForAndWithNoValidators;
+- (void)testValidateValueErrorForAndWithOnePassingValidator;
+- (void)testValidateValueErrorForAndWithMultiplePassingValidators;
+- (void)testValidateValueErrorForAndWithOneFailingValidator;
+- (void)testValidateValueErrorForAndWithMultipleFailingValidators;
+
+- (void)testValidateValueErrorForOrWithNoValidators;
+- (void)testValidateValueErrorForOrWithOnePassingValidator;
+- (void)testValidateValueErrorForOrWithMultiplePassingValidators;
+- (void)testValidateValueErrorForOrWithOneFailingValidator;
+- (void)testValidateValueErrorForOrWithMultipleFailingValidators;
+
+// TODO: Test Mutual Exclusion validator
 
 @end
 
+
+#pragma mark -
 
 @implementation TWTCompoundValidatorTests
 
@@ -48,6 +61,7 @@
     TWTCompoundValidatorType types[3] = { TWTCompoundValidatorTypeAnd, TWTCompoundValidatorTypeOr, TWTCompoundValidatorTypeMutualExclusion };
     return types[random() % 3];
 }
+
 
 - (void)testInit
 {
@@ -126,27 +140,227 @@
 }
 
 
-- (void)testValidateValueErrorAnd
+#pragma mark - And Validation Tests
+
+- (void)testValidateValueErrorForAndWithNoValidators
 {
     TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:nil];
-    XCTAssertTrue([validator validateValue:nil error:NULL]);
-    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:NULL]);
-    
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails with nil validators");
+    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:NULL], @"fails with nil validators");
+
+    validator = [TWTCompoundValidator andValidatorWithSubvalidators:@[ ]];
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails with no validators");
+    XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:NULL], @"fails with no validators");
+}
+
+
+- (void)testValidateValueErrorForAndWithOnePassingValidator
+{
     NSArray *subvalidators = @[ [self mockPassingValidatorWithErrorPointer:NULL] ];
-    
-    validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
-    XCTAssertTrue([validator validateValue:nil error:NULL]);
-    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:NULL]);
+    TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails with one passing validator");
+    XCTAssertTrue([validator validateValue:UMKRandomAlphanumericStringWithLength(10) error:NULL], @"fails with one passing validator");
     
     NSError *error = nil;
     subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error] ];
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
-    XCTAssertTrue([validator validateValue:nil error:&error]);
-    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:&error]);
-    
-    XCTFail(@"Test passing with more than one validator.");
-    XCTFail(@"Test failing with one validator.");
-    XCTFail(@"Test failing with more than one validator.");
+    XCTAssertTrue([validator validateValue:nil error:&error], @"fails with one passing validator");
+    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"fails with one passing validator");
+}
+
+
+- (void)testValidateValueErrorForAndWithMultiplePassingValidators
+{
+    NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
+        return [self mockPassingValidatorWithErrorPointer:NULL];
+    });
+
+    TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:nil], @"fails with multiple passing validators");
+    XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:nil], @"fails with multiple passing validators");
+
+    NSError *error = nil;
+    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockPassingValidatorWithErrorPointer:&error] ];
+
+    validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:&error], @"fails with multiple passing validators");
+    XCTAssertTrue([validator validateValue:UMKRandomAlphanumericStringWithLength(10) error:&error], @"fails with multiple passing validators");
+}
+
+
+- (void)testValidateValueErrorForAndWithOneFailingValidator
+{
+    NSArray *subvalidators = @[ [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]] ];
+    TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:NULL]);
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL]);
+
+    NSError *error = nil;
+    NSError *expectedError = [self randomError];
+    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedError] ];
+    validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with one failing validator");
+    XCTAssertEqualObjects(error, expectedError, @"incorrect error returned");
+    error = nil;
+    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:&error], @"passes with one failing validator");
+    XCTAssertEqualObjects(error, expectedError, @"incorrect error returned");
+}
+
+
+- (void)testValidateValueErrorForAndWithMultipleFailingValidators
+{
+    NSArray *subvalidators = UMKGeneratedArrayWithElementCount(4 + random() % 6, ^id(NSUInteger index) {
+        if (index % 2 == 0) {
+            return [self mockPassingValidatorWithErrorPointer:NULL];
+        } else {
+            return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+        }
+    });
+
+    TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with multiple failing validators");
+    XCTAssertFalse([validator validateValue:UMKRandomAlphanumericStringWithLength(10) error:NULL], @"passes with multiple failing validators");
+
+    NSError *error = nil;
+    NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(3, ^id(NSUInteger index) {
+        return [self randomError];
+    });
+
+    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
+                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
+                       [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]],
+                       [self mockPassingValidatorWithErrorPointer:&error] ];
+
+    validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with multiple failing validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_underlyingErrors, expectedErrors, @"incorrect underlying errors");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"passes with multiple failing validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_underlyingErrors, expectedErrors, @"incorrect underlying errors");
+}
+
+
+#pragma mark - Or Validation Tests
+
+- (void)testValidateValueErrorForOrWithNoValidators
+{
+    TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:nil];
+    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with nil validators");
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL], @"passes with nil validators");
+
+    validator = [TWTCompoundValidator orValidatorWithSubvalidators:@[ ]];
+    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with no validators");
+    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:NULL], @"passes with no validators");
+}
+
+
+- (void)testValidateValueErrorForOrWithOnePassingValidator
+{
+    NSArray *subvalidators = @[ [self mockPassingValidatorWithErrorPointer:NULL] ];
+    TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails with one passing validator");
+    XCTAssertTrue([validator validateValue:UMKRandomAlphanumericStringWithLength(10) error:NULL], @"fails with one passing validator");
+
+    NSError *error = nil;
+    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error] ];
+    validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:&error], @"fails with one passing validator");
+    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"fails with one passing validator");
+}
+
+
+- (void)testValidateValueErrorForOrWithMultiplePassingValidators
+{
+    NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
+        if (index % 2 == 0) {
+            return [self mockPassingValidatorWithErrorPointer:NULL];
+        } else {
+            return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+        }
+    });
+
+    TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails with multiple passing validators");
+    XCTAssertTrue([validator validateValue:UMKRandomAlphanumericStringWithLength(10) error:NULL], @"fails with multiple passing validators");
+
+    NSError *error = nil;
+    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
+                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
+                       [self mockPassingValidatorWithErrorPointer:&error],
+                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
+                       [self mockPassingValidatorWithErrorPointer:&error] ];
+
+    validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertTrue([validator validateValue:nil error:&error], @"fails with multiple passing validators");
+
+    error = nil;
+    XCTAssertTrue([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"fails with multiple passing validators");
+}
+
+
+- (void)testValidateValueErrorForOrWithOneFailingValidator
+{
+    NSArray *subvalidators = @[ [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]] ];
+    TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:NULL]);
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL]);
+
+    NSError *error = nil;
+    NSError *expectedError = [self randomError];
+    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedError] ];
+    validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with one failing validator");
+    XCTAssertEqualObjects(error, expectedError, @"incorrect error returned");
+    error = nil;
+    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:&error], @"passes with one failing validator");
+    XCTAssertEqualObjects(error, expectedError, @"incorrect error returned");
+}
+
+
+- (void)testValidateValueErrorForOrWithMultipleFailingValidators
+{
+    NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
+        return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+    });
+
+    TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:nil], @"passes with multiple failing validators");
+    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:nil], @"passes with multiple failing validators");
+
+    NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(3, ^id(NSUInteger index) {
+        return [self randomError];
+    });
+
+    NSError *error = nil;
+    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
+                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
+                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]] ];
+
+    validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with multiple failing validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_underlyingErrors, expectedErrors, @"incorrect underlying errors");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:&error], @"passes with multiple failing validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_underlyingErrors, expectedErrors, @"incorrect underlying errors");
 }
 
 @end

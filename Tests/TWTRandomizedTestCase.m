@@ -64,7 +64,7 @@
 - (id)mockFailingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError error:(NSError *)error
 {
     id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
-    [[[mockValidator stub] andReturnValue:@NO] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:nil] : NULL];
+    [[[mockValidator stub] andReturnValue:@NO] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:error] : NULL];
     return mockValidator;
 }
 
