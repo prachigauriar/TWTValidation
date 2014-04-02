@@ -65,9 +65,6 @@
     TWTValidationBlock validationBlock = [self stringValidationBlockWithLength:random() error:[self randomError]];
     validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
     XCTAssertEqualObjects(validationBlock, validator.block, @"block was not set correctly");
-
-    validator = [TWTBlockValidator blockValidatorWithBlock:validationBlock];
-    XCTAssertEqualObjects(validationBlock, validator.block, @"block was not set correctly");
 }
 
 
@@ -84,7 +81,7 @@
 - (void)testHashAndIsEqual
 {
     TWTBlockValidator *equalValidator1 = [[TWTBlockValidator alloc] initWithBlock:[self stringValidationBlockWithLength:random() error:[self randomError]]];
-    TWTBlockValidator *equalValidator2 = [TWTBlockValidator blockValidatorWithBlock:equalValidator1.block];
+    TWTBlockValidator *equalValidator2 = [[TWTBlockValidator alloc] initWithBlock:equalValidator1.block];
     TWTBlockValidator *unequalValidator = [[TWTBlockValidator alloc] initWithBlock:[self stringValidationBlockWithLength:random() error:[self randomError]]];
     
     XCTAssertEqual(equalValidator1.hash, equalValidator2.hash, @"hashes are different for equal objects");
@@ -106,7 +103,7 @@
     NSUInteger randomLength = 1 + random() % 10;
     NSError *randomError = [self randomError];
     TWTValidationBlock validationBlock = [self stringValidationBlockWithLength:randomLength error:randomError];
-    validator = [TWTBlockValidator blockValidatorWithBlock:validationBlock];
+    validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
     
     // Validation succeeds
     error = nil;

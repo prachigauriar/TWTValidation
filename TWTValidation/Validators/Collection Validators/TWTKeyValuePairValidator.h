@@ -26,12 +26,11 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@interface TWTKeyValuePairValidator : TWTValueValidator <NSCopying>
+@interface TWTKeyValuePairValidator : TWTValidator <NSCopying>
 
 @property (nonatomic, strong, readonly) id key;
 @property (nonatomic, strong, readonly) TWTValidator *valueValidator;
 
 - (instancetype)initWithKey:(id)key valueValidator:(TWTValidator *)valueValidator;
-+ (instancetype)keyValuePairValidatorWithKey:(id)key valueValidator:(TWTValidator *)valueValidator;
 
 @end

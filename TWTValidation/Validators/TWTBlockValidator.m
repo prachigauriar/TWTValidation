@@ -52,12 +52,6 @@
 }
 
 
-+ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block
-{
-    return [[self alloc] initWithBlock:block];
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ [self.block hash];
@@ -79,7 +73,7 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    return self.block ? self.block(value, outError) : YES;
+    return !self.block || self.block(value, outError);
 }
 
 @end

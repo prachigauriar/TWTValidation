@@ -58,12 +58,6 @@
 }
 
 
-+ (instancetype)collectionValidatorWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators
-{
-    return [[self alloc] initWithCountValidator:countValidator elementValidators:elementValidators];
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ self.countValidator.hash ^ self.elementAndValidator.hash;

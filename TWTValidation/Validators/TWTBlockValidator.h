@@ -59,11 +59,4 @@ typedef BOOL (^TWTValidationBlock)(id value, NSError *__autoreleasing *outError)
  */
 - (instancetype)initWithBlock:(TWTValidationBlock)block;
 
-/*!
- @abstract Creates and returns a block validator with the specified validation block.
- @param block The validation block. If nil, the resulting validator will successfully validate all values.
- @result An new block validator with the specified validation block.
- */
-+ (instancetype)blockValidatorWithBlock:(TWTValidationBlock)block;
-
 @end

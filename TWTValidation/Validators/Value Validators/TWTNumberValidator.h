@@ -33,6 +33,5 @@
 @property (nonatomic, strong, readonly) NSNumber *maximum;
 
 - (instancetype)initWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
-+ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
 
 @end

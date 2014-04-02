@@ -57,21 +57,6 @@
 }
 
 
-+ (instancetype)keyValuePairValidatorWithKey:(id)key valueValidator:(TWTValidator *)valueValidator
-{
-    return [[self alloc] initWithKey:key valueValidator:valueValidator];
-}
-
-
-- (instancetype)copyWithZone:(NSZone *)zone
-{
-    typeof(self) copy = [super copyWithZone:zone];
-    copy.key = self.key;
-    copy.valueValidator = [self.valueValidator copy];
-    return copy;
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ [self.key hash] ^ self.valueValidator.hash;
@@ -93,13 +78,7 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    if (![super validateValue:value error:outError]) {
-        return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value) || !self.valueValidator) {
-        return YES;
-    }
-    
-    return [self.valueValidator validateValue:value error:outError];
+    return !self.valueValidator || [self.valueValidator validateValue:value error:outError];
 }
 
 @end

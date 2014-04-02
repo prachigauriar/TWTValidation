@@ -66,7 +66,7 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
         userInfo[TWTValidationUnderlyingErrorsKey] = [errors copy];
     }
     
-    return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:[userInfo copy]];
+    return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
 }
 
 

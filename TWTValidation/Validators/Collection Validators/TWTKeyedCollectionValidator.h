@@ -38,9 +38,4 @@
                        valueValidators:(NSArray *)valueValidators
                 keyValuePairValidators:(NSArray *)keyValuePairValidators;
 
-+ (instancetype)keyedColletionValidatorWithCountValidator:(TWTValidator *)countValidator
-                                            keyValidators:(NSArray *)keyValidators
-                                          valueValidators:(NSArray *)valueValidators
-                                   keyValuePairValidators:(NSArray *)keyValuePairValidators;
-
 @end

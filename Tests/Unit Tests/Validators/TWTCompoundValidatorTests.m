@@ -47,7 +47,11 @@
 - (void)testValidateValueErrorForOrWithOneFailingValidator;
 - (void)testValidateValueErrorForOrWithMultipleFailingValidators;
 
-// TODO: Test Mutual Exclusion validator
+- (void)testValidateValueErrorForMutualExclusionWithNoValidators;
+- (void)testValidateValueErrorForMutualExclusionWithOnePassingValidator;
+- (void)testValidateValueErrorForMutualExclusionWithMultiplePassingValidators;
+- (void)testValidateValueErrorForMutualExclusionWithOneFailingValidator;
+- (void)testValidateValueErrorForMutualExclusionWithMultipleFailingValidators;
 
 @end
 
@@ -259,9 +263,43 @@
     XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with nil validators");
     XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL], @"passes with nil validators");
 
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with nil validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertNil(error.twt_validatedValue, @"non-nil validatedValue");
+    XCTAssertNil(error.twt_underlyingErrors, @"non-nil incorrect underlying errors");
+
+    id value = UMKRandomAlphanumericStringWithLength(10);
+    error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with nil validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validatedValue");
+    XCTAssertNil(error.twt_underlyingErrors, @"non-nil incorrect underlying errors");
+
     validator = [TWTCompoundValidator orValidatorWithSubvalidators:@[ ]];
-    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with no validators");
-    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:NULL], @"passes with no validators");
+    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with nil validators");
+    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL], @"passes with nil validators");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes with nil validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertNil(error.twt_validatedValue, @"non-nil validatedValue");
+    XCTAssertNil(error.twt_underlyingErrors, @"non-nil incorrect underlying errors");
+
+    value = UMKRandomUnicodeStringWithLength(10);
+    error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with nil validators");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validatedValue");
+    XCTAssertNil(error.twt_underlyingErrors, @"non-nil incorrect underlying errors");
 }
 
 
@@ -362,5 +400,23 @@
     XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
     XCTAssertEqualObjects(error.twt_underlyingErrors, expectedErrors, @"incorrect underlying errors");
 }
+
+
+//- (void)testValidateValueErrorForMutualExclusionWithNoValidators
+//{
+//    TWTCompoundValidator *validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:nil];
+//    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with nil validators");
+//    XCTAssertFalse([validator validateValue:UMKRandomUnsignedNumber() error:NULL], @"passes with nil validators");
+//
+//    validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:@[ ]];
+//    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes with no validators");
+//    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(10) error:NULL], @"passes with no validators");
+//}
+
+
+//- (void)testValidateValueErrorForMutualExclusionWithOnePassingValidator;
+//- (void)testValidateValueErrorForMutualExclusionWithMultiplePassingValidators;
+//- (void)testValidateValueErrorForMutualExclusionWithOneFailingValidator;
+//- (void)testValidateValueErrorForMutualExclusionWithMultipleFailingValidators;
 
 @end

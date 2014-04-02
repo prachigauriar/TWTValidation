@@ -32,6 +32,5 @@
 @property (nonatomic, copy, readonly) NSArray *elementValidators;
 
 - (instancetype)initWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators;
-+ (instancetype)collectionValidatorWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators;
 
 @end

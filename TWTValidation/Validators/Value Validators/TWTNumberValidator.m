@@ -62,12 +62,6 @@
 }
 
 
-+ (instancetype)numberValidatorWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum
-{
-    return [[self alloc] initWithMinimum:minimum maximum:maximum];
-}
-
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     typeof(self) copy = [super copyWithZone:zone];
@@ -93,8 +87,9 @@
     }
     
     typeof(self) other = object;
-    return other.requiresIntegralValue == self.requiresIntegralValue && (self.minimum && [other.minimum isEqualToNumber:self.minimum]) &&
-        (self.maximum && [other.maximum isEqualToNumber:self.maximum]);
+    return other.requiresIntegralValue == self.requiresIntegralValue &&
+        (self.minimum == other.minimum || (self.minimum && [other.minimum isEqualToNumber:self.minimum])) &&
+        (self.maximum == other.maximum || (self.maximum && [other.maximum isEqualToNumber:self.maximum]));
 }
 
 
@@ -115,7 +110,7 @@
     } else if (self.maximum && [value compare:self.maximum] > NSOrderedSame) {
         errorCode = TWTValidationErrorCodeValueGreaterThanMaximum;
     } else if (self.requiresIntegralValue && trunc(doubleValue) != doubleValue) {
-        errorCode = TWTValidationErrorCodeValueIsNonIntegral;
+        errorCode = TWTValidationErrorCodeValueIsNotIntegral;
     } else {
         return YES;
     }
@@ -135,9 +130,9 @@
                 description = [NSString stringWithFormat:descriptionFormat, value, self.maximum];
                 break;
             }
-            case TWTValidationErrorCodeValueIsNonIntegral: {
+            case TWTValidationErrorCodeValueIsNotIntegral: {
                 NSString *descriptionFormat = NSLocalizedString(@"number (%1$@) is not an integer",
-                                                                @"TWTValidationErrorCodeValueIsNonIntegral error message");
+                                                                @"TWTValidationErrorCodeValueIsNotIntegral error message");
                 description = [NSString stringWithFormat:descriptionFormat, value];
             }
         }

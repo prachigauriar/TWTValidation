@@ -87,18 +87,6 @@
 }
 
 
-+ (instancetype)keyedColletionValidatorWithCountValidator:(TWTValidator *)countValidator
-                                            keyValidators:(NSArray *)keyValidators
-                                          valueValidators:(NSArray *)valueValidators
-                                   keyValuePairValidators:(NSArray *)keyValuePairValidators
-{
-    return [[self alloc] initWithCountValidator:countValidator
-                                  keyValidators:keyValidators
-                                valueValidators:valueValidators
-                         keyValuePairValidators:keyValuePairValidators];
-}
-
-
 - (NSUInteger)hash
 {
     return [super hash] ^ self.countValidator.hash ^ self.keyAndValidator.hash ^ self.valueAndValidator.hash ^ self.keyValuePairAndValidators.hash;

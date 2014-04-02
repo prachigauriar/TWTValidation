@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeValueNull,
     TWTValidationErrorCodeValueHasIncorrectClass,
     
-    TWTValidationErrorCodeValueIsNonIntegral,
+    TWTValidationErrorCodeValueIsNotIntegral,
     TWTValidationErrorCodeValueLessThanMinimum,
     TWTValidationErrorCodeValueGreaterThanMaximum,
     
