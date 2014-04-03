@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
                    DESC
 
   s.author       = { "Two Toasters" => "general@twotoasters.com" }
-  s.homepage     = "https://github.com/twotoasters/URLMock"
+  s.homepage     = "https://github.com/twotoasters/TWTValidation"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
   s.ios.deployment_target = '7.0'
@@ -19,4 +19,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/twotoasters/TWTValidation.git", :tag => s.version.to_s }
 
   s.source_files = 'TWTValidation/**/*.{h,m}'
+  
+  s.ios.resource_bundle = { 'TWTValidation' => 'TWTValidation/Supporting Files/*.lproj' }
 end
