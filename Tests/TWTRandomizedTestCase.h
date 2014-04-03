@@ -33,10 +33,17 @@
  implementation.
  
  Additionally, randomized test cases have several utility methods that are generally useful when testing
- the TWTValidation framework. These methods include returning a random error and returning mock objects
- that pass and fail validation, respectively.
+ the TWTValidation framework. These methods include returning a random object, error, and returning mock
+ objects that pass and fail validation, respectively.
  */
 @interface TWTRandomizedTestCase : XCTestCase
+
+/*!
+ @abstract Returns a random object or nil.
+ @discussion If the return value is non-nil, it is either a random number, string, URL, or NSNull.
+ @result A random object.
+ */
+- (id)randomObject;
 
 /*!
  @abstract Returns a random error object.

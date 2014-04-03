@@ -47,6 +47,27 @@
 }
 
 
+- (id)randomObject
+{
+    switch (random() % 6) {
+        case 0:
+            return [NSNull null];
+        case 1:
+            return UMKRandomUnsignedNumber();
+        case 2:
+            return UMKRandomUnicodeString();
+        case 3:
+            return UMKRandomAlphanumericString();
+        case 4:
+            return UMKRandomHTTPURL();
+        case 5:
+            return nil;
+    }
+
+    return nil;
+}
+
+
 - (NSError *)randomError
 {
     return [NSError errorWithDomain:UMKRandomUnicodeStringWithLength(10) code:random() userInfo:UMKRandomDictionaryOfStringsWithElementCount(5)];
