@@ -1,5 +1,5 @@
 //
-//  TWTValidation.h
+//  TWTBlockValidator.m
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 3/28/2014.
@@ -24,21 +24,56 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
-
 #import <TWTValidation/TWTBlockValidator.h>
 
-#import <TWTValidation/TWTCompoundValidator.h>
+@interface TWTBlockValidator ()
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+@property (nonatomic, copy, readwrite) TWTValidationBlock block;
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+@end
 
-#import <TWTValidation/TWTValidatingObject.h>
+
+@implementation TWTBlockValidator
+
+- (instancetype)init
+{
+    return [self initWithBlock:nil];
+}
+
+
+- (instancetype)initWithBlock:(TWTValidationBlock)block
+{
+    self = [super init];
+    if (self) {
+        _block = [block copy];
+    }
+    
+    return self;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ [self.block hash];
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [self.block isEqual:other.block];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return !self.block || self.block(value, outError);
+}
+
+@end

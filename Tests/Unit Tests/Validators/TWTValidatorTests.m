@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValidatorTests.m
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 3/30/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,56 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import "TWTRandomizedTestCase.h"
 
 #import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@interface TWTValidatorTests : TWTRandomizedTestCase
 
-#import <TWTValidation/TWTCompoundValidator.h>
+@property (nonatomic, strong) TWTValidator *validator;
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+- (void)testInit;
+- (void)testCopy;
+- (void)testHashAndIsEqual;
+- (void)testValidateValueError;
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+@end
 
-#import <TWTValidation/TWTValidatingObject.h>
+
+@implementation TWTValidatorTests
+
+- (void)setUp
+{
+    [super setUp];
+    self.validator = [[TWTValidator alloc] init];
+}
+
+- (void)testInit
+{
+    XCTAssertNotNil(self.validator, @"returns nil");
+}
+
+
+- (void)testCopy
+{
+    TWTValidator *copy = [self.validator copy];
+    XCTAssertEqual(copy, self.validator, @"copy returns different object");
+}
+
+
+- (void)testHashAndIsEqual
+{
+    TWTValidator *otherValidator = [[TWTValidator alloc] init];
+    XCTAssertEqual(self.validator.hash, otherValidator.hash, @"hashes are different for equal objects");
+    XCTAssertEqualObjects(self.validator, otherValidator, @"equal objects are not equal");
+}
+
+
+- (void)testValidateValueError
+{
+    id value = UMKRandomBoolean() ? UMKRandomUnicodeStringWithLength(10) : UMKRandomUnsignedNumber();
+    NSError *error = nil;
+    XCTAssertTrue([self.validator validateValue:value error:&error], @"returns NO");
+}
+
+@end

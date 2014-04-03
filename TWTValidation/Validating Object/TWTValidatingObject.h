@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValidatingObject.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 3/29/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,19 +26,9 @@
 
 @import Foundation;
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
+@interface TWTValidatingObject : NSObject
 
-#import <TWTValidation/TWTBlockValidator.h>
++ (NSSet *)validatorsForKey:(NSString *)key;
+- (BOOL)validateValueForKey:(NSString *)key error:(out NSError *__autoreleasing *)outError;
 
-#import <TWTValidation/TWTCompoundValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
-
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
-
-#import <TWTValidation/TWTValidatingObject.h>
+@end

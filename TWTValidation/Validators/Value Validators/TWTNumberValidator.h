@@ -1,5 +1,5 @@
 //
-//  TWTValidation.h
+//  TWTNumberValidator.h
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 3/28/2014.
@@ -24,21 +24,14 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
-
-#import <TWTValidation/TWTBlockValidator.h>
-
-#import <TWTValidation/TWTCompoundValidator.h>
-
 #import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+@interface TWTNumberValidator : TWTValueValidator <NSCopying>
 
-#import <TWTValidation/TWTValidatingObject.h>
+@property (nonatomic, assign) BOOL requiresIntegralValue;
+@property (nonatomic, strong, readonly) NSNumber *minimum;
+@property (nonatomic, strong, readonly) NSNumber *maximum;
+
+- (instancetype)initWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
+
+@end

@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValidator.m
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 3/27/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,32 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
 #import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@implementation TWTValidator
 
-#import <TWTValidation/TWTCompoundValidator.h>
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    return self;
+}
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+- (NSUInteger)hash
+{
+    // An arbitrary large prime number
+    return 2796203;
+}
 
-#import <TWTValidation/TWTValidatingObject.h>
+
+- (BOOL)isEqual:(id)object
+{
+    return [object isKindOfClass:[self class]];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return YES;
+}
+
+@end

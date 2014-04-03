@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTCollectionValidator.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 3/29/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,13 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
 #import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@interface TWTCollectionValidator : TWTValidator <NSCopying>
 
-#import <TWTValidation/TWTCompoundValidator.h>
+@property (nonatomic, strong, readonly) TWTValidator *countValidator;
+@property (nonatomic, copy, readonly) NSArray *elementValidators;
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+- (instancetype)initWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators;
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
-
-#import <TWTValidation/TWTValidatingObject.h>
+@end

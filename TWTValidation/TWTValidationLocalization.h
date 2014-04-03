@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValidationLocalization.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 4/3/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,5 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
-
-#import <TWTValidation/TWTBlockValidator.h>
-
-#import <TWTValidation/TWTCompoundValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
-
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
-
-#import <TWTValidation/TWTValidatingObject.h>
+#define TWTLocalizedString(key) \
+    [[NSBundle bundleForClass:[self class]] localizedStringForKey:(key) value:@"" table:@"TWTValidation"]

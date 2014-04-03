@@ -1,5 +1,5 @@
 //
-//  TWTValidation.h
+//  TWTValueValidator.h
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 3/28/2014.
@@ -24,21 +24,20 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
 #import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@interface TWTValueValidator : TWTValidator <NSCopying>
 
-#import <TWTValidation/TWTCompoundValidator.h>
+@property (nonatomic, assign) BOOL allowsNil;
+@property (nonatomic, assign) BOOL allowsNull;
+@property (nonatomic, unsafe_unretained) Class valueClass;
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
++ (instancetype)valueValidatorWithClass:(Class)valueClass allowsNil:(BOOL)allowsNil allowsNull:(BOOL)allowsNull;
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+@end
 
-#import <TWTValidation/TWTValidatingObject.h>
+
+static inline BOOL TWTValidatorValueIsNilOrNull(id value)
+{
+    return !value || [[NSNull null] isEqual:value];
+}

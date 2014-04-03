@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTStringValidator.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 3/27/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,21 +24,32 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
-
-#import <TWTValidation/TWTBlockValidator.h>
-
-#import <TWTValidation/TWTCompoundValidator.h>
-
 #import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
+@interface TWTStringValidator : TWTValueValidator <NSCopying>
 
-#import <TWTValidation/TWTValidatingObject.h>
++ (instancetype)stringValidatorWithLength:(NSUInteger)length;
++ (instancetype)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
++ (instancetype)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
+
+@end
+
+
+@interface TWTBoundedLengthStringValidator : TWTStringValidator <NSCopying>
+
+@property (nonatomic, assign, readonly) NSUInteger minimumLength;
+@property (nonatomic, assign, readonly) NSUInteger maximumLength;
+
+- (instancetype)initWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
+
+@end
+
+
+@interface TWTRegularExpressionStringValidator : TWTStringValidator
+
+@property (nonatomic, strong, readonly) NSRegularExpression *regularExpression;
+@property (nonatomic, assign, readonly) NSMatchingOptions options;
+
+- (instancetype)initWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
+
+@end
