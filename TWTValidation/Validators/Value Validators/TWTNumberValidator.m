@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTNumberValidator.h>
 
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 @interface TWTNumberValidator ()
 
@@ -119,20 +120,17 @@
         NSString *description = nil;
         switch (errorCode) {
             case TWTValidationErrorCodeValueLessThanMinimum: {
-                NSString *descriptionFormat = NSLocalizedString(@"number (%1$@) is less than minimum (%2$@)",
-                                                                @"TWTValidationErrorCodeValueLessThanMinimum error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTNumberValidator.valueLessThanMinimum.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, value, self.minimum];
                 break;
             }
             case TWTValidationErrorCodeValueGreaterThanMaximum: {
-                NSString *descriptionFormat = NSLocalizedString(@"number (%1$@) is greater than maximum (%2$@)",
-                                                                @"TWTValidationErrorCodeValueGreaterThanMaximum error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTNumberValidator.valueGreaterThanMaximum.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, value, self.maximum];
                 break;
             }
             case TWTValidationErrorCodeValueIsNotIntegral: {
-                NSString *descriptionFormat = NSLocalizedString(@"number (%1$@) is not an integer",
-                                                                @"TWTValidationErrorCodeValueIsNotIntegral error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTNumberValidator.valueIsNotIntegral.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, value];
             }
         }

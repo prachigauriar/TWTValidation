@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTValueValidator.h>
 
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 @implementation TWTValueValidator
 
@@ -94,14 +95,13 @@
         NSString *description = nil;
         switch (errorCode) {
             case TWTValidationErrorCodeValueNil:
-                description = NSLocalizedString(@"value is nil", @"TWTValidationErrorCodeValueNil error message");
+                description = TWTLocalizedString(@"TWTValueValidator.valueNil.validationError");
                 break;
             case TWTValidationErrorCodeValueNull:
-                description = NSLocalizedString(@"value is null", @"TWTValidationErrorCodeValueNull error message");
+                description = TWTLocalizedString(@"TWTValueValidator.valueNull.validationError");
                 break;
             case TWTValidationErrorCodeValueHasIncorrectClass: {
-                NSString *descriptionFormat = NSLocalizedString(@"value class (%1$@) is incompatible with required value class (%2$@)",
-                                                                @"TWTValidationErrorCodeValueHasIncorrectClass error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, [value class], self.valueClass];
                 break;
             }

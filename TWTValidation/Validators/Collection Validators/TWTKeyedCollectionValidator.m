@@ -29,6 +29,7 @@
 #import <TWTValidation/TWTCompoundValidator.h>
 #import <TWTValidation/TWTKeyValuePairValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 @interface TWTKeyedCollectionValidator ()
 
@@ -157,8 +158,7 @@
     BOOL validated = countValidated && keysValidated && valuesValidated && pairsValidated;
     if (!validated && outError) {
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
-        userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"keyed collection is invalid",
-                                                                @"TWTValidationErrorCodeKeyedCollectionValidatorError error message");
+        userInfo[NSLocalizedDescriptionKey] = TWTLocalizedString(@"TWTKeyedCollectionValidator.validationError");
 
         if (keyedCollection) {
             userInfo[TWTValidationValidatedValueKey] = keyedCollection;

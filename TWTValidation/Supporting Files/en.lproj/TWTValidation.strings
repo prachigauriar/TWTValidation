@@ -1,0 +1,49 @@
+/* 
+  TWTValidation.strings
+  TWTValidation
+
+  Created by Prachi Gauriar on 4/3/2014.
+  Copyright (c) 2014 Two Toasters, LLC.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+*/
+
+/* Compound validators */
+"TWTCompoundValidator.and.validationError" = "one or more subvalidators fail";
+"TWTCompoundValidator.or.validationError" = "all subvalidators fail";
+"TWTCompoundValidator.mutualExclusion.validationError" = "number of passing subvalidators is not one";
+
+/* Value validator */
+"TWTValueValidator.valueNil.validationError" = "value is nil";
+"TWTValueValidator.valueNull.validationError" = "value is null";
+"TWTValueValidator.valueHasIncorrectClass.validationError.format" = "value class (%1$@) is incompatible with required value class (%2$@)";
+
+/* Number validator */
+"TWTNumberValidator.valueIsNotIntegral.validationError.format" = "number (%1$@) is not an integer";
+"TWTNumberValidator.valueLessThanMinimum.validationError.format" = "number (%1$@) is less than minimum (%2$@)";
+"TWTNumberValidator.valueGreaterThanMaximum.validationError.format" = "number (%1$@) is greater than maximum (%2$@)";
+
+/* String validators */
+"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format" = "string length (%1$lu) is less than minimum length (%2$lu)";
+"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format" = "string length (%1$lu) is greater than maximum length (%2$lu)";
+"TWTRegularExpressionStringValidator.validationError" = "string does not match regular expression (%1$@)";
+
+/* Collection validators */
+"TWTCollectionValidator.validationError" = "collection is invalid";
+"TWTKeyedCollectionValidator.validationError" = "keyed collection is invalid";

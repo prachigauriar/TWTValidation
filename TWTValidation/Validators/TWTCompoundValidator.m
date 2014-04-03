@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTCompoundValidator.h>
 
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 @implementation TWTCompoundValidator
 
@@ -119,16 +120,13 @@
         NSString *description = nil;
         switch (self.compoundValidatorType) {
             case TWTCompoundValidatorTypeAnd:
-                description = NSLocalizedString(@"one or more subvalidators fail",
-                                                @"TWTValidationErrorCodeCompoundValidatorError and error message");
+                description = TWTLocalizedString(@"TWTCompoundValidator.and.validationError");
                 break;
             case TWTCompoundValidatorTypeOr:
-                description = NSLocalizedString(@"all subvalidators fail",
-                                                @"TWTValidationErrorCodeCompoundValidatorError or error message");
+                description = TWTLocalizedString(@"TWTCompoundValidator.or.validationError");
                 break;
             case TWTCompoundValidatorTypeMutualExclusion:
-                description = NSLocalizedString(@"number of passing subvalidators is not one",
-                                                @"TWTValidationErrorCodeCompoundValidatorError mutual exclusion error message");
+                description = TWTLocalizedString(@"TWTCompoundValidator.mutualExclusion.validationError");
                 break;
         }
         

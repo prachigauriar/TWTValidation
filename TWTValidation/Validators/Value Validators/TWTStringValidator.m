@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTStringValidator.h>
 
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 @interface TWTBoundedLengthStringValidator ()
 
@@ -155,14 +156,12 @@
         NSString *description = nil;
         switch (errorCode) {
             case TWTValidationErrorCodeLengthLessThanMinimum: {
-                NSString *descriptionFormat = NSLocalizedString(@"string length (%1$lu) is less than minimum length (%2$lu)",
-                                                                @"TWTValidationErrorCodeLengthLessThanMinimum error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
                 break;
             }
             case TWTValidationErrorCodeLengthGreaterThanMaximum: {
-                NSString *descriptionFormat = NSLocalizedString(@"string length (%1$lu) is greater than maximum length (%2$lu)",
-                                                                @"TWTValidationErrorCodeLengthGreaterThanMaximum error message");
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format");
                 description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
                 break;
             }
@@ -236,8 +235,7 @@
     }
 
     if (outError) {
-        NSString *descriptionFormat = NSLocalizedString(@"string does not match regular expression (%1$@)",
-                                                        @"TWTValidationErrorCodeValueDoesNotMatchFormat error message");
+        NSString *descriptionFormat = TWTLocalizedString(@"TWTRegularExpressionStringValidator.validationError");
         NSString *description = [NSString stringWithFormat:descriptionFormat, [self.regularExpression pattern]];
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat value:value localizedDescription:description];
     }

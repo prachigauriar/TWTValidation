@@ -22,6 +22,8 @@
 		4C4D71B018E7C53600BB8CE0 /* TWTValidatingObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C4D71AE18E7C53600BB8CE0 /* TWTValidatingObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C4D71B118E7C53600BB8CE0 /* TWTValidatingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71AF18E7C53600BB8CE0 /* TWTValidatingObject.m */; };
 		4C4D71B218E7C53600BB8CE0 /* TWTValidatingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71AF18E7C53600BB8CE0 /* TWTValidatingObject.m */; };
+		4CA55E2C18EDC666009EED4B /* TWTValidation.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CA55E2E18EDC666009EED4B /* TWTValidation.strings */; };
+		4CA55E3018EDE77F009EED4B /* TWTValidationLocalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4CA7C90018E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
 		4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C90D18E662CE00A434B6 /* XCTest.framework */; };
 		4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
@@ -97,6 +99,8 @@
 		4C4D71A918E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTKeyValuePairValidator.m; sourceTree = "<group>"; };
 		4C4D71AE18E7C53600BB8CE0 /* TWTValidatingObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTValidatingObject.h; sourceTree = "<group>"; };
 		4C4D71AF18E7C53600BB8CE0 /* TWTValidatingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValidatingObject.m; sourceTree = "<group>"; };
+		4CA55E2D18EDC666009EED4B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TWTValidation.strings; sourceTree = "<group>"; };
+		4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTValidationLocalization.h; sourceTree = "<group>"; };
 		4CA7C8FC18E662CE00A434B6 /* libTWTFoundation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTWTFoundation.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA7C8FF18E662CE00A434B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4CA7C90318E662CE00A434B6 /* TWTValidation-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TWTValidation-Prefix.pch"; sourceTree = "<group>"; };
@@ -225,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				4CA7C90418E662CE00A434B6 /* TWTValidation.h */,
+				4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */,
 				4CA7C92518E6631400A434B6 /* Validators */,
 				4C4D719E18E7922E00BB8CE0 /* Errors */,
 				4C4D71AD18E7C50D00BB8CE0 /* Validating Object */,
@@ -236,6 +241,7 @@
 		4CA7C90218E662CE00A434B6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4CA55E2E18EDC666009EED4B /* TWTValidation.strings */,
 				4CA7C94618E664CC00A434B6 /* TWTValidation-Info.plist */,
 				4CA7C90318E662CE00A434B6 /* TWTValidation-Prefix.pch */,
 			);
@@ -332,6 +338,7 @@
 				4CA7C97218E6659700A434B6 /* TWTValidation.h in Headers */,
 				4C4D71A518E79FAF00BB8CE0 /* TWTKeyedCollectionValidator.h in Headers */,
 				4CA7C96A18E6657E00A434B6 /* TWTCompoundValidator.h in Headers */,
+				4CA55E3018EDE77F009EED4B /* TWTValidationLocalization.h in Headers */,
 				4C4D71B018E7C53600BB8CE0 /* TWTValidatingObject.h in Headers */,
 				4CA7C96718E6657E00A434B6 /* TWTValidator.h in Headers */,
 				4CA7C96818E6657E00A434B6 /* TWTBlockValidator.h in Headers */,
@@ -471,6 +478,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CA55E2C18EDC666009EED4B /* TWTValidation.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +624,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		4CA55E2E18EDC666009EED4B /* TWTValidation.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CA55E2D18EDC666009EED4B /* en */,
+			);
+			name = TWTValidation.strings;
+			sourceTree = "<group>";
+		};
 		4CA7C91818E662CE00A434B6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
