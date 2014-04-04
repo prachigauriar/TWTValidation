@@ -48,6 +48,13 @@
 - (id)randomObject;
 
 /*!
+ @abstract Returns a random class or Nil.
+ @discussion If the return value is non-Nil, it is either NSNumber, NSString, NSURL, or NSNull.
+ @result A random class.
+ */
+- (Class)randomClass;
+
+/*!
  @abstract Returns a random error object.
  @discussion The error has a random ten-character Unicode string as its domain, a random unsigned integer
      as its code, and a ten-element dictionary with random string keys and values as its userInfo.

@@ -33,7 +33,10 @@
 - (void)testInit;
 - (void)testCopy;
 - (void)testHashAndIsEqual;
-- (void)testValidateValueError;
+
+- (void)testValidateValueErrorValueClass;
+- (void)testValidateValueErrorAllowsNil;
+- (void)testValidateValueErrorAllowsNull;
 
 @end
 
@@ -49,7 +52,7 @@
     XCTAssertNil(validator.valueClass, @"non-nil value class");
     
     // Two arbitrary classes
-    Class valueClass = UMKRandomBoolean() ? [NSOrderedSet class] : [NSStream class];
+    Class valueClass = [self randomClass];
     BOOL allowsNil = UMKRandomBoolean();
     BOOL allowsNull = UMKRandomBoolean();
     
@@ -63,7 +66,7 @@
 
 - (void)testCopy
 {
-    Class valueClass = UMKRandomBoolean() ? [NSOrderedSet class] : [NSStream class];
+    Class valueClass = [self randomClass];
     BOOL allowsNil = UMKRandomBoolean();
     BOOL allowsNull = UMKRandomBoolean();
     
@@ -74,5 +77,51 @@
     XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
     XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
 }
+
+
+- (void)testHashAndIsEqual
+{
+    Class valueClass = [self randomClass];
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+
+    TWTValueValidator *validator1 = [TWTValueValidator valueValidatorWithClass:valueClass allowsNil:allowsNil allowsNull:allowsNull];
+    TWTValueValidator *validator2 = [TWTValueValidator valueValidatorWithClass:valueClass allowsNil:allowsNil allowsNull:allowsNull];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Value class
+    while (validator1.valueClass == validator2.valueClass) {
+        validator1.valueClass = [self randomClass];
+    }
+
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.valueClass = validator1.valueClass;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+}
+
+
+//- (void)testValidateValueErrorValueClass;
+//- (void)testValidateValueErrorAllowsNil;
+//- (void)testValidateValueErrorAllowsNull;
 
 @end

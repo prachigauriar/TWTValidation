@@ -60,11 +60,26 @@
             return UMKRandomAlphanumericString();
         case 4:
             return UMKRandomHTTPURL();
-        case 5:
+        default:
             return nil;
     }
+}
 
-    return nil;
+
+- (Class)randomClass
+{
+    switch (random() % 5) {
+        case 0:
+            return [NSNull class];
+        case 1:
+            return [NSNumber class];
+        case 2:
+            return [NSString class];
+        case 3:
+            return [NSURL class];
+        default:
+            return Nil;
+    }
 }
 
 
