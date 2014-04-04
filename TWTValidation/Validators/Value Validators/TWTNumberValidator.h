@@ -26,12 +26,38 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
+/*!
+ TWTNumberValidators validate that values are NSNumber instances with values between a minimum and
+ maximum. Further, number validators can validate that a number is an integer.
+ */
 @interface TWTNumberValidator : TWTValueValidator <NSCopying>
 
+/*!
+ @abstract Whether the validator requires a number to be an integer in order to be valid.
+ @discussion The default is NO.
+ */
 @property (nonatomic, assign) BOOL requiresIntegralValue;
+
+/*!
+ @abstract The minimum value that the validator considers valid.
+ @discussion If nil, there is no minimum value. The default is nil.
+ */
 @property (nonatomic, strong, readonly) NSNumber *minimum;
+
+/*!
+ @abstract The maximum value that the validator considers valid.
+ @discussion If nil, there is no maximum value. The default is nil.
+ */
 @property (nonatomic, strong, readonly) NSNumber *maximum;
 
+
+/*!
+ @abstract Initializes a newly created number validator with the specified minimum and maximum values.
+ @discussion This is the class’s designated initializer.
+ @param minimum The minimum value that the validator considers valid. nil indicates no minimum.
+ @param maximum The maximum value that the validator considers valid. nil indicates no maximum.
+ @result An initialized number validator with the specified minimum and maximum values.
+ */
 - (instancetype)initWithMinimum:(NSNumber *)minimum maximum:(NSNumber *)maximum;
 
 @end

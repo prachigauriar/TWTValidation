@@ -26,17 +26,52 @@
 
 #import <TWTValidation/TWTValidator.h>
 
+/*!
+ TWTValueValidators validate a single object. Each value validator can validate that an object is of a given
+ class, is not nil, and is not the NSNull instance. This class is primarily useful as the superclass of more
+ specific validators.
+ */
 @interface TWTValueValidator : TWTValidator <NSCopying>
 
+/*!
+ @abstract Whether the validator considers nil values valid.
+ @discussion The default is NO.
+ */
 @property (nonatomic, assign) BOOL allowsNil;
+
+/*!
+ @abstract Whether the validator considers NSNull instances valid.
+ @discussion The default is NO.
+ */
 @property (nonatomic, assign) BOOL allowsNull;
+
+/*!
+ @abstract The class that values have to be an instance of for the validator to consider them valid.
+ @discussion Nil by default, meaning all objects are valid.
+ */
 @property (nonatomic, unsafe_unretained) Class valueClass;
 
+
+/*!
+ @abstract Creates and returns a new TWTValueValidator instance with the specified value class.
+ @param valueClass The class that values have to be an instance of for the validator to consider them valid.
+ @param allowsNil Whether the validator considers nil values valid.
+ @param allowsNull Whether the validator considers NSNull instances valid.
+ @result A new TWTValidator instance with the specified value class.
+ */
 + (instancetype)valueValidatorWithClass:(Class)valueClass allowsNil:(BOOL)allowsNil allowsNull:(BOOL)allowsNull;
 
 @end
 
 
+/*!
+ @abstract Returns whether the specified value is nil or the NSNull instance.
+ @discussion This function is provided as a convenience for TWTValueValidator subclasses. If both
+    TWTValueValidator’s implementation of -validateValue:error: and this function return YES for a value,
+    the value is both valid and nil/null. Typically, this means no further validation is necessary.
+ @param value The value.
+ @result Whether the value is nil or the NSNull instance.
+ */
 static inline BOOL TWTValidatorValueIsNilOrNull(id value)
 {
     return !value || [[NSNull null] isEqual:value];
