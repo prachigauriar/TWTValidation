@@ -34,7 +34,15 @@
 
 + (NSSet *)validatorsForKey:(NSString *)key
 {
-    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"validatorsFor%@", key.capitalizedString]);
+    NSString *capitalizedKey = nil;
+    if (key.length < 2) {
+        capitalizedKey = [key uppercaseString];
+    } else {
+        capitalizedKey = [NSString stringWithFormat:@"%@%@", [[key substringToIndex:1] uppercaseString], [key substringFromIndex:1]];
+    }
+    
+	
+    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"validatorsFor%@", capitalizedKey]);
     NSSet *validators = objc_getAssociatedObject(self, selector);
     if (validators) {
         return validators;

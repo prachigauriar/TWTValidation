@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
 
   s.source_files = 'TWTValidation/**/*.{h,m}'
   
-  s.ios.resource_bundle = { 'TWTValidation' => 'TWTValidation/Supporting Files/*.lproj' }
+  s.ios.resource = 'TWTValidation/Supporting Files/*.lproj'
 end
