@@ -27,7 +27,7 @@
 #import "TWTRandomizedTestCase.h"
 
 #import <OCMock/OCMock.h>
-#import <TWTValidation/TWTValidator.h>
+#import <TWTValidation/TWTValidation.h>
 
 @implementation TWTRandomizedTestCase
 

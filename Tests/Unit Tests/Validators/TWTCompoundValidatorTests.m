@@ -26,8 +26,7 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import <TWTValidation/TWTCompoundValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidation.h>
 
 @interface TWTCompoundValidatorTests : TWTRandomizedTestCase
 
@@ -133,8 +132,8 @@
     TWTCompoundValidator *validator = [[TWTCompoundValidator alloc] initWithType:randomType subvalidators:randomSubvalidators];
     TWTCompoundValidator *copy = [validator copy];
     XCTAssertEqual(copy, validator, @"copy returns different object");
-    XCTAssertEqual(randomType, copy.compoundValidatorType, @"type was not set correctly");
-    XCTAssertEqualObjects(randomSubvalidators, copy.subvalidators, @"subvalidators was not set correctly");
+    XCTAssertEqual(randomType, copy.compoundValidatorType, @"type is not set correctly");
+    XCTAssertEqualObjects(randomSubvalidators, copy.subvalidators, @"subvalidators is not set correctly");
 }
 
 
