@@ -54,6 +54,14 @@
  */
 - (Class)randomClass;
 
+
+/*!
+ @abstract Returns a random class that has a mutable variant.
+ @discussion The returned class is either NSArray, NSData, NSDictionary, NSSet, or NSString.
+ @result A random class that has a mutable variant.
+ */
+- (Class)randomClassWithMutableVariant;
+
 /*!
  @abstract Returns a random error object.
  @discussion The error has a random ten-character Unicode string as its domain, a random unsigned integer

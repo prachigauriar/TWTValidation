@@ -56,7 +56,9 @@
  @abstract Creates and returns a new TWTValueValidator instance with the specified value class.
  @param valueClass The class that values have to be an instance of for the validator to consider them valid.
  @param allowsNil Whether the validator considers nil values valid.
- @param allowsNull Whether the validator considers NSNull instances valid.
+ @param allowsNull Whether the validator considers the NSNull instance valid. This option takes precedence
+     over valueClass; if valueClass is equal to [NSNull class], but allowsNull is NO, the NSNull instance
+     is not considered valid.
  @result A new TWTValidator instance with the specified value class.
  */
 + (instancetype)valueValidatorWithClass:(Class)valueClass allowsNil:(BOOL)allowsNil allowsNull:(BOOL)allowsNull;

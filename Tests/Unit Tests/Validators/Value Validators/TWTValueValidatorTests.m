@@ -120,8 +120,76 @@
 }
 
 
-//- (void)testValidateValueErrorValueClass;
-//- (void)testValidateValueErrorAllowsNil;
-//- (void)testValidateValueErrorAllowsNull;
+- (void)testValidateValueErrorValueClass
+{
+    Class valueClass = [self randomClassWithMutableVariant];
+    id value = [[valueClass alloc] init];
+    
+    // valueClass is nil
+    TWTValueValidator *validator = [[TWTValueValidator alloc] init];
+    XCTAssertTrue([validator validateValue:value error:NULL], @"fails when valueClass is nil");
+    
+    // valueClass is either [value class] or a superclass of it
+    validator.valueClass = valueClass;
+    XCTAssertTrue([validator validateValue:value error:NULL], @"fails when value is instance of valueClass");
+    XCTAssertTrue([validator validateValue:[value mutableCopy] error:NULL], @"fails when value is an instance of a subclass of valueClass");
+    
+    // valueClass is different than [value class]
+    validator.valueClass = [self class];
+    XCTAssertFalse([validator validateValue:value error:NULL], @"passes when value is not an instance of valueClass");
+
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value is not an instance of valueClass");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueHasIncorrectClass, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+    
+    // valueClass is NSNull, but allowsNull = NO
+    value = [NSNull null];
+    validator.valueClass = [NSNull class];
+    XCTAssertFalse([validator validateValue:value error:NULL]);
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when allowsNull is NO");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+}
+
+
+- (void)testValidateValueErrorAllowsNil
+{
+    TWTValueValidator *validator = [[TWTValueValidator alloc] init];
+    XCTAssertFalse([validator validateValue:nil error:NULL], @"passes when value is nil");
+
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes when value is nil");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNil, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, nil, @"incorrect validated value");
+
+    validator.allowsNil = YES;
+    XCTAssertTrue([validator validateValue:nil error:NULL], @"fails when value is nil");
+}
+
+
+- (void)testValidateValueErrorAllowsNull
+{
+    TWTValueValidator *validator = [[TWTValueValidator alloc] init];
+    XCTAssertFalse([validator validateValue:[NSNull null] error:NULL], @"passes when value is null");
+    
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:[NSNull null] error:&error], @"passes when value is null");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
+    
+    validator.allowsNull = YES;
+    XCTAssertTrue([validator validateValue:[NSNull null] error:NULL], @"fails when value is null");
+}
 
 @end

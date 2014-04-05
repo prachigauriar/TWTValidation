@@ -83,6 +83,22 @@
 }
 
 
+- (Class)randomClassWithMutableVariant
+{
+    switch (random() % 5) {
+        case 0:
+            return [NSArray class];
+        case 1:
+            return [NSData class];
+        case 2:
+            return [NSDictionary class];
+        case 3:
+            return [NSSet class];
+        default:
+            return [NSString class];
+    }    
+}
+
 - (NSError *)randomError
 {
     return [NSError errorWithDomain:UMKRandomUnicodeStringWithLength(10) code:random() userInfo:UMKRandomDictionaryOfStringsWithElementCount(5)];
