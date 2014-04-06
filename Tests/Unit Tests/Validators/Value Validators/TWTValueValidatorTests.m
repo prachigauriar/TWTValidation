@@ -88,7 +88,7 @@
     TWTValueValidator *validator1 = [TWTValueValidator valueValidatorWithClass:valueClass allowsNil:allowsNil allowsNull:allowsNull];
     TWTValueValidator *validator2 = [TWTValueValidator valueValidatorWithClass:valueClass allowsNil:allowsNil allowsNull:allowsNull];
 
-    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
     // Value class
@@ -99,7 +99,7 @@
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
     validator2.valueClass = validator1.valueClass;
-    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
     // Allows nil
@@ -107,7 +107,7 @@
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
     validator2.allowsNil = validator1.allowsNil;
-    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
     // Allows nil
@@ -115,7 +115,7 @@
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
     validator2.allowsNull = validator1.allowsNull;
-    XCTAssertEqual(validator1.hash, validator2.hash, @"hashs are not equal for equal objects");
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 }
 

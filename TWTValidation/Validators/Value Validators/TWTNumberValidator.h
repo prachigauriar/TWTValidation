@@ -53,7 +53,8 @@
 
 /*!
  @abstract Initializes a newly created number validator with the specified minimum and maximum values.
- @discussion This is the class’s designated initializer.
+ @discussion This is the class’s designated initializer. If both minimum and maximum are non-nil, minimum
+     must be less than or equal to maximum.
  @param minimum The minimum value that the validator considers valid. nil indicates no minimum.
  @param maximum The maximum value that the validator considers valid. nil indicates no maximum.
  @result An initialized number validator with the specified minimum and maximum values.

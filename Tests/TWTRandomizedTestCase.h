@@ -35,7 +35,7 @@
  implementation.
  
  Additionally, randomized test cases have several utility methods that are generally useful when testing
- the TWTValidation framework. These methods include returning a random object, error, and returning mock
+ the TWTValidation framework. These utilities include returning a random object, class, error, and mock
  objects that pass and fail validation, respectively.
  */
 @interface TWTRandomizedTestCase : XCTestCase
