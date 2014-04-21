@@ -50,7 +50,9 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeValueDoesNotMatchFormat,
     TWTValidationErrorCodeLengthLessThanMinimum,
     TWTValidationErrorCodeLengthGreaterThanMaximum,
-    
+
+    TWTValidationErrorCodeKeyValueCodingValidatorError,
+
     TWTValidationErrorCodeCompoundValidatorError,
     
     TWTValidationErrorCodeCollectionValidatorError,

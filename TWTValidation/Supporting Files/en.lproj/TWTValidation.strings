@@ -30,6 +30,9 @@
 "TWTCompoundValidator.or.validationError" = "all subvalidators fail";
 "TWTCompoundValidator.mutualExclusion.validationError" = "number of passing subvalidators is not one";
 
+/* Key-value coding validator */
+"TWTKeyValueCodingValidator.validationError" = "one or more validators failed";
+
 /* Value validator */
 "TWTValueValidator.valueNil.validationError" = "value is nil";
 "TWTValueValidator.valueNull.validationError" = "value is null";
