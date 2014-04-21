@@ -39,6 +39,8 @@
 
 - (instancetype)initWithType:(TWTCompoundValidatorType)type subvalidators:(NSArray *)subvalidators
 {
+    NSParameterAssert(type != TWTCompoundValidatorTypeNot || subvalidators.count == 1);
+
     self = [super init];
     if (self) {
         _compoundValidatorType = type;
@@ -46,6 +48,13 @@
     }
 
     return self;
+}
+
+
++ (instancetype)notValidatorWithSubvalidator:(TWTValidator *)subvalidator
+{
+    NSParameterAssert(subvalidator);
+    return [[self alloc] initWithType:TWTCompoundValidatorTypeNot subvalidators:@[ subvalidator ]];
 }
 
 
@@ -105,6 +114,9 @@
 
     BOOL validated = NO;
     switch (self.compoundValidatorType) {
+        case TWTCompoundValidatorTypeNot:
+            validated = validatedCount == 0;
+            break;
         case TWTCompoundValidatorTypeAnd:
             validated = validatedCount == self.subvalidators.count;
             break;
@@ -119,6 +131,9 @@
     if (!validated && outError) {
         NSString *description = nil;
         switch (self.compoundValidatorType) {
+            case TWTCompoundValidatorTypeNot:
+                description = TWTLocalizedString(@"TWTCompoundValidator.not.validationError");
+                break;
             case TWTCompoundValidatorTypeAnd:
                 description = TWTLocalizedString(@"TWTCompoundValidator.and.validationError");
                 break;

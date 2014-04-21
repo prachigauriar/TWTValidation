@@ -27,6 +27,8 @@
 #import <XCTest/XCTest.h>
 #import <URLMock/UMKTestUtilities.h>
 
+@class TWTValidator;
+
 /*!
  TWTRandomizedTestCases override +setUp to call srandomdev() and -setUp to generate and log a random seed
  value before calling srandom(). Subclasses that override +setUp or -setUp should invoke the superclass 
@@ -52,6 +54,13 @@
  @result A random error object.
  */
 - (NSError *)randomError;
+
+/*!
+ @abstract Returns a random validator.
+ @discussion The validator is either a mock passing validator or a mock failing validator.
+ @result A random validator.
+ */
+- (TWTValidator *)randomValidator;
 
 /*!
  @abstract Returns a mock TWTValidator object that always validates values.
