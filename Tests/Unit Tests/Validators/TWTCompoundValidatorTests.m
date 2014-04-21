@@ -35,6 +35,9 @@
 - (void)testCopy;
 - (void)testHashAndIsEqual;
 
+- (void)testValidateValueErrorForNotWithPassingValidator;
+- (void)testValidateValueErrorForNotWithFailingValidator;
+
 - (void)testValidateValueErrorForAndWithNoValidators;
 - (void)testValidateValueErrorForAndWithOnePassingValidator;
 - (void)testValidateValueErrorForAndWithMultiplePassingValidators;
@@ -76,14 +79,33 @@
 
     TWTCompoundValidatorType randomType = [self randomCompoundValidatorType];
     NSArray *randomSubvalidators = UMKGeneratedArrayWithElementCount(1 + random() % 5, ^id(NSUInteger index) {
-        return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+        return [self randomValidator];
     });
-    
+
+    // Test all types but not
     validator = [[TWTCompoundValidator alloc] initWithType:randomType subvalidators:randomSubvalidators];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertEqual(validator.compoundValidatorType, randomType, @"type set incorrectly");
     XCTAssertEqualObjects(validator.subvalidators, randomSubvalidators, @"subvalidators set incorrectly");
 
+    // Test not type
+    NSArray *notSubvalidators = @[ [self randomValidator] ];
+    validator = [[TWTCompoundValidator alloc] initWithType:TWTCompoundValidatorTypeNot subvalidators:notSubvalidators];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertEqual(validator.compoundValidatorType, TWTCompoundValidatorTypeNot, @"type set incorrectly");
+    XCTAssertEqualObjects(validator.subvalidators, notSubvalidators, @"subvalidators set incorrectly");
+
+    XCTAssertThrows([[TWTCompoundValidator alloc] initWithType:TWTCompoundValidatorTypeNot subvalidators:nil], @"does not throw with nil subvalidators");
+    XCTAssertThrows([[TWTCompoundValidator alloc] initWithType:TWTCompoundValidatorTypeNot subvalidators:@[ ]], @"does not throw with empty subvalidators");
+
+    notSubvalidators = UMKGeneratedArrayWithElementCount(random() % 5 + 2, ^id(NSUInteger index) {
+        return [self randomValidator];
+    });
+
+    XCTAssertThrows([[TWTCompoundValidator alloc] initWithType:TWTCompoundValidatorTypeNot subvalidators:notSubvalidators],
+                    @"does not throw with more than 1 subvalidators");
+
+    // Test factory methods
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:randomSubvalidators];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertEqual(validator.compoundValidatorType, TWTCompoundValidatorTypeAnd, @"type is not TWTCompoundValidatorTypeAnd");
@@ -141,6 +163,40 @@
     XCTAssertEqualObjects(equalValidator1, equalValidator2, @"equal objects are not equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator1, @"unequal objects are equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator2, @"unequal objects are equal");
+}
+
+
+#pragma mark - Not Validation Tests
+
+- (void)testValidateValueErrorForNotWithPassingValidator
+{
+    TWTValidator *subvalidator = [self mockPassingValidatorWithErrorPointer:NULL];
+    TWTCompoundValidator *validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+    XCTAssertFalse([validator validateValue:[self randomObject] error:NULL], @"passes with passing validator");
+
+    NSError *error = nil;
+    subvalidator = [self mockPassingValidatorWithErrorPointer:&error];
+    validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+
+    id value = [self randomObject];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with passing validator");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeCompoundValidatorError, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+}
+
+
+- (void)testValidateValueErrorForNotWithFailingValidator
+{
+    TWTValidator *subvalidator = [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+    TWTCompoundValidator *validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+    XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with passing validator");
+
+    NSError *error = nil;
+    subvalidator = [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]];
+    validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+    XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"passes with passing validator");
 }
 
 

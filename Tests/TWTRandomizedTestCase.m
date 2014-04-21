@@ -74,6 +74,12 @@
 }
 
 
+- (TWTValidator *)randomValidator
+{
+    return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+}
+
+
 - (id)mockPassingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError
 {
     id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];

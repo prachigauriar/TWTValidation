@@ -25,6 +25,7 @@
 */
 
 /* Compound validators */
+"TWTCompoundValidator.not.validationError" = "subvalidator passed";
 "TWTCompoundValidator.and.validationError" = "one or more subvalidators fail";
 "TWTCompoundValidator.or.validationError" = "all subvalidators fail";
 "TWTCompoundValidator.mutualExclusion.validationError" = "number of passing subvalidators is not one";
