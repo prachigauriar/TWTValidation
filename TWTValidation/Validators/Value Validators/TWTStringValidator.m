@@ -62,19 +62,19 @@
 }
 
 
-+ (instancetype)stringValidatorWithLength:(NSUInteger)length
++ (TWTBoundedLengthStringValidator *)stringValidatorWithLength:(NSUInteger)length
 {
     return [[TWTBoundedLengthStringValidator alloc] initWithMinimumLength:length maximumLength:length];
 }
 
 
-+ (instancetype)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength
++ (TWTBoundedLengthStringValidator *)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength
 {
     return [[TWTBoundedLengthStringValidator alloc] initWithMinimumLength:minimumLength maximumLength:maximumLength];
 }
 
 
-+ (instancetype)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options
++ (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options
 {
     return [[TWTRegularExpressionStringValidator alloc] initWithRegularExpression:regularExpression options:options];
 }

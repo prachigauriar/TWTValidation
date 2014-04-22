@@ -26,9 +26,11 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
+@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator;
+
 /*!
  TWTStringValidators validate that values are NSString instances. Its subclasses,
- TWTBoundedLengthStringValidator and TWTRegularExpressionStringValidator validate that a string’s length is
+TWTBoundedLengthStringValidator and TWTRegularExpressionStringValidator validate that a string’s length is
  within a range and that the string matches a regular expression, respectively. These subclasses need not be
  instantiated directly. Instead, use one of TWTStringValidator’s factory methods. The subclasses are exposed
  only so that they can be subclassed.
@@ -42,7 +44,7 @@
  @param length The length of valid strings.
  @result A newly created string validator that validates that strings are the specified length.
  */
-+ (instancetype)stringValidatorWithLength:(NSUInteger)length;
++ (TWTBoundedLengthStringValidator *)stringValidatorWithLength:(NSUInteger)length;
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings have the specified minimum
@@ -54,7 +56,7 @@
  @result A newly created string validator that validates that strings have the specified minimum and maximum
      lengths.
  */
-+ (instancetype)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
++ (TWTBoundedLengthStringValidator *)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings match the specified regular
@@ -63,7 +65,7 @@
  @param options The regular expression matching options to use when validating values.
  @result A newly created string validator that validates that strings match the specified regular expression.
  */
-+ (instancetype)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
++ (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
 
 @end
 
