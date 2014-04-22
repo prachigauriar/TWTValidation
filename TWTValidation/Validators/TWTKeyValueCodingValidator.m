@@ -127,7 +127,7 @@
     SEL selector = NSSelectorFromString([NSString stringWithFormat:@"twt_validatorsFor%@", capitalizedKey]);
     NSSet *validators = objc_getAssociatedObject(self, selector);
     if (validators) {
-        return validators;
+        return [[NSNull null] isEqual:validators] ? nil : validators;
     }
 
     if ([self respondsToSelector:selector]) {
@@ -137,7 +137,7 @@
     }
 #pragma clang diagnostic pop
 
-    objc_setAssociatedObject(self, selector, validators, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, selector, validators ? validators : [NSNull null], OBJC_ASSOCIATION_COPY_NONATOMIC);
 
     return validators;
 }
