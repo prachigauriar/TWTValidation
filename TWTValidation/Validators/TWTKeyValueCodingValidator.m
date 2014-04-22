@@ -81,7 +81,7 @@
         NSError *error = nil;
         id value = [object valueForKey:key];
 
-        NSArray *validators = [[object twt_validatorsForKey:key] allObjects];
+        NSArray *validators = [[[object class] twt_validatorsForKey:key] allObjects];
         if (validators) {
             TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
             if (![andValidator validateValue:value error:outError ? &error : NULL]) {
