@@ -26,10 +26,10 @@
 
 #import <TWTValidation/TWTKeyValueCodingValidator.h>
 
+@import ObjectiveC.runtime;
+
 #import <TWTValidation/TWTCompoundValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
-
-@import ObjectiveC.runtime;
 
 
 @implementation TWTKeyValueCodingValidator
@@ -70,29 +70,6 @@
 }
 
 
-- (NSSet *)validatorsForValue:(id)value key:(NSString *)key
-{
-    NSString *capitalizedKey = nil;
-    if (key.length < 2) {
-        capitalizedKey = [key uppercaseString];
-    } else {
-        capitalizedKey = [NSString stringWithFormat:@"%@%@", [[key substringToIndex:1] uppercaseString], [key substringFromIndex:1]];
-    }
-
-    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"validatorsFor%@", capitalizedKey]);
-    NSSet *validators = nil;
-
-    if ([[value class] respondsToSelector:selector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        validators = [[value class] performSelector:selector];
-#pragma clang diagnostic pop
-    }
-
-    return validators;
-}
-
-
 - (BOOL)validateValue:(id)object error:(out NSError *__autoreleasing *)outError
 {
     NSMutableArray *errors = outError ? [[NSMutableArray alloc] init] : nil;
@@ -104,7 +81,7 @@
         NSError *error = nil;
         id value = [object valueForKey:key];
 
-        NSArray *validators = [[self validatorsForValue:object key:key] allObjects];
+        NSArray *validators = [[object twt_validatorsForKey:key] allObjects];
         if (validators) {
             TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
             if (![andValidator validateValue:value error:outError ? &error : NULL]) {
@@ -129,6 +106,40 @@
     }
 
     return validated;
+}
+
+@end
+
+
+#pragma mark -
+
+@implementation NSObject (TWTKeyValueCodingValidator)
+
++ (NSSet *)twt_validatorsForKey:(NSString *)key
+{
+    NSString *capitalizedKey = nil;
+    if (key.length < 2) {
+        capitalizedKey = [key uppercaseString];
+    } else {
+        capitalizedKey = [[[key substringToIndex:1] uppercaseString] stringByAppendingString:[key substringFromIndex:1]];
+    }
+
+    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"twt_validatorsFor%@", capitalizedKey]);
+    NSSet *validators = objc_getAssociatedObject(self, selector);
+    if (validators) {
+        return validators;
+    }
+
+    if ([self respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        validators = [self performSelector:selector];
+    }
+#pragma clang diagnostic pop
+
+    objc_setAssociatedObject(self, selector, validators, OBJC_ASSOCIATION_COPY_NONATOMIC);
+
+    return validators;
 }
 
 @end

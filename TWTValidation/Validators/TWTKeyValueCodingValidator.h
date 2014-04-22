@@ -27,11 +27,17 @@
 #import <TWTValidation/TWTValidator.h>
 
 /*! 
- Description forthcoming.
+ TWTKeyValueCodingValidators validate the values for a subset of an object’s key-value compliant keys. This 
+ subset of keys is called the validator’s key set. When validating an object O, the validator iterates over 
+ each key K in its key set and asks the object for the set of validators to use to validate K’s
+ corresponding value. It does this by invoking +twt_validatorsForKey: on O’s class object. If that method
+ does not return nil, the validator uses the returned validators to validate K’s corresponding value. Otherwise,
+ it validates the value using O’s implementation of -validateValue:forKey:error:. This is repeated for each key
+ in the validator’s key set. An object is considered valid only if all validations pass.
  */
 @interface TWTKeyValueCodingValidator : TWTValidator <NSCopying>
 
-/*! The set of keys whose values the instance validates. */
+/*! The set of KVC keys whose values the instance validates. */
 @property (nonatomic, copy, readonly) NSSet *keys;
 
 /*!
@@ -42,5 +48,29 @@
  @result A newly initialized key-value coding validator with the specified set of keys.
  */
 - (instancetype)initWithKeys:(NSSet *)keys;
+
+@end
+
+
+/*!
+ The TWTKeyValueCodingValidator category on NSObject declares a single method, +twt_validatorsForKey:, which
+ TWTKeyValueCodingValidator instances use to get the validators to validate the values for an object’s KVC-
+ compliant keys.
+ 
+ Typically, instead of overriding +twt_validatorsForKey:, subclasses should implement +twt_validatorsFor«Key»,
+ with «Key» being the capitalized form of the KVC key. The base implementation of +twt_validatorsForKey: simply
+ checks to see the receiver responds to that message, and if so, invokes it.
+ */
+@interface NSObject (TWTKeyValueCodingValidator)
+
+/*!
+ @abstract Returns the validators that should be used for the specified KVC key.
+ @discussion The base implementation checks if the receiver responds to +twt_validatorsFor«Key», and if so,
+     returns the result of sending the receiver that message. Subclass implementations should take care to
+     call their superclass’s implementation to retain this behavior.
+ @param key A key for which instances of the receiver are key-value coding compliant.
+ @result A set of validators that should be used to validate the value for the specified KVC key.
+ */
++ (NSSet *)twt_validatorsForKey:(NSString *)key;
 
 @end
