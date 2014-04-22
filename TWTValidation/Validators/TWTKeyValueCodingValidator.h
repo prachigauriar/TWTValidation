@@ -26,10 +26,21 @@
 
 #import <TWTValidation/TWTValidator.h>
 
+/*! 
+ Description forthcoming.
+ */
 @interface TWTKeyValueCodingValidator : TWTValidator <NSCopying>
 
+/*! The set of keys whose values the instance validates. */
 @property (nonatomic, copy, readonly) NSSet *keys;
 
+/*!
+ @abstract Initializes a newly created TWTKeyValueCodingValidator instance with the specified set of keys.
+ @discussion This is the designated initializer.
+ @param keys A set of key-value coding keys. Values validated by this class must be key-value coding compliant
+     for the specified key set, or else an error will occur during validation.
+ @result A newly initialized key-value coding validator with the specified set of keys.
+ */
 - (instancetype)initWithKeys:(NSSet *)keys;
 
 @end

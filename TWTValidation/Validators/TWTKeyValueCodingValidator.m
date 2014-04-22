@@ -82,10 +82,10 @@
     SEL selector = NSSelectorFromString([NSString stringWithFormat:@"validatorsFor%@", capitalizedKey]);
     NSSet *validators = nil;
 
-    if ([self respondsToSelector:selector]) {
+    if ([[value class] respondsToSelector:selector]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        validators = [value performSelector:selector];
+        validators = [[value class] performSelector:selector];
 #pragma clang diagnostic pop
     }
 
@@ -93,25 +93,37 @@
 }
 
 
-- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+- (BOOL)validateValue:(id)object error:(out NSError *__autoreleasing *)outError
 {
     NSMutableArray *errors = outError ? [[NSMutableArray alloc] init] : nil;
 
+    // For each key, get the validators from object (using +validatorsFor«Key»). If object didn’t return any,
+    // fall back on -validateValue:forKey:error: instead.
     BOOL validated = YES;
     for (NSString *key in self.keys) {
         NSError *error = nil;
-        TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:[[self validatorsForValue:value key:key] allObjects]];
-        if (![andValidator validateValue:[value objectForKey:key] error:outError ? &error : NULL]) {
+        id value = [object valueForKey:key];
+
+        NSArray *validators = [[self validatorsForValue:object key:key] allObjects];
+        if (validators) {
+            TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
+            if (![andValidator validateValue:value error:outError ? &error : NULL]) {
+                validated = NO;
+                if (error) {
+                    [errors addObjectsFromArray:error.twt_underlyingErrors];
+                }
+            }
+        } else if (![object validateValue:&value forKey:key error:outError ? &error : NULL]) {
             validated = NO;
             if (error) {
-                [errors addObjectsFromArray:error.twt_underlyingErrors];
+                [errors addObject:error];
             }
         }
     }
 
     if (!validated && outError) {
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
-                                                   value:value
+                                                   value:object
                                     localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
                                         underlyingErrors:errors];
     }

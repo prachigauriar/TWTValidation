@@ -29,6 +29,8 @@
 #import <TWTValidation/TWTValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
 
+#import <TWTValidation/TWTKeyValueCodingValidator.h>
+
 #import <TWTValidation/TWTBlockValidator.h>
 
 #import <TWTValidation/TWTCompoundValidator.h>
