@@ -34,6 +34,9 @@
  does not return nil, the validator uses the returned validators to validate K’s corresponding value. Otherwise,
  it validates the value using O’s implementation of -validateValue:forKey:error:. This is repeated for each key
  in the validator’s key set. An object is considered valid only if all validations pass.
+ 
+ Key-Value Coding validators are immutable objects. As such, sending -copy or -copyWithZone: to a key-value 
+ coding validator will simply return the validator itself.
  */
 @interface TWTKeyValueCodingValidator : TWTValidator <NSCopying>
 
