@@ -120,7 +120,7 @@
 
 - (void)testHashAndIsEqual
 {
-    NSNumber *minimum = [self randomFloatingPointNumber];
+    NSNumber *minimum = nil;
     NSNumber *maximum = [self randomNumberGreaterThanNumber:minimum];
     
     TWTNumberValidator *validator1 = [[TWTNumberValidator alloc] initWithMinimum:minimum maximum:maximum];
@@ -184,6 +184,8 @@
     NSNumber *minimum = [self randomFloatingPointNumber];
     TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:minimum maximum:nil];
 
+    XCTAssertTrue([validator validateValue:minimum error:NULL], @"fails with minimum number");
+
     NSNumber *value = [self randomNumberGreaterThanNumber:minimum];
     XCTAssertTrue([validator validateValue:value error:NULL], @"fails with larger number");
     
@@ -213,7 +215,9 @@
 {
     NSNumber *maximum = [self randomFloatingPointNumber];
     TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:nil maximum:maximum];
-    
+
+    XCTAssertTrue([validator validateValue:maximum error:NULL], @"fails with minimum number");
+
     NSNumber *value = [self randomNumberLessThanNumber:maximum];
     XCTAssertTrue([validator validateValue:value error:NULL], @"fails with smaller number");
     

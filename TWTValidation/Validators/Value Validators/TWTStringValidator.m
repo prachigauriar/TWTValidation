@@ -220,7 +220,8 @@
     }
     
     typeof(self) other = object;
-    return [other.regularExpression isEqual:self.regularExpression];
+
+    return self.options == other.options && (other.regularExpression == self.regularExpression || [other.regularExpression isEqual:self.regularExpression]);
 }
 
 
