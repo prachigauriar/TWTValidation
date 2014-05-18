@@ -44,8 +44,6 @@
 @end
 
 
-#pragma mark
-
 @implementation TWTKeyedCollectionValidator
 
 - (instancetype)init

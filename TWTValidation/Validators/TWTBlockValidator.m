@@ -34,8 +34,6 @@
 @end
 
 
-#pragma mark
-
 @implementation TWTBlockValidator
 
 - (instancetype)init

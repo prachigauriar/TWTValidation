@@ -38,8 +38,6 @@
 @end
 
 
-#pragma mark
-
 @implementation TWTNumberValidator
 
 - (instancetype)init

@@ -28,9 +28,8 @@
 
 /*!
  TWTCollectionValidators validate a collection’s count and elements. To iterate over a collection’s elements,
- collection validators used fast enumeration. As such, TWTCollectionValidator is primarily intended for
- arrays, sets, and enumerators. For keyed collections like dictionaries and map tables, use
- TWTKeyedCollectionValidator.
+ collection validators uses fast enumeration. As such, TWTCollectionValidator is primarily intended for
+ arrays and sets. For keyed collections like dictionaries and map tables, use TWTKeyedCollectionValidator.
 
  Collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
  validator will simply return the validator itself.
@@ -39,8 +38,7 @@
 
 /*! 
  @abstract The validator for a collection’s count.
- @discussion If the instance is initialized with a nil count validator, a TWTNumberValidator with a minimum
-     of 0 and a maximum of NSUIntegerMax is used.
+ @discussion If nil, collections with any number of objects will pass validation.
  */
 @property (nonatomic, strong, readonly) TWTValidator *countValidator;
 
@@ -53,11 +51,11 @@
 /*!
  @abstract Initializes a newly created collection validator with the specified count and element validators.
  @discussion This is the class’s designated initializer.
- @param countValidator The validator to validate a collection’s count. If nil, a TWTNumberValidator with a
-     minimum of 0 and a maximum of NSUIntegerMax is used.
- @param elementValidators The validators to use for a collection’s element. If nil, the resulting validator 
+ @param countValidator The validator to validate a collection’s count. If nil, collections with any number of
+     objects will pass validation.
+ @param elementValidators The validators to use for a collection’s element. If nil, the resulting validator
      will successfully validate all of a collection’s elements.
- @result An initialized element validator with the specified count and element validators.
+ @result An initialized collection validator with the specified count and element validators.
  */
 - (instancetype)initWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators;
 

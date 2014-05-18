@@ -37,8 +37,6 @@
 @end
 
 
-#pragma mark
-
 @implementation TWTKeyValuePairValidator
 
 - (instancetype)init

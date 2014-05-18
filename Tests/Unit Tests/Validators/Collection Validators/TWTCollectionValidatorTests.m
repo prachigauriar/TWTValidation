@@ -86,32 +86,98 @@
 
 - (void)testValidateValueErrorCount
 {
-    NSArray *array = UMKGeneratedArrayWithElementCount(random() % 100 + 1, ^id(NSUInteger index) {
+    NSArray *array = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
         return [self randomObject];
     });
 
-    TWTCollectionValidator *validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:nil];
-    XCTAssertTrue([validator validateValue:array error:NULL], @"fails with no count validator");
+    NSSet *set = UMKGeneratedSetWithElementCount(random() % 10 + 1, ^id{
+        return [self randomObject];
+    });
 
-    TWTValidator *countValidator = [self mockPassingValidatorWithErrorPointer:NULL];
-    validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
-    XCTAssertTrue([validator validateValue:array error:NULL], @"fails with passing count validator");
+    NSOrderedSet *orderedSet = [[NSOrderedSet alloc] initWithArray:UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
+        return [self randomObject];
+    })];
 
-    countValidator = [self mockFailingValidatorWithErrorPointer:NULL error:nil];
-    validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
-    XCTAssertFalse([validator validateValue:array error:NULL], @"passes with failing count validator");
+    for (id collection in @[ array, set, orderedSet ]) {
+        NSArray *elementValidators = @[ [self passingValidator] ];
+        TWTCollectionValidator *validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:elementValidators];
+        XCTAssertTrue([validator validateValue:collection error:NULL], @"fails with no count validator");
 
-    NSError *randomError = [self randomError];
-    NSError *error = nil;
-    countValidator = [self mockFailingValidatorWithErrorPointer:&error error:randomError];
-    validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
-    XCTAssertFalse([validator validateValue:array error:&error], @"passes with failing count validator");
-    XCTAssertNotNil(error, @"error is nil");
-    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
-    XCTAssertEqual(error.code, TWTValidationErrorCodeCollectionValidatorError, @"incorrect error code");
-    XCTAssertEqualObjects(error.twt_validatedValue, array, @"incorrect validated value");
-    XCTAssertEqualObjects(error.twt_countValidationError, randomError, @"error is not set correctly");
+        TWTValidator *countValidator = [self passingValidator];
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
+        XCTAssertTrue([validator validateValue:collection error:NULL], @"fails with passing count validator");
+
+        countValidator = [self failingValidatorWithError:nil];
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
+        XCTAssertFalse([validator validateValue:collection error:NULL], @"passes with failing count validator");
+
+        NSError *expectedError = [self randomError];
+        NSError *error = nil;
+        countValidator = [self failingValidatorWithError:expectedError];
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
+        XCTAssertFalse([validator validateValue:collection error:&error], @"passes with failing count validator");
+        XCTAssertNotNil(error, @"error is nil");
+        XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+        XCTAssertEqual(error.code, TWTValidationErrorCodeCollectionValidatorError, @"incorrect error code");
+        XCTAssertEqualObjects(error.twt_validatedValue, collection, @"incorrect validated value");
+        XCTAssertEqualObjects(error.twt_countValidationError, expectedError, @"count validation error is not set correctly");
+    }
 }
 
+
+- (void)testValidateValueErrorElements
+{
+    NSArray *array = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
+        return [self randomObject];
+    });
+
+    NSSet *set = UMKGeneratedSetWithElementCount(random() % 10 + 1, ^id{
+        return [self randomObject];
+    });
+
+    NSOrderedSet *orderedSet = [[NSOrderedSet alloc] initWithArray:UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
+        return [self randomObject];
+    })];
+
+    for (id collection in @[ array, set, orderedSet ]) {
+        TWTValidator *countValidator = [self passingValidator];
+        TWTCollectionValidator *validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
+        XCTAssertTrue([validator validateValue:collection error:nil], @"fails with nil element validators");
+
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:@[]];
+        XCTAssertTrue([validator validateValue:collection error:nil], @"fails with empty element validators");
+
+        NSArray *elementValidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
+            return [self passingValidator];
+        });
+
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:elementValidators];
+        XCTAssertTrue([validator validateValue:collection error:nil], @"fails with passing element validators");
+
+        NSError *error = nil;
+        NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
+            return [self randomError];
+        });
+
+        NSArray *failingValidators = UMKGeneratedArrayWithElementCount(expectedErrors.count, ^id(NSUInteger index) {
+            return [self failingValidatorWithError:expectedErrors[index]];
+        });
+
+        NSUInteger elementCount = [collection count];
+        NSMutableArray *cumulativeErrors = [[NSMutableArray alloc] initWithCapacity:expectedErrors.count * elementCount];
+        for (NSUInteger i = 0; i < elementCount; ++i) {
+            [cumulativeErrors addObjectsFromArray:expectedErrors];
+        }
+
+        elementValidators = [elementValidators arrayByAddingObjectsFromArray:failingValidators];
+        validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:elementValidators];
+        XCTAssertFalse([validator validateValue:collection error:&error], @"passes with failing element validators");
+        XCTAssertNotNil(error, @"error is nil");
+        XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+        XCTAssertEqual(error.code, TWTValidationErrorCodeCollectionValidatorError, @"incorrect error code");
+        XCTAssertEqualObjects(error.twt_validatedValue, collection, @"incorrect validated value");
+        XCTAssertEqualObjects(error.twt_elementValidationErrors, cumulativeErrors, @"element validation errors is not set correctly");
+    }
+}
 
 @end

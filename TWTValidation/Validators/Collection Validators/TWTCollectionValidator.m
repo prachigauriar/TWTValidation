@@ -40,8 +40,6 @@
 @end
 
 
-#pragma mark
-
 @implementation TWTCollectionValidator
 
 - (instancetype)init
