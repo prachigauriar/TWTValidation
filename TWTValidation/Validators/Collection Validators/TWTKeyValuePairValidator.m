@@ -28,6 +28,7 @@
 
 #import <TWTValidation/TWTValidationErrors.h>
 
+
 @interface TWTKeyValuePairValidator ()
 
 @property (nonatomic, strong, readwrite) id key;
@@ -35,6 +36,8 @@
 
 @end
 
+
+#pragma mark
 
 @implementation TWTKeyValuePairValidator
 

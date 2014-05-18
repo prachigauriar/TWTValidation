@@ -31,6 +31,7 @@
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
+
 @interface TWTCollectionValidator ()
 
 @property (nonatomic, strong, readwrite) TWTValidator *countValidator;
@@ -38,6 +39,8 @@
 
 @end
 
+
+#pragma mark
 
 @implementation TWTCollectionValidator
 
@@ -51,7 +54,7 @@
 {
     self = [super init];
     if (self) {
-        _countValidator = countValidator ? countValidator : [[TWTNumberValidator alloc] init];
+        _countValidator = countValidator;
         _elementAndValidator = [TWTCompoundValidator andValidatorWithSubvalidators:elementValidators];
     }
     
@@ -74,7 +77,8 @@
     }
     
     typeof(self) other = object;
-    return [other.countValidator isEqual:self.countValidator] && [other.elementAndValidator isEqual:self.elementAndValidator];
+    return (other.countValidator == self.countValidator || [other.countValidator isEqual:self.countValidator]) && 
+        [other.elementAndValidator isEqual:self.elementAndValidator];
 }
 
 
@@ -87,7 +91,10 @@
 - (BOOL)validateValue:(id)collection error:(out NSError *__autoreleasing *)outError
 {
     NSError *countValidationError = nil;
-    BOOL countValidated = [self.countValidator validateValue:@([collection count]) error:outError ? &countValidationError : NULL];
+    BOOL countValidated = YES;
+    if (self.countValidator) {
+        countValidated = [self.countValidator validateValue:@([collection count]) error:outError ? &countValidationError : NULL];
+    }
     
     BOOL elementsValidated = YES;
     NSMutableArray *elementValidationErrors = outError ? [[NSMutableArray alloc] init] : nil;

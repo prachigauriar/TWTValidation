@@ -26,12 +26,15 @@
 
 #import <TWTValidation/TWTBlockValidator.h>
 
+
 @interface TWTBlockValidator ()
 
 @property (nonatomic, copy, readwrite) TWTValidationBlock block;
 
 @end
 
+
+#pragma mark
 
 @implementation TWTBlockValidator
 

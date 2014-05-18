@@ -119,6 +119,15 @@
 }
 
 
+- (id)mockPassingValidatorWithAnyErrorPointer
+{
+    id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
+    [[[mockValidator stub] andReturnValue:@YES] validateValue:[OCMArg any] error:[OCMArg setTo:nil]];
+    return mockValidator;
+}
+
+
+
 - (id)mockFailingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError error:(NSError *)error
 {
     id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];

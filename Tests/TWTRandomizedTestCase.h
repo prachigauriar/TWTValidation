@@ -26,6 +26,8 @@
 
 #import <XCTest/XCTest.h>
 #import <URLMock/UMKTestUtilities.h>
+#import <TWTValidation/TWTValidation.h>
+
 
 @class TWTValidator;
 

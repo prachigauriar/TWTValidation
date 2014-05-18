@@ -26,7 +26,6 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import <TWTValidation/TWTValidation.h>
 
 @interface TWTBlockValidatorTests : TWTRandomizedTestCase
 
