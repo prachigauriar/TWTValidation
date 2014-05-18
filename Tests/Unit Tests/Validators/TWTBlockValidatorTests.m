@@ -26,7 +26,7 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import <TWTValidation/TWTBlockValidator.h>
+#import <TWTValidation/TWTValidation.h>
 
 @interface TWTBlockValidatorTests : TWTRandomizedTestCase
 
@@ -64,7 +64,7 @@
     
     TWTValidationBlock validationBlock = [self stringValidationBlockWithLength:random() error:[self randomError]];
     validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
-    XCTAssertEqualObjects(validationBlock, validator.block, @"block was not set correctly");
+    XCTAssertEqualObjects(validationBlock, validator.block, @"block is not set correctly");
 }
 
 
@@ -74,7 +74,7 @@
     TWTBlockValidator *validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
     TWTBlockValidator *copy = [validator copy];
     XCTAssertEqual(copy, validator, @"copy returns different object");
-    XCTAssertEqualObjects(validationBlock, copy.block, @"block was not set correctly");
+    XCTAssertEqualObjects(validationBlock, copy.block, @"block is not set correctly");
 }
 
 

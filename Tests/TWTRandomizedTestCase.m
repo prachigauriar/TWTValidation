@@ -27,7 +27,7 @@
 #import "TWTRandomizedTestCase.h"
 
 #import <OCMock/OCMock.h>
-#import <TWTValidation/TWTValidator.h>
+#import <TWTValidation/TWTValidation.h>
 
 @implementation TWTRandomizedTestCase
 
@@ -60,13 +60,44 @@
             return UMKRandomAlphanumericString();
         case 4:
             return UMKRandomHTTPURL();
-        case 5:
+        default:
             return nil;
     }
-
-    return nil;
 }
 
+
+- (Class)randomClass
+{
+    switch (random() % 5) {
+        case 0:
+            return [NSNull class];
+        case 1:
+            return [NSNumber class];
+        case 2:
+            return [NSString class];
+        case 3:
+            return [NSURL class];
+        default:
+            return Nil;
+    }
+}
+
+
+- (Class)randomClassWithMutableVariant
+{
+    switch (random() % 5) {
+        case 0:
+            return [NSArray class];
+        case 1:
+            return [NSData class];
+        case 2:
+            return [NSDictionary class];
+        case 3:
+            return [NSSet class];
+        default:
+            return [NSString class];
+    }    
+}
 
 - (NSError *)randomError
 {

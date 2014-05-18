@@ -49,7 +49,7 @@
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.valueClass.hash;
+    return [super hash] ^ self.allowsNil ^ self.allowsNull ^ self.valueClass.hash;
 }
 
 
@@ -82,13 +82,14 @@
         }
 
         errorCode = TWTValidationErrorCodeValueNull;
-    } else if (self.valueClass) {
-        if ([[value class] isSubclassOfClass:self.valueClass]) {
+    } else {
+        if (!self.valueClass || [[value class] isSubclassOfClass:self.valueClass]) {
             return YES;
         }
-
+        
         errorCode = TWTValidationErrorCodeValueHasIncorrectClass;
     }
+    
 
     // Construct the error based on the code
     if (outError) {

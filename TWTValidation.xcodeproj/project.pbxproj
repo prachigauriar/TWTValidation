@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		09D2C62150634CFA828C192B /* libPods-libTWTValidation-libTWTValidation Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 492B39A25057459FB1F32438 /* libPods-libTWTValidation-libTWTValidation Tests.a */; };
+		4C3FF80418EE5F4500EF8776 /* libTWTFoundation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FC18E662CE00A434B6 /* libTWTFoundation.a */; };
+		4C3FF80518EE5F6700EF8776 /* TWTValidationErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71A018E7922E00BB8CE0 /* TWTValidationErrors.m */; };
+		4C4989D21927F931008D6B43 /* TWTStringValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */; };
 		4C4D719318E7615E00BB8CE0 /* TWTCollectionValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C4D719118E7615E00BB8CE0 /* TWTCollectionValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C4D719418E7615E00BB8CE0 /* TWTCollectionValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D719218E7615E00BB8CE0 /* TWTCollectionValidator.m */; };
 		4C4D719718E7636800BB8CE0 /* TWTCollectionValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D719218E7615E00BB8CE0 /* TWTCollectionValidator.m */; };
@@ -19,7 +22,6 @@
 		4C4D71AA18E7C16F00BB8CE0 /* TWTKeyValuePairValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C4D71A818E7C16F00BB8CE0 /* TWTKeyValuePairValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C4D71AB18E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71A918E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m */; };
 		4C4D71AC18E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71A918E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m */; };
-		4C5603701905CB9E004923D4 /* TWTCompoundValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */; };
 		4C5603981905D35B004923D4 /* TWTValueValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */; };
 		4C5603991905D360004923D4 /* TWTNumberValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97518E66B4E00A434B6 /* TWTNumberValidator.m */; };
 		4C56039A1905D365004923D4 /* TWTStringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97718E66B4E00A434B6 /* TWTStringValidator.m */; };
@@ -27,12 +29,13 @@
 		4C5603A01905D7D3004923D4 /* TWTKeyValueCodingValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C56039E1905D7D3004923D4 /* TWTKeyValueCodingValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C5603A11905D7D3004923D4 /* TWTKeyValueCodingValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C56039F1905D7D3004923D4 /* TWTKeyValueCodingValidator.m */; };
 		4C5603A21905D7D8004923D4 /* TWTKeyValueCodingValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C56039F1905D7D3004923D4 /* TWTKeyValueCodingValidator.m */; };
+		4C706D62192852A3009F5F63 /* TWTStringValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */; };
+		4C706D63192852A7009F5F63 /* TWTNumberValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD622DE18F073AA004BA088 /* TWTNumberValidatorTests.m */; };
 		4CA55E2C18EDC666009EED4B /* TWTValidation.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CA55E2E18EDC666009EED4B /* TWTValidation.strings */; };
 		4CA55E3018EDE77F009EED4B /* TWTValidationLocalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4CA7C90018E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
 		4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C90D18E662CE00A434B6 /* XCTest.framework */; };
 		4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
-		4CA7C91418E662CE00A434B6 /* libTWTFoundation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FC18E662CE00A434B6 /* libTWTFoundation.a */; };
 		4CA7C91A18E662CE00A434B6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CA7C91818E662CE00A434B6 /* InfoPlist.strings */; };
 		4CA7C93218E6634000A434B6 /* TWTBlockValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C92718E6634000A434B6 /* TWTBlockValidator.m */; };
 		4CA7C93318E6634000A434B6 /* TWTCompoundValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C92918E6634000A434B6 /* TWTCompoundValidator.m */; };
@@ -52,6 +55,13 @@
 		4CA7C97D18E66B4E00A434B6 /* TWTStringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97718E66B4E00A434B6 /* TWTStringValidator.m */; };
 		4CA7C97E18E66B4E00A434B6 /* TWTValueValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA7C97818E66B4E00A434B6 /* TWTValueValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4CA7C97F18E66B4E00A434B6 /* TWTValueValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */; };
+		4CD25CD618EE59DE005A2ABE /* TWTCompoundValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */; };
+		4CD25CD718EE59E9005A2ABE /* TWTStringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97718E66B4E00A434B6 /* TWTStringValidator.m */; };
+		4CD25CD818EE59EF005A2ABE /* TWTNumberValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97518E66B4E00A434B6 /* TWTNumberValidator.m */; };
+		4CD25CD918EE59F2005A2ABE /* TWTValueValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */; };
+		4CD25CDC18EE5A66005A2ABE /* TWTValueValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD25CDA18EE5A66005A2ABE /* TWTValueValidatorTests.m */; };
+		4CD622DF18F073AA004BA088 /* TWTNumberValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD622DE18F073AA004BA088 /* TWTNumberValidatorTests.m */; };
+		4CD622E118F073AF004BA088 /* TWTValueValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD25CDA18EE5A66005A2ABE /* TWTValueValidatorTests.m */; };
 		4CD62FB518E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */; };
 		4CD62FB618E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */; };
 		4CD62FC218E88EC0007F7EF3 /* TWTBlockValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */; };
@@ -129,6 +139,9 @@
 		4CA7C97718E66B4E00A434B6 /* TWTStringValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTStringValidator.m; sourceTree = "<group>"; };
 		4CA7C97818E66B4E00A434B6 /* TWTValueValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTValueValidator.h; sourceTree = "<group>"; };
 		4CA7C97918E66B4E00A434B6 /* TWTValueValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValueValidator.m; sourceTree = "<group>"; };
+		4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTStringValidatorTests.m; sourceTree = "<group>"; };
+		4CD25CDA18EE5A66005A2ABE /* TWTValueValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValueValidatorTests.m; sourceTree = "<group>"; };
+		4CD622DE18F073AA004BA088 /* TWTNumberValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTNumberValidatorTests.m; sourceTree = "<group>"; };
 		4CD62FB318E85C86007F7EF3 /* TWTRandomizedTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTRandomizedTestCase.h; sourceTree = "<group>"; };
 		4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTRandomizedTestCase.m; sourceTree = "<group>"; };
 		4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTBlockValidatorTests.m; sourceTree = "<group>"; };
@@ -151,8 +164,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C3FF80418EE5F4500EF8776 /* libTWTFoundation.a in Frameworks */,
 				4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */,
-				4CA7C91418E662CE00A434B6 /* libTWTFoundation.a in Frameworks */,
 				4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */,
 				09D2C62150634CFA828C192B /* libPods-libTWTValidation-libTWTValidation Tests.a in Frameworks */,
 			);
@@ -306,6 +319,16 @@
 			path = "Collection Validators";
 			sourceTree = "<group>";
 		};
+		4CD25CD118EE59A4005A2ABE /* Value Validators */ = {
+			isa = PBXGroup;
+			children = (
+				4CD25CDA18EE5A66005A2ABE /* TWTValueValidatorTests.m */,
+				4CD622DE18F073AA004BA088 /* TWTNumberValidatorTests.m */,
+				4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */,
+			);
+			path = "Value Validators";
+			sourceTree = "<group>";
+		};
 		4CD62FB218E85C33007F7EF3 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -320,6 +343,7 @@
 				4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */,
 				4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */,
 				4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */,
+				4CD25CD118EE59A4005A2ABE /* Value Validators */,
 			);
 			path = Validators;
 			sourceTree = "<group>";
@@ -559,12 +583,16 @@
 				4C5603981905D35B004923D4 /* TWTValueValidator.m in Sources */,
 				4C56039B1905D37C004923D4 /* TWTValidationErrors.m in Sources */,
 				4C4D719718E7636800BB8CE0 /* TWTCollectionValidator.m in Sources */,
+				4C3FF80518EE5F6700EF8776 /* TWTValidationErrors.m in Sources */,
 				4C4D71AC18E7C16F00BB8CE0 /* TWTKeyValuePairValidator.m in Sources */,
 				4C5603991905D360004923D4 /* TWTNumberValidator.m in Sources */,
 				4CA7C93618E6634000A434B6 /* TWTValidator.m in Sources */,
+				4CD25CD818EE59EF005A2ABE /* TWTNumberValidator.m in Sources */,
+				4CD25CD718EE59E9005A2ABE /* TWTStringValidator.m in Sources */,
 				4C4D71A718E79FAF00BB8CE0 /* TWTKeyedCollectionValidator.m in Sources */,
 				4C5603A21905D7D8004923D4 /* TWTKeyValueCodingValidator.m in Sources */,
 				4CA7C93218E6634000A434B6 /* TWTBlockValidator.m in Sources */,
+				4CD25CD918EE59F2005A2ABE /* TWTValueValidator.m in Sources */,
 				4CA7C93318E6634000A434B6 /* TWTCompoundValidator.m in Sources */,
 				4C56039A1905D365004923D4 /* TWTStringValidator.m in Sources */,
 			);
@@ -576,8 +604,11 @@
 			files = (
 				4CD62FC718E8B27E007F7EF3 /* TWTBlockValidatorTests.m in Sources */,
 				4CD62FB618E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */,
+				4CD25CD618EE59DE005A2ABE /* TWTCompoundValidatorTests.m in Sources */,
 				4CD62FC518E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
-				4C5603701905CB9E004923D4 /* TWTCompoundValidatorTests.m in Sources */,
+				4CD25CDC18EE5A66005A2ABE /* TWTValueValidatorTests.m in Sources */,
+				4C706D63192852A7009F5F63 /* TWTNumberValidatorTests.m in Sources */,
+				4C706D62192852A3009F5F63 /* TWTStringValidatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,7 +636,10 @@
 			files = (
 				4CD62FC218E88EC0007F7EF3 /* TWTBlockValidatorTests.m in Sources */,
 				4CD62FB518E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */,
+				4CD622E118F073AF004BA088 /* TWTValueValidatorTests.m in Sources */,
 				4CD62FC418E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
+				4CD622DF18F073AA004BA088 /* TWTNumberValidatorTests.m in Sources */,
+				4C4989D21927F931008D6B43 /* TWTStringValidatorTests.m in Sources */,
 				4CD62FC918E8C938007F7EF3 /* TWTCompoundValidatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
