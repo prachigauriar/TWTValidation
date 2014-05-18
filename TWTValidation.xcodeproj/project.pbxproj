@@ -29,6 +29,8 @@
 		4C5603A01905D7D3004923D4 /* TWTKeyValueCodingValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C56039E1905D7D3004923D4 /* TWTKeyValueCodingValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C5603A11905D7D3004923D4 /* TWTKeyValueCodingValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C56039F1905D7D3004923D4 /* TWTKeyValueCodingValidator.m */; };
 		4C5603A21905D7D8004923D4 /* TWTKeyValueCodingValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C56039F1905D7D3004923D4 /* TWTKeyValueCodingValidator.m */; };
+		4C706D62192852A3009F5F63 /* TWTStringValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */; };
+		4C706D63192852A7009F5F63 /* TWTNumberValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD622DE18F073AA004BA088 /* TWTNumberValidatorTests.m */; };
 		4CA55E2C18EDC666009EED4B /* TWTValidation.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CA55E2E18EDC666009EED4B /* TWTValidation.strings */; };
 		4CA55E3018EDE77F009EED4B /* TWTValidationLocalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4CA7C90018E662CE00A434B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FF18E662CE00A434B6 /* Foundation.framework */; };
@@ -605,6 +607,8 @@
 				4CD25CD618EE59DE005A2ABE /* TWTCompoundValidatorTests.m in Sources */,
 				4CD62FC518E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
 				4CD25CDC18EE5A66005A2ABE /* TWTValueValidatorTests.m in Sources */,
+				4C706D63192852A7009F5F63 /* TWTNumberValidatorTests.m in Sources */,
+				4C706D62192852A3009F5F63 /* TWTStringValidatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
