@@ -28,8 +28,9 @@
 
 /*!
  TWTCollectionValidators validate a collection’s count and elements. To iterate over a collection’s elements,
- collection validators uses fast enumeration. As such, TWTCollectionValidator is primarily intended for
- arrays and sets. For keyed collections like dictionaries and map tables, use TWTKeyedCollectionValidator.
+ collection validators use fast enumeration. As such, TWTCollectionValidator is primarily intended for
+ validating arrays, sets, and the like. For keyed collections like dictionaries and map tables, use
+ TWTKeyedCollectionValidator.
 
  Collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
  validator will simply return the validator itself.
@@ -45,6 +46,7 @@
 /*! 
  @abstract The validators for a collection’s elements.
  @discussion A collection is only valid if all its elements pass validation by all the element validators.
+     If nil, all elements in a collection will pass validation.
  */
 @property (nonatomic, copy, readonly) NSArray *elementValidators;
 
@@ -54,7 +56,7 @@
  @param countValidator The validator to validate a collection’s count. If nil, collections with any number of
      objects will pass validation.
  @param elementValidators The validators to use for a collection’s element. If nil, the resulting validator
-     will successfully validate all of a collection’s elements.
+     will successfully validate all a collection’s elements.
  @result An initialized collection validator with the specified count and element validators.
  */
 - (instancetype)initWithCountValidator:(TWTValidator *)countValidator elementValidators:(NSArray *)elementValidators;
