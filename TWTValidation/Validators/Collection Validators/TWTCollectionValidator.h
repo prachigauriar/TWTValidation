@@ -55,7 +55,7 @@
  @discussion This is the class’s designated initializer.
  @param countValidator The validator to validate a collection’s count. If nil, collections with any number of
      objects will pass validation.
- @param elementValidators The validators to use for a collection’s element. If nil, the resulting validator
+ @param elementValidators The validators to use for a collection’s elements. If nil, the resulting validator
      will successfully validate all a collection’s elements.
  @result An initialized collection validator with the specified count and element validators.
  */
