@@ -74,7 +74,7 @@
 {
     NSMutableArray *errors = outError ? [[NSMutableArray alloc] init] : nil;
 
-    // For each key, get the validators from object (using +validatorsFor«Key»). If object didn’t return any,
+    // For each key, get the validators from object (using +twt_validatorsFor«Key»). If object didn’t return any,
     // fall back on -validateValue:forKey:error: instead.
     BOOL validated = YES;
     for (NSString *key in self.keys) {
