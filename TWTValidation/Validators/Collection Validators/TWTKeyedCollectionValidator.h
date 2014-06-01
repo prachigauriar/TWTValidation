@@ -101,8 +101,10 @@
 @interface TWTKeyValuePairValidator : TWTValidator <NSCopying>
 
 /*! 
- @abstract The key for the key-value pairs the instance will validate.
- @discussion May not be nil.
+ @abstract The key for the key-value pairs the instance will validate. 
+ @discussion May not be nil. This key is not taken into account when validation is performed by key-
+     value pair validators themselves. Classes that use key-value pair validators, e.g., keyed collection
+     validators, may use this property however they see fit.
  */
 @property (nonatomic, strong, readonly) id key;
 
