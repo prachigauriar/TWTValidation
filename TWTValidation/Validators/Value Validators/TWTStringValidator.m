@@ -29,6 +29,7 @@
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
+
 @interface TWTBoundedLengthStringValidator ()
 
 @property (nonatomic, assign, readwrite) NSUInteger minimumLength;

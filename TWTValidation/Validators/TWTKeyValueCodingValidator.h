@@ -70,7 +70,7 @@
  @abstract Returns the validators that should be used for the specified KVC key.
  @discussion The base implementation checks if the receiver responds to +twt_validatorsFor«Key», and if so,
      returns the result of sending the receiver that message. Subclass implementations should take care to
-     call their superclass’s implementation to retain this behavior.
+     invoke their superclass’s implementation to retain this behavior.
  @param key A key for which instances of the receiver are key-value coding compliant.
  @result A set of validators that should be used to validate the value for the specified KVC key.
  */

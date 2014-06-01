@@ -24,8 +24,11 @@
 //  THE SOFTWARE.
 //
 
-#import <XCTest/XCTest.h>
+@import XCTest;
+
 #import <URLMock/UMKTestUtilities.h>
+#import <TWTValidation/TWTValidation.h>
+
 
 @class TWTValidator;
 
@@ -54,7 +57,6 @@
  */
 - (Class)randomClass;
 
-
 /*!
  @abstract Returns a random class that has a mutable variant.
  @discussion The returned class is either NSArray, NSData, NSDictionary, NSSet, or NSString.
@@ -78,34 +80,16 @@
 - (TWTValidator *)randomValidator;
 
 /*!
- @abstract Returns a mock TWTValidator object that always validates values.
- @discussion The mock object responds to -validateValue:error: by returning YES and setting the error 
-     parameter to nil if a non-NULL error pointer is provided.
- @param outError The error pointer that will be used when invoking -validateValue:error:.
- @result A mock TWTValidator object that always validates values.
+ @abstract Returns a TWTValidator object that always validates values.
+ @result A TWTValidator object that always validates values.
  */
-- (id)mockPassingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError;
+- (TWTValidator *)passingValidator;
 
 /*!
- @abstract Returns a mock TWTValidator object that never validates values.
- @discussion The mock object responds to -validateValue:error: by returning NO and setting the error
-     parameter to the specified error if a non-NULL error pointer is provided.
- @param outError The error pointer that will be used when invoking -validateValue:error:.
- @param error The error to return by reference.
- @result A mock TWTValidator object that never validates values.
+ @abstract Returns a TWTValidator object that never validates values.
+ @param error The error that the validator should return by reference.
+ @result A TWTValidator object that never validates values.
  */
-- (id)mockFailingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError error:(NSError *)error;
+- (TWTValidator *)failingValidatorWithError:(NSError *)error;
 
 @end
-
-
-/*!
- @abstract XCTAsserts that the given expression evaluates to YES before the given timeout interval elapses.
- @param timeoutInterval An NSTimeInterval containing the amount of time to wait for the expression to evaluate to YES.
- @param expression The boolean expression to evaluate.
- @param format An NSString object that contains a printf-style string containing an error message describing the failure
-     condition and placeholders for the arguments.
- @param ... The arguments displayed in the format string.
- */
-#define UMKAssertTrueBeforeTimeout(timeoutInterval, expression, format...) \
-    XCTAssertTrue(UMKWaitForCondition((timeoutInterval), ^BOOL{ return (expression); }), ## format)

@@ -31,6 +31,7 @@
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
+
 @interface TWTKeyedCollectionValidator ()
 
 @property (nonatomic, strong, readwrite) TWTValidator *countValidator;
@@ -42,8 +43,6 @@
 
 @end
 
-
-#pragma mark
 
 @implementation TWTKeyedCollectionValidator
 

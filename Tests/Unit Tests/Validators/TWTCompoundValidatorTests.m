@@ -26,7 +26,6 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import <TWTValidation/TWTValidation.h>
 
 @interface TWTCompoundValidatorTests : TWTRandomizedTestCase
 
@@ -126,7 +125,7 @@
 {
     TWTCompoundValidatorType randomType = [self randomCompoundValidatorType];
     NSArray *randomSubvalidators = UMKGeneratedArrayWithElementCount(1 + random() % 5, ^id(NSUInteger index) {
-        return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+        return [self randomValidator];
     });
 
     TWTCompoundValidator *validator = [[TWTCompoundValidator alloc] initWithType:randomType subvalidators:randomSubvalidators];
@@ -141,7 +140,7 @@
 {
     TWTCompoundValidatorType randomType1 = [self randomCompoundValidatorType];
     NSArray *randomSubvalidators1 = UMKGeneratedArrayWithElementCount(1 + random() % 5, ^id(NSUInteger index) {
-        return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+        return [self randomValidator];
     });
     
     TWTCompoundValidatorType randomType2 = [self randomCompoundValidatorType];
@@ -150,7 +149,7 @@
     }
     
     NSArray *randomSubvalidators2 = UMKGeneratedArrayWithElementCount(1 + randomSubvalidators1.count, ^id(NSUInteger index) {
-        return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+        return [self randomValidator];
     });
     
     TWTCompoundValidator *equalValidator1 = [[TWTCompoundValidator alloc] initWithType:randomType1 subvalidators:randomSubvalidators1];
@@ -169,12 +168,12 @@
 
 - (void)testValidateValueErrorForNotWithPassingValidator
 {
-    TWTValidator *subvalidator = [self mockPassingValidatorWithErrorPointer:NULL];
+    TWTValidator *subvalidator = [self passingValidator];
     TWTCompoundValidator *validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL], @"passes with passing validator");
 
     NSError *error = nil;
-    subvalidator = [self mockPassingValidatorWithErrorPointer:&error];
+    subvalidator = [self passingValidator];
     validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
 
     id value = [self randomObject];
@@ -188,12 +187,12 @@
 
 - (void)testValidateValueErrorForNotWithFailingValidator
 {
-    TWTValidator *subvalidator = [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+    TWTValidator *subvalidator = [self failingValidatorWithError:[self randomError]];
     TWTCompoundValidator *validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with passing validator");
 
     NSError *error = nil;
-    subvalidator = [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]];
+    subvalidator = [self failingValidatorWithError:[self randomError]];
     validator = [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
     XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"passes with passing validator");
 }
@@ -213,12 +212,11 @@
 
 - (void)testValidateValueErrorForAndWithOnePassingValidator
 {
-    NSArray *subvalidators = @[ [self mockPassingValidatorWithErrorPointer:NULL] ];
+    NSArray *subvalidators = @[ [self passingValidator] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with one passing validator");
     
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error] ];
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"fails with one passing validator");
 }
@@ -227,17 +225,13 @@
 - (void)testValidateValueErrorForAndWithMultiplePassingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
-        return [self mockPassingValidatorWithErrorPointer:NULL];
+        return [self passingValidator];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:nil], @"fails with multiple passing validators");
 
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockPassingValidatorWithErrorPointer:&error] ];
-
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"fails with multiple passing validators");
 }
@@ -245,13 +239,13 @@
 
 - (void)testValidateValueErrorForAndWithOneFailingValidator
 {
-    NSArray *subvalidators = @[ [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]] ];
+    NSArray *subvalidators = @[ [self failingValidatorWithError:[self randomError]] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL]);
 
     NSError *error = nil;
     NSError *expectedError = [self randomError];
-    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedError] ];
+    subvalidators = @[ [self failingValidatorWithError:expectedError] ];
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
 
     id value = [self randomObject];
@@ -268,29 +262,24 @@
 - (void)testValidateValueErrorForAndWithMultipleFailingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(4 + random() % 6, ^id(NSUInteger index) {
-        if (index % 2 == 0) {
-            return [self mockPassingValidatorWithErrorPointer:NULL];
-        } else {
-            return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
-        }
+        return index % 2 == 0 ? [self passingValidator] : [self failingValidatorWithError:[self randomError]];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL], @"passes with multiple failing validators");
 
-    NSError *error = nil;
     NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(3, ^id(NSUInteger index) {
         return [self randomError];
     });
 
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
-                       [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]],
-                       [self mockPassingValidatorWithErrorPointer:&error] ];
+    subvalidators = @[ [self passingValidator],
+                       [self failingValidatorWithError:expectedErrors[0]],
+                       [self failingValidatorWithError:expectedErrors[1]],
+                       [self passingValidator],
+                       [self failingValidatorWithError:expectedErrors[2]],
+                       [self passingValidator] ];
 
-    error = nil;
+    NSError *error = nil;
     id value = [self randomObject];
     validator = [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     XCTAssertFalse([validator validateValue:value error:&error], @"passes with multiple failing validators");
@@ -334,12 +323,11 @@
 
 - (void)testValidateValueErrorForOrWithOnePassingValidator
 {
-    NSArray *subvalidators = @[ [self mockPassingValidatorWithErrorPointer:NULL] ];
+    NSArray *subvalidators = @[ [self passingValidator] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with one passing validator");
 
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error] ];
     validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"fails with one passing validator");
 }
@@ -348,23 +336,23 @@
 - (void)testValidateValueErrorForOrWithMultiplePassingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
-        if (index % 2 == 0) {
-            return [self mockPassingValidatorWithErrorPointer:NULL];
-        } else {
-            return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
-        }
+        return index % 2 == 0 ? [self passingValidator] : [self failingValidatorWithError:[self randomError]];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with multiple passing validators");
 
+    NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(3, ^id(NSUInteger index) {
+        return [self randomError];
+    });
+
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
-                       [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockFailingValidatorWithErrorPointer:&error error:[self randomError]],
-                       [self mockPassingValidatorWithErrorPointer:&error] ];
+    subvalidators = @[ [self passingValidator],
+                       [self failingValidatorWithError:expectedErrors[0]],
+                       [self failingValidatorWithError:expectedErrors[1]],
+                       [self passingValidator],
+                       [self failingValidatorWithError:expectedErrors[2]],
+                       [self passingValidator] ];
 
     error = nil;
     validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
@@ -374,14 +362,12 @@
 
 - (void)testValidateValueErrorForOrWithOneFailingValidator
 {
-    NSArray *subvalidators = @[ [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]] ];
+    NSError *expectedError = [self randomError];
+    NSArray *subvalidators = @[ [self failingValidatorWithError:expectedError] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL]);
 
     NSError *error = nil;
-    NSError *expectedError = [self randomError];
-    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedError] ];
-    validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     id value = [self randomObject];
     XCTAssertFalse([validator validateValue:value error:&error], @"passes with one failing validator");
     XCTAssertNotNil(error, @"returns nil error");
@@ -395,7 +381,7 @@
 - (void)testValidateValueErrorForOrWithMultipleFailingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
-        return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+        return [self failingValidatorWithError:[self randomError]];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
@@ -406,9 +392,9 @@
     });
 
     NSError *error = nil;
-    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]] ];
+    subvalidators = @[ [self failingValidatorWithError:expectedErrors[0]],
+                       [self failingValidatorWithError:expectedErrors[1]],
+                       [self failingValidatorWithError:expectedErrors[2]] ];
 
     validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     id value = [self randomObject];
@@ -453,13 +439,11 @@
 
 - (void)testValidateValueErrorForMutualExclusionWithOnePassingValidator
 {
-    NSArray *subvalidators = @[ [self mockPassingValidatorWithErrorPointer:NULL] ];
+    NSArray *subvalidators = @[ [self passingValidator] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with one passing validator");
 
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error] ];
-    validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
     XCTAssertTrue([validator validateValue:[self randomObject] error:&error], @"fails with one passing validator");
 }
 
@@ -467,11 +451,7 @@
 - (void)testValidateValueErrorForMutualExclusionWithMultiplePassingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(3 + random() % 8, ^id(NSUInteger index) {
-        if (index % 2 == 0) {
-            return [self mockPassingValidatorWithErrorPointer:NULL];
-        } else {
-            return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
-        }
+        return index % 2 == 0 ? [self passingValidator] : [self failingValidatorWithError:[self randomError]];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
@@ -482,11 +462,11 @@
     });
 
     NSError *error = nil;
-    subvalidators = @[ [self mockPassingValidatorWithErrorPointer:&error],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]],
-                       [self mockPassingValidatorWithErrorPointer:&error] ];
+    subvalidators = @[ [self passingValidator],
+                       [self failingValidatorWithError:expectedErrors[0]],
+                       [self failingValidatorWithError:expectedErrors[1]],
+                       [self failingValidatorWithError:expectedErrors[2]],
+                       [self passingValidator] ];
 
     error = nil;
     validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
@@ -502,14 +482,12 @@
 
 - (void)testValidateValueErrorForMutualExclusionWithOneFailingValidator
 {
-    NSArray *subvalidators = @[ [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]] ];
+    NSError *expectedError = [self randomError];
+    NSArray *subvalidators = @[ [self failingValidatorWithError:expectedError] ];
     TWTCompoundValidator *validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL]);
 
     NSError *error = nil;
-    NSError *expectedError = [self randomError];
-    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedError] ];
-    validator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:subvalidators];
     id value = [self randomObject];
     XCTAssertFalse([validator validateValue:value error:&error], @"passes with one failing validator");
     XCTAssertNotNil(error, @"returns nil error");
@@ -523,7 +501,7 @@
 - (void)testValidateValueErrorForMutualExclusionWithMultipleFailingValidators
 {
     NSArray *subvalidators = UMKGeneratedArrayWithElementCount(2 + random() % 8, ^id(NSUInteger index) {
-        return [self mockFailingValidatorWithErrorPointer:NULL error:[self randomError]];
+        return [self failingValidatorWithError:[self randomError]];
     });
 
     TWTCompoundValidator *validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
@@ -534,9 +512,9 @@
     });
 
     NSError *error = nil;
-    subvalidators = @[ [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[0]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[1]],
-                       [self mockFailingValidatorWithErrorPointer:&error error:expectedErrors[2]] ];
+    subvalidators = @[ [self failingValidatorWithError:expectedErrors[0]],
+                       [self failingValidatorWithError:expectedErrors[1]],
+                       [self failingValidatorWithError:expectedErrors[2]] ];
 
     validator = [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators];
     id value = [self randomObject];
