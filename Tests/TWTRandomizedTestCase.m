@@ -26,8 +26,44 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import <OCMock/OCMock.h>
-#import <TWTValidation/TWTValidation.h>
+
+#pragma mark Failing Validator
+
+@interface TWTFailingValidator : TWTValidator
+
+@property (nonatomic, strong, readonly) NSError *error;
+
+- (instancetype)initWithError:(NSError *)error;
+
+@end
+
+
+@implementation TWTFailingValidator
+
+- (instancetype)initWithError:(NSError *)error
+{
+    self = [super init];
+    if (self) {
+        _error = error;
+    }
+
+    return self;
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (outError) {
+        *outError = self.error;
+    }
+
+    return NO;
+}
+
+@end
+
+
+#pragma mark -
 
 @implementation TWTRandomizedTestCase
 
@@ -107,23 +143,19 @@
 
 - (TWTValidator *)randomValidator
 {
-    return UMKRandomBoolean() ? [self mockPassingValidatorWithErrorPointer:NULL] : [self mockFailingValidatorWithErrorPointer:NULL error:self.randomError];
+    return UMKRandomBoolean() ? [self passingValidator] : [self failingValidatorWithError:self.randomError];
 }
 
 
-- (id)mockPassingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError
+- (TWTValidator *)passingValidator
 {
-    id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
-    [[[mockValidator stub] andReturnValue:@YES] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:nil] : NULL];
-    return mockValidator;
+    return [[TWTValidator alloc] init];
 }
 
 
-- (id)mockFailingValidatorWithErrorPointer:(NSError *__autoreleasing *)outError error:(NSError *)error
+- (TWTValidator *)failingValidatorWithError:(NSError *)error
 {
-    id mockValidator = [OCMockObject mockForClass:[TWTValidator class]];
-    [[[mockValidator stub] andReturnValue:@NO] validateValue:[OCMArg any] error:outError ? [OCMArg setTo:error] : NULL];
-    return mockValidator;
+    return [[TWTFailingValidator alloc] initWithError:error];
 }
 
 @end

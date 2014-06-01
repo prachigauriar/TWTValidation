@@ -30,7 +30,7 @@
 
 /*!
  TWTStringValidators validate that values are NSString instances. Its subclasses,
-TWTBoundedLengthStringValidator and TWTRegularExpressionStringValidator validate that a string’s length is
+ TWTBoundedLengthStringValidator and TWTRegularExpressionStringValidator validate that a string’s length is
  within a range and that the string matches a regular expression, respectively. These subclasses need not be
  instantiated directly. Instead, use one of TWTStringValidator’s factory methods. The subclasses are exposed
  only so that they can be subclassed.

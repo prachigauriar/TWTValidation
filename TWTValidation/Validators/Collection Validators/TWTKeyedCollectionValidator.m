@@ -27,9 +27,69 @@
 #import <TWTValidation/TWTKeyedCollectionValidator.h>
 
 #import <TWTValidation/TWTCompoundValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
+
+
+#pragma Key-Value Pair Validator
+
+@interface TWTKeyValuePairValidator ()
+
+@property (nonatomic, strong, readwrite) id key;
+@property (nonatomic, strong, readwrite) TWTValidator *valueValidator;
+
+@end
+
+
+@implementation TWTKeyValuePairValidator
+
+- (instancetype)init
+{
+    return [self initWithKey:nil valueValidator:nil];
+}
+
+
+- (instancetype)initWithKey:(id)key valueValidator:(TWTValidator *)valueValidator
+{
+    NSParameterAssert(key);
+    self = [super init];
+    if (self) {
+        _key = key;
+        _valueValidator = valueValidator;
+    }
+
+    return self;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ [self.key hash] ^ self.valueValidator.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+
+    typeof(self) other = object;
+    return [other.key isEqual:self.key] && [other.valueValidator isEqual:self.valueValidator];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return !self.valueValidator || [self.valueValidator validateValue:value error:outError];
+}
+
+@end
+
+
+#pragma mark
 
 @interface TWTKeyedCollectionValidator ()
 
@@ -69,7 +129,7 @@
         NSMapTable *pairValidatorsByKey = [NSMapTable strongToStrongObjectsMapTable];
         for (TWTKeyValuePairValidator *pairValidator in keyValuePairValidators) {
             NSMutableArray *validators = [pairValidatorsByKey objectForKey:pairValidator.key];
-            if (!pairValidator) {
+            if (!validators) {
                 validators = [[NSMutableArray alloc] init];
                 [pairValidatorsByKey setObject:validators forKey:pairValidator.key];
             }
@@ -123,8 +183,11 @@
 - (BOOL)validateValue:(id)keyedCollection error:(out NSError *__autoreleasing *)outError
 {
     NSError *countValidationError = nil;
-    BOOL countValidated = [self.countValidator validateValue:@([keyedCollection count]) error:outError ? &countValidationError : NULL];
-    
+    BOOL countValidated = YES;
+    if (self.countValidator) {
+        countValidated = [self.countValidator validateValue:@([keyedCollection count]) error:outError ? &countValidationError : NULL];
+    }
+
     BOOL keysValidated = YES;
     BOOL valuesValidated = YES;
     BOOL pairsValidated = YES;

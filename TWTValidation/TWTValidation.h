@@ -41,4 +41,3 @@
 
 #import <TWTValidation/TWTCollectionValidator.h>
 #import <TWTValidation/TWTKeyedCollectionValidator.h>
-#import <TWTValidation/TWTKeyValuePairValidator.h>

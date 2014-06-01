@@ -29,6 +29,7 @@
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
+
 @interface TWTNumberValidator ()
 
 @property (nonatomic, strong, readwrite) NSNumber *minimum;
@@ -36,8 +37,6 @@
 
 @end
 
-
-#pragma mark
 
 @implementation TWTNumberValidator
 
