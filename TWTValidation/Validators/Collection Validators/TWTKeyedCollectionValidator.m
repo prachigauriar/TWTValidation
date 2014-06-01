@@ -129,7 +129,7 @@
         NSMapTable *pairValidatorsByKey = [NSMapTable strongToStrongObjectsMapTable];
         for (TWTKeyValuePairValidator *pairValidator in keyValuePairValidators) {
             NSMutableArray *validators = [pairValidatorsByKey objectForKey:pairValidator.key];
-            if (!pairValidator) {
+            if (!validators) {
                 validators = [[NSMutableArray alloc] init];
                 [pairValidatorsByKey setObject:validators forKey:pairValidator.key];
             }
@@ -183,8 +183,11 @@
 - (BOOL)validateValue:(id)keyedCollection error:(out NSError *__autoreleasing *)outError
 {
     NSError *countValidationError = nil;
-    BOOL countValidated = [self.countValidator validateValue:@([keyedCollection count]) error:outError ? &countValidationError : NULL];
-    
+    BOOL countValidated = YES;
+    if (self.countValidator) {
+        countValidated = [self.countValidator validateValue:@([keyedCollection count]) error:outError ? &countValidationError : NULL];
+    }
+
     BOOL keysValidated = YES;
     BOOL valuesValidated = YES;
     BOOL pairsValidated = YES;
