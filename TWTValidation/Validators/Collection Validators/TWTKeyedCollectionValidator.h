@@ -27,11 +27,11 @@
 #import <TWTValidation/TWTValueValidator.h>
 
 /*!
- TWTKeyedCollectionValidators validate keyed collection, e.g., dictionaries and map tables. Keyed 
- collection validators validate a collection’s count, keys, values, and specific key-value pairs. 
+ TWTKeyedCollectionValidators validate keyed collection, e.g., dictionaries and map tables. Keyed collection
+ validators validate a collection’s count, keys, values, and specific key-value pairs. 
 
- Keyed collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a 
- collection validator will simply return the validator itself.
+ Keyed collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
+ validator will simply return the validator itself.
  */
 @interface TWTKeyedCollectionValidator : TWTValidator <NSCopying>
 
@@ -43,24 +43,24 @@
 
 /*!
  @abstract The validators for a keyed collection’s keys.
- @discussion A keyed collection is only valid if all its keys pass validation by all the key validators.
-     If nil, all keys in a collection will pass validation. Keyed collection validators get a collection’s
-     keys using fast enumeration.
+ @discussion A keyed collection is only valid if all its keys pass validation by all the key validators. If
+    nil, all keys in a collection will pass validation. Keyed collection validators get a collection’s
+    keys using fast enumeration.
  */
 @property (nonatomic, copy, readonly) NSArray *keyValidators;
 
 /*!
  @abstract The validators for a keyed collection’s values.
- @discussion A keyed collection is only valid if all its values pass validation by all the value validators.
-     If nil, all values in a collection will pass validation. Keyed collection validators get a collection’s
-     value for a specific key by sending the collection the -objectForKey: message.
+ @discussion A keyed collection is only valid if all its values pass validation by all the value
+     validators. If nil, all values in a collection will pass validation. Keyed collection validators get a
+     collection’s value for a specific key by sending the collection the -objectForKey: message.
  */
 @property (nonatomic, copy, readonly) NSArray *valueValidators;
 
 /*!
  @abstract The validators for specific key-value pairs in a keyed collection.
  @discussion These validators must be instances of TWTKeyValuePairValidator.
- 
+
      A keyed collection is only valid if all its key-value pairs pass validation by their corresponding
      key-value pair validators. If there is no key-value pair validator for a particular key, the key-value
      pair will always pass validation.
@@ -68,25 +68,60 @@
 @property (nonatomic, copy, readonly) NSArray *keyValuePairValidators;
 
 /*!
- @abstract Initializes a newly created keyed collection validator with the specified count, key, value, and 
+ @abstract Initializes a newly created keyed collection validator with the specified count, key, value, and
      key-value pair validators.
  @discussion This is the class’s designated initializer.
- @param countValidator The validator to validate a collection’s count. If nil, collections with any number of
-     objects will pass validation.
- @param keyValidators The validators to use for a collection’s keys. If nil, the resulting validator
-     will successfully validate all a collection’s keys.
+ @param countValidator The validator to validate a collection’s count. If nil, collections with any number
+     of objects will pass validation.
+ @param keyValidators The validators to use for a collection’s keys. If nil, the resulting validator will
+     successfully validate all a collection’s keys.
  @param valueValidators The validators to use for a collection’s values. If nil, the resulting validator
      will successfully validate all a collection’s values.
- @param keyValuePairValidators The validators to use for specific key-value pairs in a collection. The objects
-     must be elements of TWTKeyValuePairValidator. If nil, the resulting validator will successfully validate 
-     all a collection’s key-value pairs. If there is no key-value pair validator for a particular key, that 
-     key-value pair will always pass validation.
- @result An initialized collection validator with the specified count, key, value, and key-value pair
+ @param keyValuePairValidators The validators to use for specific key-value pairs in a collection. The
+     objects must be elements of TWTKeyValuePairValidator. If nil, the resulting validator will
+     successfully validate all a collection’s key-value pairs. If there is no key-value pair validator for
+     a particular key, that key-value pair will always pass validation.
+ @result An initialized keyed collection validator with the specified count, key, value, and key-value pair
      validators.
  */
 - (instancetype)initWithCountValidator:(TWTValidator *)countValidator
                          keyValidators:(NSArray *)keyValidators
                        valueValidators:(NSArray *)valueValidators
                 keyValuePairValidators:(NSArray *)keyValuePairValidators;
+
+@end
+
+
+/*!
+ Key-value pair validators validate specific key-value pairs on behalf of keyed collection validators.
+ 
+ Key-value pair validators are immutable objects. As such, sending -copy or -copyWithZone: to a key-
+ value pair validator will simply return the validator itself.
+ */
+@interface TWTKeyValuePairValidator : TWTValidator <NSCopying>
+
+/*! 
+ @abstract The key for the key-value pairs the instance will validate.
+ @discussion May not be nil.
+ */
+@property (nonatomic, strong, readonly) id key;
+
+/*!
+ @abstract The validator for the pair that the instance will validate.
+ @discussion If nil, all values will successfully pass validation. Note that this validator need not be
+     an instance of TWTValueValidator. It is used to validate the value in a key-value pair. You can use
+     TWTCompoundValidators to provide multiple validators for a single key.
+ */
+@property (nonatomic, strong, readonly) TWTValidator *valueValidator;
+
+/*!
+ @abstract Initializes a newly created key-value pair validator with the specified key and value validator.
+ @discussion This is the class’s designated initializer.
+ @param key The key for the key-value pairs the instance will validate. May not be nil.
+ @param valueValidator The validator to use to validate a key-value pair’s values. If nil, all values will
+     pass validation.
+ @result An initialized key-value pair validator with the specified key and value validator.
+ */
+- (instancetype)initWithKey:(id)key valueValidator:(TWTValidator *)valueValidator;
 
 @end
