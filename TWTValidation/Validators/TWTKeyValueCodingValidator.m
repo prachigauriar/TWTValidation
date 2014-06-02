@@ -111,7 +111,7 @@
 @end
 
 
-#pragma mark -
+#pragma mark
 
 @implementation NSObject (TWTKeyValueCodingValidator)
 

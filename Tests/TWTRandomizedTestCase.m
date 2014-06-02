@@ -60,10 +60,28 @@
     return NO;
 }
 
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ [self.error hash];
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+
+    return [self.error isEqual:[object error]];
+}
+
 @end
 
 
-#pragma mark -
+#pragma mark
 
 @implementation TWTRandomizedTestCase
 

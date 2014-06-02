@@ -57,7 +57,7 @@
 @end
 
 
-#pragma mark -
+#pragma mark
 
 @implementation TWTCompoundValidatorTests
 
