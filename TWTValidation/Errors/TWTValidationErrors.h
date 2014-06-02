@@ -130,7 +130,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @param code The error code for the new error.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
      corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
- @param localizedDescription A human-readable description of the error. If non-nil, this string will be the
+ @param description A human-readable description of the error. If non-nil, this string will be the
      value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
  @result A new validation error with the specified code, validated value, and localized description.
  */
@@ -142,10 +142,10 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @param code The error code for the new error.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
      corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
- @param localizedDescription A human-readable description of the error. If non-nil, this string will be the
+ @param description A human-readable description of the error. If non-nil, this string will be the
      value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
- @param underlyingErrors The underyling errors that caused the new error to occur. If non-nil, this array
-     will be the value corresponding to TWTValidationUnderlyingErrorsKey in the error’s userInfo dictionary.
+ @param errors The underyling errors that caused the new error to occur. If non-nil, this array will be 
+     the value corresponding to TWTValidationUnderlyingErrorsKey in the error’s userInfo dictionary.
  @result A new validation error with the specified code, validated value, localized description, and
      underlying errors.
  */
