@@ -1,13 +1,10 @@
 PODS:
-  - OCMock (2.2.4)
   - URLMock/TestHelpers (1.1.3)
 
 DEPENDENCIES:
-  - OCMock (~> 2.0)
   - URLMock/TestHelpers (~> 1.1.3)
 
 SPEC CHECKSUMS:
-  OCMock: 5008fae4b4789b8fc3e48cd7660f2eb5ef8ce89e
-  URLMock: 3e9f673ac2eb1b6587adc0564cb2bce1254bf601
+  URLMock: 04dd77ce1e80d3458e8cf746e7e3bee56818e0a5
 
-COCOAPODS: 0.32.1
+COCOAPODS: 0.33.1
