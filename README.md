@@ -36,21 +36,22 @@ build output directory.
 
 ## Using TWTValidation
 
-TWTValidation provides validators for a variety of use cases, but doesn’t constraint how you will
-use them. All validators in TWTValidation inherit from `TWTValidator`, an abstract class that
-declares the primary interface to a validator, `-validateValue:error:`. This method validates the
-specified value and returns whether the value passed validation. If the value failed to validate, an
-error describing why validation failed is returned by reference.
+TWTValidation provides validators for a variety of use cases, but doesn’t constrain how you use
+them. All validators in TWTValidation inherit from `TWTValidator`, an abstract class that declares
+the primary interface to a validator, `-validateValue:error:`. This method validates the specified
+value and returns whether it passed validation. If the value failed to validate, an error describing
+why validation failed is returned indirectly via the error parameter.
 
-Let’s step through the major subclasses of `TWTValidator` in turn. These are merely summaries of what’s
-possible. For more detailed information, check out the documentation in each class’s header.
+Let’s step through each of the major subclasses of `TWTValidator` in turn. These are merely
+summaries of what’s possible. For more detailed information, check out the documentation in each
+class’s header.
 
 
 ### Value Validators
 
 Value validators inherit from `TWTValueValidator`. By itself, `TWTValueValidator` can only perform
-some basic validations. It can optionally ensure that a value is an instance of a specific class,
-is not `nil`, and is not the `NSNull` instance.
+some basic validations: it can optionally ensure that a value is an instance of a specific class,
+not `nil`, and not the `NSNull` instance.
 
     TWTValueValidator *validator = [TWTValueValidator valueValidatorWithClass:[NSNumber class]     
                                                                     allowsNil:NO 
@@ -95,8 +96,8 @@ part.
 
 ### Compound Validators
 
-Compound validators, instances of `TWTCompoundValidator`, allow you to combine validators using
-logical operations like AND, OR, and NOT.
+Instances of `TWTCompoundValidator`, or simply compound validators, allow you to combine validators
+using logical operations like AND, OR, and NOT.
 
     TWTNumberValidator *rangeValidator = [TWTNumberValidator numberValidatorWithMinimum:@2 maximum:@10];
     TWTCompoundValidator *notValidator = [TWTCompoundValidator notValidatorWithSubvalidator:rangeValidator];
@@ -219,14 +220,15 @@ validate a keyed collection’s count, keys, and values, as well as specific key
 ### Key-Value Coding Validators
 
 Perhaps the most interesting and useful validators in TWTValidation are key-value coding validators.
-These objects—instances of `TWTKeyValueCodingValidator`—validate an object’s values for a given set 
-of key-value coding compliant keys. It gets the validators to use for each key from the object’s 
+These objects—instances of `TWTKeyValueCodingValidator`—validate an object’s values for a given set
+of key-value coding compliant keys. It gets the validators to use for each key from the object’s
 class. This is best explained using an example:
 
     // Header File
     @interface TWTSimplePerson : NSObject
     
-    @property (nonatomic, copy) NSString *name;
+    @property (nonatomic, copy) NSString *firstName;
+    @property (nonatomic, copy) NSString *lastName;
     @property (nonatomic, strong) NSNumber *age;
 
     - (BOOL)isValid;
@@ -248,7 +250,7 @@ class. This is best explained using an example:
     {
         self = [super init];
         if (self) {
-            NSSet *keys = [NSSet setWithObjects:@"name", @"age", nil];
+            NSSet *keys = [NSSet setWithObjects:@"firstName", @"lastName", @"age", nil];
             _validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:keys];
         }
         
@@ -262,16 +264,20 @@ class. This is best explained using an example:
     }
 
 
-    // The following methods are automatically invoked by the TWTKeyValueCodingValidator instance
-    // when it attempts to validate the name and age keys, respectively. If these validators pass,
-    // the entire validator passes. Generally, validators for a given key are retrieved by invoking
-    // +twt_validatorsFor«Key» on the class of the value being validated, where «Key» is the 
-    // capitalized form of the key it is validating. See the TWTKeyValueCodingValidator 
-    // documentation for more details.
-    
-    + (NSSet *)twt_validatorsForName
+    // Key-value coding validators get the validators for their KVC keys by invoking +twt_validatorsForKey:
+    // on the value’s class. The base implementation simply checks to see if the class implements 
+    // +twt_validatorsFor«Key», where «Key» is the capitalized form of the KVC key. When you have multiple
+    // keys that use the same validators, you can override this implementation. Here, we return the same
+    // validators for firstName and lastName, but rely on the superclass implementation to invoke 
+    // +twt_validatorsForAge to get the validators for the age key.
+
+    + (NSSet *)twt_validatorsForKey:(NSString *)key
     {
-        return [NSSet setWithObject:[TWTStringValidator stringValidatorWithMinimumLength:1 maximumLength:20]];
+        if ([key isEqualToString:@"firstName"] || [key isEqualToString:@"lastName"]) {
+            return [NSSet setWithObject:[TWTStringValidator stringValidatorWithMinimumLength:1 maximumLength:20]];        
+        } 
+            
+        return [super twt_validatorsForKey:key];
     }
 
     
