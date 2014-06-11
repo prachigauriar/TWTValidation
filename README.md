@@ -289,6 +289,15 @@ class. This is best explained using an example:
     @end
 
 
+### Creating Custom Validators
+
+If one of TWTValidation’s validators doesn’t meet your needs, it’s easy to add new validators or
+extend existing ones. Simply subclass `TWTValidator` or one of its subclasses and override
+`-validateValue:error:`. Take a look at any `TWTValidator` subclass for more guidance. We also
+provide some convenience methods for building error objects, which can be found in
+`TWTValidationErrors.h`.
+
+
 ## Contributing, Filing Bugs, and Requesting Enhancements
 
 If you would like to help fix bugs or add features to TWTValidation, send us a pull request!
