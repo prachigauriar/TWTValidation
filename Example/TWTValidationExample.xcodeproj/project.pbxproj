@@ -16,7 +16,6 @@
 		84F6F276194A1F650006BE7B /* TWTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F6F275194A1F650006BE7B /* TWTAppDelegate.m */; };
 		84F6F279194A1F650006BE7B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84F6F277194A1F650006BE7B /* Main.storyboard */; };
 		84F6F27C194A1F650006BE7B /* TWTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F6F27B194A1F650006BE7B /* TWTViewController.m */; };
-		84F6F27E194A1F650006BE7B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84F6F27D194A1F650006BE7B /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +32,6 @@
 		84F6F278194A1F650006BE7B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		84F6F27A194A1F650006BE7B /* TWTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TWTViewController.h; sourceTree = "<group>"; };
 		84F6F27B194A1F650006BE7B /* TWTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TWTViewController.m; sourceTree = "<group>"; };
-		84F6F27D194A1F650006BE7B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		84F6F284194A1F650006BE7B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		B488D9DAA76944F48CE82465 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		D1D783F5B02E4E7D9AD6B229 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,7 +90,6 @@
 				84F6F277194A1F650006BE7B /* Main.storyboard */,
 				84F6F27A194A1F650006BE7B /* TWTViewController.h */,
 				84F6F27B194A1F650006BE7B /* TWTViewController.m */,
-				84F6F27D194A1F650006BE7B /* Images.xcassets */,
 				84F6F26C194A1F650006BE7B /* Supporting Files */,
 			);
 			path = TWTValidationExample;
@@ -164,7 +161,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84F6F27E194A1F650006BE7B /* Images.xcassets in Resources */,
 				84F6F270194A1F650006BE7B /* InfoPlist.strings in Resources */,
 				84F6F279194A1F650006BE7B /* Main.storyboard in Resources */,
 			);
