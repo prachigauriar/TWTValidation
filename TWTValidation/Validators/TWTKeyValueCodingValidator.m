@@ -86,7 +86,7 @@
             TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
             if (![andValidator validateValue:value error:outError ? &error : NULL]) {
                 validated = NO;
-                if (error) {
+                if (error.twt_underlyingErrors) {
                     [errors setObject:error.twt_underlyingErrors forKey:key];
                 }
             }
@@ -99,13 +99,32 @@
     }
 
     if (!validated && outError) {
-        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
+        *outError = [self twt_validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
                                                    value:object
                                     localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
-                                        errorsByKey:errors];
+                                        underlyingErrorsByKey:errors];
     }
 
     return validated;
+}
+
+
+- (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrorsByKey:(NSDictionary *)errors
+{
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:3];
+    if (value) {
+        userInfo[TWTValidationValidatedValueKey] = value;
+    }
+    
+    if (description) {
+        userInfo[NSLocalizedDescriptionKey] = [description copy];
+    }
+    
+    if (errors.count) {
+        userInfo[TWTValidationUnderlyingErrorsByKeyKey] = [errors copy];
+    }
+    
+    return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
 }
 
 @end

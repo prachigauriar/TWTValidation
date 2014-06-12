@@ -32,7 +32,7 @@
 NSString *const TWTValidationErrorDomain = @"TWTValidationErrorDomain";
 NSString *const TWTValidationValidatedValueKey = @"TWTValidationValidatedValue";
 NSString *const TWTValidationUnderlyingErrorsKey = @"TWTValidationUnderlyingErrors";
-NSString *const TWTValidationErrorsByKeyKey = @"TWTValidationErrorsByKey";
+NSString *const TWTValidationUnderlyingErrorsByKeyKey = @"TWTValidationUnderlyingErrorsByKey";
 
 NSString *const TWTValidationCountValidationErrorKey = @"TWTValidationCountValidationError";
 NSString *const TWTValidationElementValidationErrorsKey = @"TWTValidationElementValidationErrors";
@@ -70,24 +70,6 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
     return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
 }
 
-+ (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description errorsByKey:(NSDictionary *)errors
-{
-    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:3];
-    if (value) {
-        userInfo[TWTValidationValidatedValueKey] = value;
-    }
-    
-    if (description) {
-        userInfo[NSLocalizedDescriptionKey] = [description copy];
-    }
-    
-    if (errors.count) {
-        userInfo[TWTValidationErrorsByKeyKey] = [errors copy];
-    }
-    
-    return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
-}
-
 
 - (id)twt_validatedValue
 {
@@ -101,9 +83,9 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
 }
 
 
-- (NSDictionary *)twt_errorsByKey
+- (NSDictionary *)twt_underlyingErrorsByKey
 {
-    return self.userInfo[TWTValidationErrorsByKeyKey];
+    return self.userInfo[TWTValidationUnderlyingErrorsByKeyKey];
 }
 
 

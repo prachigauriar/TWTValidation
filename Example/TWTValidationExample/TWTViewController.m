@@ -16,8 +16,6 @@
 @property (nonatomic, strong) TWTKeyValueObserver *formValidObserver;
 @property (nonatomic, strong) TWTKeyValueCodingValidator *formValidator;
 
-
-
 @property (nonatomic, copy) NSString *emailAddress;
 @property (nonatomic, strong) NSNumber *age;
 @property (nonatomic, copy) NSString *password;
@@ -104,6 +102,7 @@
     
     return valid;
 }
+
 
 - (void)formValidDidChange
 {
