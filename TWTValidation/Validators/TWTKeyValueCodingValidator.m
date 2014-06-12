@@ -99,7 +99,7 @@
     }
 
     if (!validated && outError) {
-        *outError = [self twt_validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
+        *outError = [self validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
                                                 value:object
                                  localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
                                 underlyingErrorsByKey:errors];
@@ -109,7 +109,7 @@
 }
 
 
-- (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrorsByKey:(NSDictionary *)errors
+- (NSError *)validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrorsByKey:(NSDictionary *)errors
 {
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:3];
     if (value) {
