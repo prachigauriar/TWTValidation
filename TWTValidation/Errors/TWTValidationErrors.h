@@ -43,7 +43,7 @@ extern NSString *const TWTValidationValidatedValueKey;
 extern NSString *const TWTValidationUnderlyingErrorsKey;
 
 /*!
- @abstract userInfo key whose value is the key-value collection of errors that caused the error.
+ @abstract userInfo key whose value is a dictionary containing the underlying errors for each value key.
  */
 extern NSString *const TWTValidationUnderlyingErrorsByKeyKey;
 
