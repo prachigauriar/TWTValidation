@@ -38,7 +38,7 @@ build output directory.
 
 TWTValidation provides validators for a variety of use cases, but doesn’t constrain how you use
 them. All validators in TWTValidation inherit from `TWTValidator`, an abstract class that declares
-the primary interface to a validator, `-validateValue:error:`. This method validates the specified
+the primary interface to a validator, `‑validateValue:error:`. This method validates the specified
 value and returns whether it passed validation. If the value failed to validate, an error describing
 why validation failed is returned indirectly via the error parameter.
 
@@ -153,7 +153,7 @@ using logical operations like AND, OR, and NOT.
 You can validate a collection’s count and elements using an instance of `TWTCollectionValidator`. 
 Collection validators use fast enumeration to get a collection’s elements. As such, it is primarily
 intended for validating arrays, sets, and ordered sets. However, it can work with any object that
-implements `NSFastEnumeration` and responds to `-count`.
+implements `NSFastEnumeration` and responds to `‑count`.
 
     TWTNumberValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:@1 maximum:@3];
 
@@ -293,7 +293,7 @@ class. This is best explained using an example:
 
 If one of TWTValidation’s validators doesn’t meet your needs, it’s easy to add new validators or
 extend existing ones. Simply subclass `TWTValidator` or one of its subclasses and override
-`-validateValue:error:`. Take a look at any `TWTValidator` subclass for more guidance. We also
+`‑validateValue:error:`. Take a look at any `TWTValidator` subclass for more guidance. We also
 provide some convenience methods for building error objects, which can be found in
 `TWTValidationErrors.h`.
 
