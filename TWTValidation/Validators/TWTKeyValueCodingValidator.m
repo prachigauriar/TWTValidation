@@ -100,9 +100,9 @@
 
     if (!validated && outError) {
         *outError = [self twt_validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
-                                                   value:object
-                                    localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
-                                        underlyingErrorsByKey:errors];
+                                                value:object
+                                 localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
+                                underlyingErrorsByKey:errors];
     }
 
     return validated;
