@@ -1,0 +1,13 @@
+PODS:
+  - TWTToast/Foundation/KVO (0.8)
+  - TWTValidation (0.1.1)
+
+DEPENDENCIES:
+  - TWTToast/Foundation/KVO
+  - TWTValidation
+
+SPEC CHECKSUMS:
+  TWTToast: 503a8c16a95f6df1c3cbe3020bffe1ccbe052108
+  TWTValidation: 1c435a970b33d668ce30f98a3d0881218cef2fac
+
+COCOAPODS: 0.33.1

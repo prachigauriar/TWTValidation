@@ -43,6 +43,11 @@ extern NSString *const TWTValidationValidatedValueKey;
 extern NSString *const TWTValidationUnderlyingErrorsKey;
 
 /*!
+ @abstract userInfo key whose value is the key-value collection of errors that caused the error.
+ */
+extern NSString *const TWTValidationErrorsByKeyKey;
+
+/*!
  @abstract userInfo key whose value is the error that occurred while validating a collection’s count.
  */
 extern NSString *const TWTValidationCountValidationErrorKey;
@@ -152,6 +157,21 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 + (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrors:(NSArray *)errors;
 
 /*!
+ @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
+ validated value, localized description, and underlying errors.
+ @param code The error code for the new error.
+ @param value The value being validated when the error occured. If non-nil, this object will be the value
+ corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
+ @param description A human-readable description of the error. If non-nil, this string will be the
+ value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
+ @param errors A key-value pairing of the underyling errors that caused the new error to occur. If non-nil, this dictionary will be
+ the value corresponding to TWTValidationErrorsByKeyKey in the error’s userInfo dictionary.
+ @result A new validation error with the specified code, validated value, localized description, and
+ underlying errors.
+ */
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description errorsByKey:(NSDictionary *)errors;
+
+/*!
  @abstract Returns an error’s validated value.
  @discussion This is equivalent to accessing error.userInfo[TWTValidationValidatedValueKey].
  @result The error’s validated value.
@@ -164,6 +184,13 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @result The error’s underlying errors.
  */
 - (NSArray *)twt_underlyingErrors;
+
+/*!
+ @abstract Returns the error’s underlying errors by key.
+ @discussion This is equivalent to accessing error.userInfo[TWTValidationErrorsByKeyKey].
+ @result The error’s underlying errors by key.
+ */
+- (NSDictionary *)twt_errorsByKey;
 
 /*!
  @abstract Returns the count validation error that caused the error.
