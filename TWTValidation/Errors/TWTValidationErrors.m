@@ -32,6 +32,7 @@
 NSString *const TWTValidationErrorDomain = @"TWTValidationErrorDomain";
 NSString *const TWTValidationValidatedValueKey = @"TWTValidationValidatedValue";
 NSString *const TWTValidationUnderlyingErrorsKey = @"TWTValidationUnderlyingErrors";
+NSString *const TWTValidationUnderlyingErrorsByKeyKey = @"TWTValidationUnderlyingErrorsByKey";
 
 NSString *const TWTValidationCountValidationErrorKey = @"TWTValidationCountValidationError";
 NSString *const TWTValidationElementValidationErrorsKey = @"TWTValidationElementValidationErrors";
@@ -79,6 +80,12 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
 - (NSArray *)twt_underlyingErrors
 {
     return self.userInfo[TWTValidationUnderlyingErrorsKey];
+}
+
+
+- (NSDictionary *)twt_underlyingErrorsByKey
+{
+    return self.userInfo[TWTValidationUnderlyingErrorsByKeyKey];
 }
 
 

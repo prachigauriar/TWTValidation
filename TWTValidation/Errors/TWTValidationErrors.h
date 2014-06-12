@@ -43,6 +43,11 @@ extern NSString *const TWTValidationValidatedValueKey;
 extern NSString *const TWTValidationUnderlyingErrorsKey;
 
 /*!
+ @abstract userInfo key whose value is a dictionary containing the underlying errors for each value key.
+ */
+extern NSString *const TWTValidationUnderlyingErrorsByKeyKey;
+
+/*!
  @abstract userInfo key whose value is the error that occurred while validating a collection’s count.
  */
 extern NSString *const TWTValidationCountValidationErrorKey;
@@ -164,6 +169,13 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @result The error’s underlying errors.
  */
 - (NSArray *)twt_underlyingErrors;
+
+/*!
+ @abstract Returns the error’s underlying errors by key.
+ @discussion This is equivalent to accessing error.userInfo[TWTValidationUnderlyingErrorsByKeyKey].
+ @result The error’s underlying errors by key.
+ */
+- (NSDictionary *)twt_underlyingErrorsByKey;
 
 /*!
  @abstract Returns the count validation error that caused the error.

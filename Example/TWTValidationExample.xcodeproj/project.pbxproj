@@ -1,0 +1,359 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3DC86D7D00394CBAA2EAC0A3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1D783F5B02E4E7D9AD6B229 /* libPods.a */; };
+		84F6F266194A1F650006BE7B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F6F265194A1F650006BE7B /* Foundation.framework */; };
+		84F6F268194A1F650006BE7B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F6F267194A1F650006BE7B /* CoreGraphics.framework */; };
+		84F6F26A194A1F650006BE7B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F6F269194A1F650006BE7B /* UIKit.framework */; };
+		84F6F270194A1F650006BE7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84F6F26E194A1F650006BE7B /* InfoPlist.strings */; };
+		84F6F272194A1F650006BE7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F6F271194A1F650006BE7B /* main.m */; };
+		84F6F276194A1F650006BE7B /* TWTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F6F275194A1F650006BE7B /* TWTAppDelegate.m */; };
+		84F6F279194A1F650006BE7B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84F6F277194A1F650006BE7B /* Main.storyboard */; };
+		84F6F27C194A1F650006BE7B /* TWTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F6F27B194A1F650006BE7B /* TWTViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		84F6F262194A1F650006BE7B /* TWTValidationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TWTValidationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		84F6F265194A1F650006BE7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		84F6F267194A1F650006BE7B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		84F6F269194A1F650006BE7B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		84F6F26D194A1F650006BE7B /* TWTValidationExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TWTValidationExample-Info.plist"; sourceTree = "<group>"; };
+		84F6F26F194A1F650006BE7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		84F6F271194A1F650006BE7B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		84F6F273194A1F650006BE7B /* TWTValidationExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TWTValidationExample-Prefix.pch"; sourceTree = "<group>"; };
+		84F6F274194A1F650006BE7B /* TWTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TWTAppDelegate.h; sourceTree = "<group>"; };
+		84F6F275194A1F650006BE7B /* TWTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TWTAppDelegate.m; sourceTree = "<group>"; };
+		84F6F278194A1F650006BE7B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		84F6F27A194A1F650006BE7B /* TWTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TWTViewController.h; sourceTree = "<group>"; };
+		84F6F27B194A1F650006BE7B /* TWTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TWTViewController.m; sourceTree = "<group>"; };
+		84F6F284194A1F650006BE7B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		B488D9DAA76944F48CE82465 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		D1D783F5B02E4E7D9AD6B229 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		84F6F25F194A1F650006BE7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F6F268194A1F650006BE7B /* CoreGraphics.framework in Frameworks */,
+				84F6F26A194A1F650006BE7B /* UIKit.framework in Frameworks */,
+				84F6F266194A1F650006BE7B /* Foundation.framework in Frameworks */,
+				3DC86D7D00394CBAA2EAC0A3 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		84F6F259194A1F650006BE7B = {
+			isa = PBXGroup;
+			children = (
+				84F6F26B194A1F650006BE7B /* TWTValidationExample */,
+				84F6F264194A1F650006BE7B /* Frameworks */,
+				84F6F263194A1F650006BE7B /* Products */,
+				B488D9DAA76944F48CE82465 /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		84F6F263194A1F650006BE7B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84F6F262194A1F650006BE7B /* TWTValidationExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84F6F264194A1F650006BE7B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				84F6F265194A1F650006BE7B /* Foundation.framework */,
+				84F6F267194A1F650006BE7B /* CoreGraphics.framework */,
+				84F6F269194A1F650006BE7B /* UIKit.framework */,
+				84F6F284194A1F650006BE7B /* XCTest.framework */,
+				D1D783F5B02E4E7D9AD6B229 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		84F6F26B194A1F650006BE7B /* TWTValidationExample */ = {
+			isa = PBXGroup;
+			children = (
+				84F6F274194A1F650006BE7B /* TWTAppDelegate.h */,
+				84F6F275194A1F650006BE7B /* TWTAppDelegate.m */,
+				84F6F277194A1F650006BE7B /* Main.storyboard */,
+				84F6F27A194A1F650006BE7B /* TWTViewController.h */,
+				84F6F27B194A1F650006BE7B /* TWTViewController.m */,
+				84F6F26C194A1F650006BE7B /* Supporting Files */,
+			);
+			path = TWTValidationExample;
+			sourceTree = "<group>";
+		};
+		84F6F26C194A1F650006BE7B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				84F6F26D194A1F650006BE7B /* TWTValidationExample-Info.plist */,
+				84F6F26E194A1F650006BE7B /* InfoPlist.strings */,
+				84F6F271194A1F650006BE7B /* main.m */,
+				84F6F273194A1F650006BE7B /* TWTValidationExample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		84F6F261194A1F650006BE7B /* TWTValidationExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84F6F294194A1F650006BE7B /* Build configuration list for PBXNativeTarget "TWTValidationExample" */;
+			buildPhases = (
+				70B2DE6B106D45A99955EC31 /* Check Pods Manifest.lock */,
+				84F6F25E194A1F650006BE7B /* Sources */,
+				84F6F25F194A1F650006BE7B /* Frameworks */,
+				84F6F260194A1F650006BE7B /* Resources */,
+				AA48891B6D9A4B5E81AC4D8F /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TWTValidationExample;
+			productName = TWTValidationExample;
+			productReference = 84F6F262194A1F650006BE7B /* TWTValidationExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		84F6F25A194A1F650006BE7B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = TWT;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Two Toasters";
+			};
+			buildConfigurationList = 84F6F25D194A1F650006BE7B /* Build configuration list for PBXProject "TWTValidationExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 84F6F259194A1F650006BE7B;
+			productRefGroup = 84F6F263194A1F650006BE7B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				84F6F261194A1F650006BE7B /* TWTValidationExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		84F6F260194A1F650006BE7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F6F270194A1F650006BE7B /* InfoPlist.strings in Resources */,
+				84F6F279194A1F650006BE7B /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		70B2DE6B106D45A99955EC31 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		AA48891B6D9A4B5E81AC4D8F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		84F6F25E194A1F650006BE7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84F6F276194A1F650006BE7B /* TWTAppDelegate.m in Sources */,
+				84F6F272194A1F650006BE7B /* main.m in Sources */,
+				84F6F27C194A1F650006BE7B /* TWTViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		84F6F26E194A1F650006BE7B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				84F6F26F194A1F650006BE7B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		84F6F277194A1F650006BE7B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				84F6F278194A1F650006BE7B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		84F6F292194A1F650006BE7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		84F6F293194A1F650006BE7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		84F6F295194A1F650006BE7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B488D9DAA76944F48CE82465 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidationExample/TWTValidationExample-Prefix.pch";
+				INFOPLIST_FILE = "TWTValidationExample/TWTValidationExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		84F6F296194A1F650006BE7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B488D9DAA76944F48CE82465 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TWTValidationExample/TWTValidationExample-Prefix.pch";
+				INFOPLIST_FILE = "TWTValidationExample/TWTValidationExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		84F6F25D194A1F650006BE7B /* Build configuration list for PBXProject "TWTValidationExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F6F292194A1F650006BE7B /* Debug */,
+				84F6F293194A1F650006BE7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		84F6F294194A1F650006BE7B /* Build configuration list for PBXNativeTarget "TWTValidationExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84F6F295194A1F650006BE7B /* Debug */,
+				84F6F296194A1F650006BE7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 84F6F25A194A1F650006BE7B /* Project object */;
+}

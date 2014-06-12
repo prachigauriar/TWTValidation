@@ -34,6 +34,7 @@
 
 - (void)testValidatedValue;
 - (void)testUnderlyingErrors;
+- (void)testUnderlyingErrorsByKey;
 - (void)testCountValidationError;
 - (void)testElementValidationErrors;
 - (void)testKeyValidationErrors;
@@ -142,6 +143,17 @@
     id object = [self randomNonNilObject];
     error = [self randomErrorWithObject:object forUserInfoKey:key];
     XCTAssertEqualObjects(error.twt_underlyingErrors, object, @"underlying errors is not set correctly");
+}
+
+- (void)testUnderlyingErrorsByKey
+{
+    NSString *key = TWTValidationUnderlyingErrorsByKeyKey;
+    NSError *error = [self randomErrorWithoutUserInfoKey:key];
+    XCTAssertNil(error.twt_underlyingErrorsByKey, @"underlying errors by key returns non-nil object");
+    
+    id object = [self randomNonNilObject];
+    error = [self randomErrorWithObject:object forUserInfoKey:key];
+    XCTAssertEqualObjects(error.twt_underlyingErrorsByKey, object, @"underlying errors by key is not set correctly");
 }
 
 
