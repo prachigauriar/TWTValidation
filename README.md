@@ -222,7 +222,8 @@ validate a keyed collection’s count, keys, and values, as well as specific key
 Perhaps the most interesting and useful validators in TWTValidation are key-value coding validators.
 These objects—instances of `TWTKeyValueCodingValidator`—validate an object’s values for a given set
 of key-value coding compliant keys. It gets the validators to use for each key from the object’s
-class. This is best explained using an example:
+class, in much the same way that key-value observing gets the key paths affecting a key. This is best
+explained using an example:
 
     // Header File
     @interface TWTSimplePerson : NSObject
@@ -287,6 +288,8 @@ class. This is best explained using an example:
     }
     
     @end
+
+For a more detailed example of how to use key-value coding validators, see our example project.
 
 
 ### Creating Custom Validators
