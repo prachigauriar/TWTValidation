@@ -1,11 +1,12 @@
 Pod::Spec.new do |s|
   s.name         = "TWTValidation"
-  s.version      = "0.1.1"
+  s.version      = "1.0"
 
   s.summary      = "A Cocoa framework for validating objects and their properties declaratively."
   s.description  = <<-DESC
-                   TWTValidation is an Objective-C framework for validating objects and their 
-                   properties declaratively."
+                   TWTValidation is a Cocoa framework for declaratively validating data. It provides a
+                   mechanism for validating individual objects and collections, and for combining multiple
+                   validators using logical operators to create more complex validations."
                    DESC
 
   s.author       = { "Two Toasters" => "general@twotoasters.com" }

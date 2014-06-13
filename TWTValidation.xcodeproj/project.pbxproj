@@ -478,6 +478,7 @@
 		4CA7C8F418E662CE00A434B6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = TWT;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Two Toasters, LLC";
 				TargetAttributes = {
