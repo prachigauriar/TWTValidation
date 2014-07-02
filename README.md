@@ -26,7 +26,7 @@ operators to create more complex validations.
 
 The easiest way to start using TWTValidation is to install it with CocoaPods.
 
-    pod 'TWTValidation', '~> 1.0'
+    pod 'TWTValidation', '~> 1.0.1'
 
 You can also build it and include the built products in your project. For OS X, just add
 `TWTValidation.framework` to your project. For iOS, add TWTValidation’s public headers to your
