@@ -1,11 +1,16 @@
-target 'TWTValidation Tests'.to_sym do
-  pod 'URLMock/TestHelpers', '~> 1.1.3' 
-end
+Target = Struct.new(:target, :platform, :platform_version)
 
-target :libTWTValidation, exclusive: false do
-  platform :ios, '7.0'
+[ Target.new('TWTValidation', :osx, '10.8'), Target.new('libTWTValidation', :ios, '6.1') ].each do |t|
+  target t.target.to_sym, exclusive: true do
+    platform t.platform, t.platform_version
 
-  target 'libTWTValidation Tests'.to_sym do
-    pod 'URLMock/TestHelpers', '~> 1.1.3'
+    # Pods for the framework/library targets
+  end
+
+  target "#{t.target} Tests".to_sym, exclusive: true do
+    platform t.platform, t.platform_version
+
+    # Pods for the test targets
+    pod 'URLMock/TestHelpers', '~> 1.2.1' 
   end
 end

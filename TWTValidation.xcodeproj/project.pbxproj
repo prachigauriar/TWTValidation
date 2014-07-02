@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09D2C62150634CFA828C192B /* libPods-libTWTValidation-libTWTValidation Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 492B39A25057459FB1F32438 /* libPods-libTWTValidation-libTWTValidation Tests.a */; };
 		4C3FF80418EE5F4500EF8776 /* libTWTFoundation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA7C8FC18E662CE00A434B6 /* libTWTFoundation.a */; };
 		4C3FF80518EE5F6700EF8776 /* TWTValidationErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71A018E7922E00BB8CE0 /* TWTValidationErrors.m */; };
 		4C4989D21927F931008D6B43 /* TWTStringValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB55C5E18F262C3003AF344 /* TWTStringValidatorTests.m */; };
@@ -74,6 +73,7 @@
 		4CD62FC718E8B27E007F7EF3 /* TWTBlockValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */; };
 		4CD62FC918E8C938007F7EF3 /* TWTCompoundValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */; };
 		B9307643C67943DAA69E5116 /* libPods-TWTValidation Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C971DF7F512A48E1ADE1CAAF /* libPods-TWTValidation Tests.a */; };
+		CE9577B773784FEDBD5E0D01 /* libPods-libTWTValidation Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EDFDC6EABD2545BFAF2AB6A3 /* libPods-libTWTValidation Tests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,8 +153,9 @@
 		4CD62FC018E88EC0007F7EF3 /* TWTBlockValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTBlockValidatorTests.m; sourceTree = "<group>"; };
 		4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValidatorTests.m; sourceTree = "<group>"; };
 		4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTCompoundValidatorTests.m; sourceTree = "<group>"; };
-		7378FC729B664261BFE5C678 /* Pods-libTWTValidation-libTWTValidation Tests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libTWTValidation-libTWTValidation Tests.xcconfig"; path = "Pods/Pods-libTWTValidation-libTWTValidation Tests.xcconfig"; sourceTree = "<group>"; };
 		C971DF7F512A48E1ADE1CAAF /* libPods-TWTValidation Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TWTValidation Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDFDC6EABD2545BFAF2AB6A3 /* libPods-libTWTValidation Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-libTWTValidation Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3F88786FD06437CA5974AB4 /* Pods-libTWTValidation Tests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libTWTValidation Tests.xcconfig"; path = "Pods/Pods-libTWTValidation Tests.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,7 +174,7 @@
 				4C3FF80418EE5F4500EF8776 /* libTWTFoundation.a in Frameworks */,
 				4CA7C90E18E662CE00A434B6 /* XCTest.framework in Frameworks */,
 				4CA7C90F18E662CE00A434B6 /* Foundation.framework in Frameworks */,
-				09D2C62150634CFA828C192B /* libPods-libTWTValidation-libTWTValidation Tests.a in Frameworks */,
+				CE9577B773784FEDBD5E0D01 /* libPods-libTWTValidation Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +225,7 @@
 				4CA7C8FE18E662CE00A434B6 /* Frameworks */,
 				4CA7C8FD18E662CE00A434B6 /* Products */,
 				2FEB379B30584344BF7FC554 /* Pods-TWTValidation Tests.xcconfig */,
-				7378FC729B664261BFE5C678 /* Pods-libTWTValidation-libTWTValidation Tests.xcconfig */,
+				F3F88786FD06437CA5974AB4 /* Pods-libTWTValidation Tests.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -246,6 +247,7 @@
 				4CA7C90D18E662CE00A434B6 /* XCTest.framework */,
 				C971DF7F512A48E1ADE1CAAF /* libPods-TWTValidation Tests.a */,
 				492B39A25057459FB1F32438 /* libPods-libTWTValidation-libTWTValidation Tests.a */,
+				EDFDC6EABD2545BFAF2AB6A3 /* libPods-libTWTValidation Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -549,7 +551,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-libTWTValidation-libTWTValidation Tests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Pods-libTWTValidation Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7727FDFE725241268165AE20 /* Check Pods Manifest.lock */ = {
@@ -810,7 +812,7 @@
 		};
 		4CA7C92318E662CE00A434B6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7378FC729B664261BFE5C678 /* Pods-libTWTValidation-libTWTValidation Tests.xcconfig */;
+			baseConfigurationReference = F3F88786FD06437CA5974AB4 /* Pods-libTWTValidation Tests.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -832,7 +834,7 @@
 		};
 		4CA7C92418E662CE00A434B6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7378FC729B664261BFE5C678 /* Pods-libTWTValidation-libTWTValidation Tests.xcconfig */;
+			baseConfigurationReference = F3F88786FD06437CA5974AB4 /* Pods-libTWTValidation Tests.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

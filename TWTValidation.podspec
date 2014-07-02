@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "TWTValidation"
-  s.version      = "1.0"
+  s.version      = "1.0.1"
 
   s.summary      = "A Cocoa framework for validating objects and their properties declaratively."
   s.description  = <<-DESC
@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/twotoasters/TWTValidation"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
-  s.ios.deployment_target = '7.0'
-  s.osx.deployment_target = '10.9'
+  s.ios.deployment_target = '6.0'
+  s.osx.deployment_target = '10.8'
   s.requires_arc = true
 
   s.source       = { :git => "https://github.com/twotoasters/TWTValidation.git", :tag => s.version.to_s }
