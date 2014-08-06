@@ -105,7 +105,7 @@
     TWTKeyValuePairValidator *validator = [[TWTKeyValuePairValidator alloc] initWithKey:key valueValidator:[self passingValidator]];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with passing value validator");
 
-    NSError *expectedError = [self randomError];
+    NSError *expectedError = UMKRandomError();
 
     validator = [[TWTKeyValuePairValidator alloc] initWithKey:key valueValidator:[self failingValidatorWithError:expectedError]];
     XCTAssertFalse([validator validateValue:[self randomObject] error:NULL], @"passes with failing value validator");

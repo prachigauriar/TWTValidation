@@ -196,6 +196,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueLessThanMinimum, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
@@ -247,6 +248,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueIsNotIntegral, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 

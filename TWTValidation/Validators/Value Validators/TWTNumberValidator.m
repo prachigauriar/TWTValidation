@@ -134,7 +134,7 @@
             }
         }
 
-        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
     
     return NO;

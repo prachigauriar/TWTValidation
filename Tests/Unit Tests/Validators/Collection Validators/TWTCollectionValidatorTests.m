@@ -127,7 +127,7 @@
         validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
         XCTAssertFalse([validator validateValue:collection error:NULL], @"passes with failing count validator");
 
-        NSError *expectedError = [self randomError];
+        NSError *expectedError = UMKRandomError();
         NSError *error = nil;
         countValidator = [self failingValidatorWithError:expectedError];
         validator = [[TWTCollectionValidator alloc] initWithCountValidator:countValidator elementValidators:nil];
@@ -135,6 +135,7 @@
         XCTAssertNotNil(error, @"error is nil");
         XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
         XCTAssertEqual(error.code, TWTValidationErrorCodeCollectionValidatorError, @"incorrect error code");
+        XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
         XCTAssertEqualObjects(error.twt_validatedValue, collection, @"incorrect validated value");
         XCTAssertEqualObjects(error.twt_countValidationError, expectedError, @"count validation error is not set correctly");
     }
@@ -172,7 +173,7 @@
 
         NSError *error = nil;
         NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
-            return [self randomError];
+            return UMKRandomError();
         });
 
         NSArray *failingValidators = UMKGeneratedArrayWithElementCount(expectedErrors.count, ^id(NSUInteger index) {
@@ -191,6 +192,7 @@
         XCTAssertNotNil(error, @"error is nil");
         XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
         XCTAssertEqual(error.code, TWTValidationErrorCodeCollectionValidatorError, @"incorrect error code");
+        XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
         XCTAssertEqualObjects(error.twt_validatedValue, collection, @"incorrect validated value");
         XCTAssertEqualObjects(error.twt_elementValidationErrors, cumulativeErrors, @"element validation errors is not set correctly");
     }

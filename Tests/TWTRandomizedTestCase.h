@@ -65,14 +65,6 @@
 - (Class)randomClassWithMutableVariant;
 
 /*!
- @abstract Returns a random error object.
- @discussion The error has a random ten-character Unicode string as its domain, a random unsigned integer
-     as its code, and a ten-element dictionary with random string keys and values as its userInfo.
- @result A random error object.
- */
-- (NSError *)randomError;
-
-/*!
  @abstract Returns a random validator.
  @discussion The validator is either a mock passing validator or a mock failing validator.
  @result A random validator.

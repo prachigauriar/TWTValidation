@@ -91,7 +91,6 @@
         errorCode = TWTValidationErrorCodeValueHasIncorrectClass;
     }
     
-
     // Construct the error based on the code
     if (outError) {
         NSString *description = nil;
@@ -109,7 +108,7 @@
             }
         }
 
-        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
     
     return NO;

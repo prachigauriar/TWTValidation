@@ -106,7 +106,8 @@
     
     BOOL validated = countValidated && elementsValidated;
     if (!validated && outError) {
-        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
+        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:5];
+        userInfo[TWTValidationFailingValidatorKey] = self;
         userInfo[NSLocalizedDescriptionKey] = TWTLocalizedString(@"TWTCollectionValidator.validationError");
 
         if (collection) {

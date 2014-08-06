@@ -142,6 +142,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueHasIncorrectClass, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
     
     // valueClass is NSNull, but allowsNull = NO
@@ -154,6 +155,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
@@ -168,6 +170,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueNil, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, nil, @"incorrect validated value");
 
     validator.allowsNil = YES;
@@ -185,6 +188,7 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
     
     validator.allowsNull = YES;
