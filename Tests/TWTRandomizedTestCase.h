@@ -84,4 +84,21 @@
  */
 - (TWTValidator *)failingValidatorWithError:(NSError *)error;
 
+/*!
+ @abstract Returns a TWTValidator object that always validates values.
+ @discussion This is provided as a class method to ease testing from a class method. It provides the
+     exact same functionality as the instance method.
+ @result A TWTValidator object that always validates values.
+ */
++ (TWTValidator *)passingValidator;
+
+/*!
+ @abstract Returns a TWTValidator object that never validates values.
+ @discussion This is provided as a class method to ease testing from a class method. It provides the
+     exact same functionality as the instance method.
+ @param error The error that the validator should return by reference.
+ @result A TWTValidator object that never validates values.
+ */
++ (TWTValidator *)failingValidatorWithError:(NSError *)error;
+
 @end

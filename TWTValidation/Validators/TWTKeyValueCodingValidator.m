@@ -72,7 +72,7 @@
 
 - (BOOL)validateValue:(id)object error:(out NSError *__autoreleasing *)outError
 {
-    NSMutableDictionary *errors = outError ? [[NSMutableDictionary alloc] init] : nil;
+    NSMutableDictionary *errorsByKey = outError ? [[NSMutableDictionary alloc] init] : nil;
 
     // For each key, get the validators from object (using +twt_validatorsFor«Key»). If object didn’t return any,
     // fall back on -validateValue:forKey:error: instead.
@@ -87,44 +87,36 @@
             if (![andValidator validateValue:value error:outError ? &error : NULL]) {
                 validated = NO;
                 if (error.twt_underlyingErrors) {
-                    [errors setObject:error.twt_underlyingErrors forKey:key];
+                    errorsByKey[key] = error.twt_underlyingErrors;
                 }
             }
         } else if (![object validateValue:&value forKey:key error:outError ? &error : NULL]) {
             validated = NO;
             if (error) {
-                [errors setObject:error forKey:key];
+                errorsByKey[key] = @[ error ];
             }
         }
     }
 
     if (!validated && outError) {
-        *outError = [self validationErrorWithCode:TWTValidationErrorCodeKeyValueCodingValidatorError
-                                                value:object
-                                 localizedDescription:NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil)
-                                underlyingErrorsByKey:errors];
+        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
+        userInfo[TWTValidationFailingValidatorKey] = self;
+        userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil);
+
+        if (object) {
+            userInfo[TWTValidationValidatedValueKey] = object;
+        }
+
+        if (errorsByKey.count) {
+            userInfo[TWTValidationUnderlyingErrorsByKeyKey] = [errorsByKey copy];
+        }
+
+        *outError = [NSError errorWithDomain:TWTValidationErrorDomain
+                                        code:TWTValidationErrorCodeKeyValueCodingValidatorError
+                                    userInfo:userInfo];
     }
 
     return validated;
-}
-
-
-- (NSError *)validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrorsByKey:(NSDictionary *)errors
-{
-    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:3];
-    if (value) {
-        userInfo[TWTValidationValidatedValueKey] = value;
-    }
-    
-    if (description) {
-        userInfo[NSLocalizedDescriptionKey] = [description copy];
-    }
-    
-    if (errors.count) {
-        userInfo[TWTValidationUnderlyingErrorsByKeyKey] = [errors copy];
-    }
-    
-    return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
 }
 
 @end

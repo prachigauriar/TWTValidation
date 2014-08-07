@@ -156,17 +156,29 @@
 
 - (TWTValidator *)randomValidator
 {
-    return UMKRandomBoolean() ? [self passingValidator] : [self failingValidatorWithError:UMKRandomError()];
+    return UMKRandomBoolean() ? [self.class passingValidator] : [self.class failingValidatorWithError:UMKRandomError()];
 }
 
 
 - (TWTValidator *)passingValidator
 {
-    return [[TWTValidator alloc] init];
+    return [self.class passingValidator];
 }
 
 
 - (TWTValidator *)failingValidatorWithError:(NSError *)error
+{
+    return [self.class failingValidatorWithError:error];
+}
+
+
++ (TWTValidator *)passingValidator
+{
+    return [[TWTValidator alloc] init];
+}
+
+
++ (TWTValidator *)failingValidatorWithError:(NSError *)error
 {
     return [[TWTFailingValidator alloc] initWithError:error];
 }
