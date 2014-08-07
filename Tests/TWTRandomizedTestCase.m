@@ -1,8 +1,8 @@
 //
 //  TWTRandomizedTestCase.m
-//  Toast
+//  TWTValidation
 //
-//  Created by Prachi Gauriar on 1/8/2014.
+//  Created by Prachi Gauriar on 3/30/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -153,15 +153,10 @@
     }    
 }
 
-- (NSError *)randomError
-{
-    return [NSError errorWithDomain:UMKRandomUnicodeStringWithLength(10) code:random() userInfo:UMKRandomDictionaryOfStringsWithElementCount(5)];
-}
-
 
 - (TWTValidator *)randomValidator
 {
-    return UMKRandomBoolean() ? [self passingValidator] : [self failingValidatorWithError:self.randomError];
+    return UMKRandomBoolean() ? [self passingValidator] : [self failingValidatorWithError:UMKRandomError()];
 }
 
 

@@ -30,6 +30,8 @@
 #pragma mark Constants
 
 NSString *const TWTValidationErrorDomain = @"TWTValidationErrorDomain";
+
+NSString *const TWTValidationFailingValidatorKey = @"TWTValidationFailingValidator";
 NSString *const TWTValidationValidatedValueKey = @"TWTValidationValidatedValue";
 NSString *const TWTValidationUnderlyingErrorsKey = @"TWTValidationUnderlyingErrors";
 NSString *const TWTValidationUnderlyingErrorsByKeyKey = @"TWTValidationUnderlyingErrorsByKey";
@@ -48,13 +50,36 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
 
 + (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description
 {
-    return [self twt_validationErrorWithCode:code value:value localizedDescription:description underlyingErrors:nil];
+    return [self twt_validationErrorWithCode:code failingValidator:nil value:value localizedDescription:description underlyingErrors:nil];
 }
 
 
 + (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrors:(NSArray *)errors
 {
-    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:3];
+    return [self twt_validationErrorWithCode:code failingValidator:nil value:value localizedDescription:description underlyingErrors:errors];
+}
+
+
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code
+                        failingValidator:(TWTValidator *)validator
+                                   value:(id)value
+                    localizedDescription:(NSString *)description
+{
+    return [self twt_validationErrorWithCode:code failingValidator:validator value:value localizedDescription:description underlyingErrors:nil];
+}
+
+
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code
+                        failingValidator:(TWTValidator *)validator
+                                   value:(id)value
+                    localizedDescription:(NSString *)description
+                        underlyingErrors:(NSArray *)errors
+{
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
+    if (validator) {
+        userInfo[TWTValidationFailingValidatorKey] = validator;
+    }
+
     if (value) {
         userInfo[TWTValidationValidatedValueKey] = value;
     }
@@ -68,6 +93,12 @@ NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKe
     }
     
     return [NSError errorWithDomain:TWTValidationErrorDomain code:code userInfo:userInfo];
+}
+
+
+- (TWTValidator *)twt_failingValidator
+{
+    return self.userInfo[TWTValidationFailingValidatorKey];
 }
 
 

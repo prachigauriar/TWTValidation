@@ -250,7 +250,7 @@
                                                          keyValuePairValidators:nil];
         XCTAssertFalse([validator validateValue:collection error:NULL], @"passes with failing count validator");
 
-        NSError *expectedError = [self randomError];
+        NSError *expectedError = UMKRandomError();
         NSError *error = nil;
         countValidator = [self failingValidatorWithError:expectedError];
         validator = [[TWTKeyedCollectionValidator alloc] initWithCountValidator:countValidator
@@ -305,7 +305,7 @@
         // Failing validators
         NSError *error = nil;
         NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
-            return [self randomError];
+            return UMKRandomError();
         });
 
         NSArray *failingValidators = UMKGeneratedArrayWithElementCount(expectedErrors.count, ^id(NSUInteger index) {
@@ -372,7 +372,7 @@
         // Failing validators
         NSError *error = nil;
         NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
-            return [self randomError];
+            return UMKRandomError();
         });
 
         NSArray *failingValidators = UMKGeneratedArrayWithElementCount(expectedErrors.count, ^id(NSUInteger index) {
@@ -461,7 +461,7 @@
                 key = [self randomObject];
             }
 
-            return [self failingKeyValuePairValidatorWithKey:key error:[self randomError]];
+            return [self failingKeyValuePairValidatorWithKey:key error:UMKRandomError()];
         });
 
         validator = [[TWTKeyedCollectionValidator alloc] initWithCountValidator:nil
@@ -473,7 +473,7 @@
         // Failing validators for present keys
         NSError *error = nil;
         NSArray *expectedErrors = UMKGeneratedArrayWithElementCount(keys.count, ^id(NSUInteger index) {
-            return [self randomError];
+            return UMKRandomError();
         });
 
         NSArray *failingValidators = UMKGeneratedArrayWithElementCount(keys.count , ^id(NSUInteger index) {

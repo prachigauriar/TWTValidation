@@ -26,10 +26,19 @@
 
 @import Foundation;
 
+#import <AvailabilityMacros.h>
+
+@class TWTValidator;
+
 /*!
  @abstract The error domain for errors originating from TWTValidation.
  */
 extern NSString *const TWTValidationErrorDomain;
+
+/*!
+ @abstract userInfo key whose value is the validator instance for which the error applies.
+ */
+extern NSString *const TWTValidationFailingValidatorKey;
 
 /*!
  @abstract userInfo key whose value is the value that was validated.
@@ -43,7 +52,7 @@ extern NSString *const TWTValidationValidatedValueKey;
 extern NSString *const TWTValidationUnderlyingErrorsKey;
 
 /*!
- @abstract userInfo key whose value is a dictionary containing the underlying errors for each value key.
+ @abstract userInfo key whose value is a dictionary containing the underlying errors for each key-value coding key.
  */
 extern NSString *const TWTValidationUnderlyingErrorsByKeyKey;
 
@@ -128,9 +137,8 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 /*!
  @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
      validated value, and localized description.
- @discussion This is equivalent to invoking
-
-     [NSError twt_validationErrorWithCode:code value:value localizedDescription:description underlyingErrors:nil];
+ @discussion This method has been deprecated. Use +twt_validationErrorWithCode:failingValidator:value:localizedDescription:
+     instead. Validation errors should always include the validator that failed.
  
  @param code The error code for the new error.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
@@ -139,11 +147,15 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
      value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
  @result A new validation error with the specified code, validated value, and localized description.
  */
-+ (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description;
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description
+    __deprecated_msg("Use +twt_validationErrorWithCode:failingValidator:value:localizedDescription: instead.");
 
 /*!
  @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
      validated value, localized description, and underlying errors.
+ @discussion This method has been deprecated. Use 
+     +twt_validationErrorWithCode:failingValidator:value:localizedDescription:underlyingErrors: instead. Validation
+     errors should always include the validator that failed.
  @param code The error code for the new error.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
      corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
@@ -154,7 +166,62 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @result A new validation error with the specified code, validated value, localized description, and
      underlying errors.
  */
-+ (NSError *)twt_validationErrorWithCode:(NSInteger)code value:(id)value localizedDescription:(NSString *)description underlyingErrors:(NSArray *)errors;
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code
+                                   value:(id)value
+                    localizedDescription:(NSString *)description
+                        underlyingErrors:(NSArray *)errors
+    __deprecated_msg("Use +twt_validationErrorWithCode:failingValidator:value:localizedDescription:underlyingErrors: instead.");
+
+/*!
+ @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
+     failing validator, validated value, and localized description.
+ @discussion This is equivalent to invoking 
+ 
+     [NSError twt_validationErrorWithCode:code 
+                         failingValidator:validator 
+                                    value:value
+                     localizedDescription:description 
+                         underlyingErrors:nil];
+
+ @param code The error code for the new error.
+ @param validator The validator reporting the new error.
+ @param value The value being validated when the error occured. If non-nil, this object will be the value
+     corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
+ @param description A human-readable description of the error. If non-nil, this string will be the
+     value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
+ @result A new validation error with the specified code, validated value, and localized description.
+ */
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code
+                        failingValidator:(TWTValidator *)validator
+                                   value:(id)value
+                    localizedDescription:(NSString *)description;
+
+/*!
+ @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
+     failing validator, validated value, localized description, and underlying errors.
+ @param code The error code for the new error.
+ @param validator The validator reporting the new error.
+ @param value The value being validated when the error occured. If non-nil, this object will be the value
+     corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
+ @param description A human-readable description of the error. If non-nil, this string will be the
+     value corresponding to NSLocalizedDescriptionKey in the error’s userInfo dictionary.
+ @param errors The underyling errors that caused the new error to occur. If non-nil, this array will be
+     the value corresponding to TWTValidationUnderlyingErrorsKey in the error’s userInfo dictionary.
+ @result A new validation error with the specified code, validated value, localized description, and
+     underlying errors.
+ */
++ (NSError *)twt_validationErrorWithCode:(NSInteger)code
+                        failingValidator:(TWTValidator *)validator
+                                   value:(id)value
+                    localizedDescription:(NSString *)description
+                        underlyingErrors:(NSArray *)errors;
+
+/*!
+ @abstract Returns an error’s failing validator.
+ @discussion This is equivalent to accessing error.userInfo[TWTValidationFailingValidatorKey].
+ @result The error’s failing validator.
+ */
+- (TWTValidator *)twt_failingValidator;
 
 /*!
  @abstract Returns an error’s validated value.

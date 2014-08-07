@@ -147,6 +147,7 @@
         }
         
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeCompoundValidatorError
+                                        failingValidator:self
                                                    value:value
                                     localizedDescription:description
                                         underlyingErrors:errors];

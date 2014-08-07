@@ -168,7 +168,7 @@
             }
         }
 
-        *outError = [NSError twt_validationErrorWithCode:errorCode value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
     
     return NO;
@@ -239,7 +239,10 @@
     if (outError) {
         NSString *descriptionFormat = TWTLocalizedString(@"TWTRegularExpressionStringValidator.validationError");
         NSString *description = [NSString stringWithFormat:descriptionFormat, [self.regularExpression pattern]];
-        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
     }
 
     return NO;

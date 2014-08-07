@@ -31,6 +31,8 @@
 
 - (void)testValidationErrorWithCodeValueLocalizedDescription;
 - (void)testValidationErrorWithCodeValueLocalizedDescriptionUnderlyingErrors;
+- (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescription;
+- (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescriptionUnderlyingErrors;
 
 - (void)testValidatedValue;
 - (void)testUnderlyingErrors;
@@ -57,7 +59,7 @@
 - (NSError *)randomErrorWithoutUserInfoKey:(id<NSCopying>)key
 {
     NSError *error = nil;
-    while (!(error = [self randomError]) || error.userInfo[TWTValidationValidatedValueKey]);
+    while (!(error = UMKRandomError()) || error.userInfo[key]);
     return error;
 }
 
@@ -72,6 +74,8 @@
 
 - (void)testValidationErrorWithCodeValueLocalizedDescription
 {
+    // It’s okay to ignore deprecation warnings on +twt_validationErrorWithCode:value:localizedDescription:
+    // in this test, as that’s the method we’re testing
     NSInteger code = random();
     id value = [self randomObject];
     while (!value) {
@@ -81,18 +85,92 @@
     NSString *description = UMKRandomUnicodeString();
 
     NSDictionary *userInfo = @{ TWTValidationValidatedValueKey : value, NSLocalizedDescriptionKey : description };
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSError *error = [NSError twt_validationErrorWithCode:code value:value localizedDescription:description];
+#pragma clang diagnostic pop
+
+    XCTAssertNotNil(error, @"returns nil object");
+    XCTAssertEqual(error.code, code, @"code is not set correctly");
+    XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil];
+#pragma clang diagnostic pop
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
+}
+
+
+- (void)testValidationErrorWithCodeValueLocalizedDescriptionUnderlyingErrors
+{
+    // It’s okay to ignore deprecation warnings on +twt_validationErrorWithCode:value:localizedDescription:underlyingErrors:
+    // in this test, as that’s the method we’re testing
+    NSInteger code = random();
+    id value = [self randomObject];
+    while (!value) {
+        value = [self randomObject];
+    };
+
+    NSString *description = UMKRandomUnicodeString();
+    NSArray *errors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
+        return UMKRandomError();
+    });
+
+    NSDictionary *userInfo = @{ TWTValidationValidatedValueKey : value,
+                                NSLocalizedDescriptionKey : description,
+                                TWTValidationUnderlyingErrorsKey : errors };
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    NSError *error = [NSError twt_validationErrorWithCode:code value:value localizedDescription:description underlyingErrors:errors];
+#pragma clang diagnostic pop
     XCTAssertNotNil(error, @"returns nil object");
     XCTAssertEqual(error.code, code, @"code is not set correctly");
     XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
 
     userInfo = @{ };
-    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil];
-    XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil underlyingErrors:nil];
+#pragma clang diagnostic pop
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil underlyingErrors:@[ ]];
+#pragma clang diagnostic pop
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
 }
 
 
-- (void)testValidationErrorWithCodeValueLocalizedDescriptionUnderlyingErrors
+- (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescription
+{
+    NSInteger code = random();
+    id value = [self randomObject];
+    while (!value) {
+        value = [self randomObject];
+    };
+
+    NSString *description = UMKRandomUnicodeString();
+    TWTValidator *validator = [self randomValidator];
+
+    NSDictionary *userInfo = @{ TWTValidationFailingValidatorKey : validator,
+                                TWTValidationValidatedValueKey : value,
+                                NSLocalizedDescriptionKey : description };
+    NSError *error = [NSError twt_validationErrorWithCode:code failingValidator:validator value:value localizedDescription:description];
+
+    XCTAssertNotNil(error, @"returns nil object");
+    XCTAssertEqual(error.code, code, @"code is not set correctly");
+    XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
+
+    error = [NSError twt_validationErrorWithCode:code failingValidator:nil value:nil localizedDescription:nil];
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
+}
+
+
+- (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescriptionUnderlyingErrors
 {
     NSInteger code = random();
     id value = [self randomObject];
@@ -102,23 +180,43 @@
 
     NSString *description = UMKRandomUnicodeString();
     NSArray *errors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
-        return [self randomError];
+        return UMKRandomError();
     });
 
-    NSDictionary *userInfo = @{ TWTValidationValidatedValueKey : value,
+    TWTValidator *validator = [self randomValidator];
+
+    NSDictionary *userInfo = @{ TWTValidationFailingValidatorKey : validator,
+                                TWTValidationValidatedValueKey : value,
                                 NSLocalizedDescriptionKey : description,
                                 TWTValidationUnderlyingErrorsKey : errors };
-    NSError *error = [NSError twt_validationErrorWithCode:code value:value localizedDescription:description underlyingErrors:errors];
+
+    NSError *error = [NSError twt_validationErrorWithCode:code
+                                         failingValidator:validator
+                                                    value:value
+                                     localizedDescription:description
+                                         underlyingErrors:errors];
     XCTAssertNotNil(error, @"returns nil object");
     XCTAssertEqual(error.code, code, @"code is not set correctly");
     XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
 
     userInfo = @{ };
-    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil underlyingErrors:nil];
-    XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
+    error = [NSError twt_validationErrorWithCode:code failingValidator:nil value:nil localizedDescription:nil underlyingErrors:nil];
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
 
-    error = [NSError twt_validationErrorWithCode:code value:nil localizedDescription:nil underlyingErrors:@[ ]];
-    XCTAssertEqualObjects(error.userInfo, userInfo, @"userInfo is not set correctly");
+    error = [NSError twt_validationErrorWithCode:code failingValidator:nil value:nil localizedDescription:nil underlyingErrors:@[ ]];
+    XCTAssertEqualObjects(error.userInfo, @{ }, @"userInfo is not set correctly");
+}
+
+
+- (void)testFailingValidator
+{
+    NSString *key = TWTValidationFailingValidatorKey;
+    NSError *error = [self randomErrorWithoutUserInfoKey:key];
+    XCTAssertNil(error.twt_failingValidator, @"failing validator returns non-nil object");
+
+    id object = [self randomNonNilObject];
+    error = [self randomErrorWithObject:object forUserInfoKey:key];
+    XCTAssertEqualObjects(error.twt_failingValidator, object, @"failing validator is not set correctly");
 }
 
 
