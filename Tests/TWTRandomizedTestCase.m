@@ -30,7 +30,6 @@
 #pragma mark Passing Validator
 
 @interface TWTPassingValidator : TWTValidator
-
 @end
 
 
@@ -42,7 +41,6 @@
 }
 
 @end
-
 
 
 #pragma mark - Failing Validator
