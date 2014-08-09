@@ -54,11 +54,11 @@
 /*!
  @abstract Returns whether the specified value is valid.
  @discussion This is the primary interface that validators use to perform validations. The base
-     implementation always returns YES. Subclasses should override this method to validate the specified
-     value and return an error indirectly that describes any validation failures. The error’s userInfo
-     dictionary should minimally include the NSLocalizedDescriptionKey and TWTValidationValidatedValueKey
-     keys. The former has the typical meaning; the latter is the value that did not pass validation. See
-     TWTValidationErrors.h for more information.
+     implementation returns YES unless the value is nil or the NSNull instance. Subclasses should override 
+     this method to validate the specified value and return an error indirectly that describes any validation
+     failures. The error’s userInfo dictionary should minimally include the NSLocalizedDescriptionKey, 
+     TWTValidationFailingValidatorKey, and TWTValidationValidatedValueKey keys. The former has the typical 
+     meaning; see TWTValidationErrors.h for more information on the latter two.
  @param value The value to validate.
  @param outError A pointer to an error object to return indirectly. If NULL, no error should be returned.
  @result Whether the specified value is valid.

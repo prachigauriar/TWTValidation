@@ -27,7 +27,25 @@
 #import "TWTRandomizedTestCase.h"
 
 
-#pragma mark Failing Validator
+#pragma mark Passing Validator
+
+@interface TWTPassingValidator : TWTValidator
+
+@end
+
+
+@implementation TWTPassingValidator
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return YES;
+}
+
+@end
+
+
+
+#pragma mark - Failing Validator
 
 @interface TWTFailingValidator : TWTValidator
 
@@ -174,7 +192,7 @@
 
 + (TWTValidator *)passingValidator
 {
-    return [[TWTValidator alloc] init];
+    return [[TWTPassingValidator alloc] init];
 }
 
 

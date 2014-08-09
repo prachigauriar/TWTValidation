@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 - (void)testCopy;
 - (void)testHashAndIsEqual;
 
-- (void)testValidateValueErrorNilObject;
+- (void)testValidateValueErrorNilAndNullObjects;
 - (void)testValidateValueErrorKeyParameter;
 - (void)testValidateValueErrorDynamicDispatch;
 - (void)testValidateValueErrorKeyValueValidation;
@@ -164,10 +164,25 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 }
 
 
-- (void)testValidateValueErrorNilObject
+- (void)testValidateValueErrorNilAndNullObjects
 {
     TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[self randomKeySetWithCount:random() % 10 + 1]];
-    XCTAssertFalse([validator validateValue:nil error:NULL], @"validation fails with nil value");
+
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes when value is nil");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNil, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, nil, @"incorrect validated value");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:[NSNull null] error:&error], @"passes when value is null");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
 }
 
 
