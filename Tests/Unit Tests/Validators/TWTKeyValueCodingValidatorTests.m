@@ -27,18 +27,30 @@
 #import "TWTRandomizedTestCase.h"
 
 typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
-    TWTKVCValidatorErrorCodeKeyParameter,
-    TWTKVCValidatorErrorCodeDynamicDispatch,
+    TWTKVCValidatorErrorCodeKeyParameterClass,
+    TWTKVCValidatorErrorCodeKeyParameterInstance,
+    TWTKVCValidatorErrorCodeKeyParameterCollision,
+    TWTKVCValidatorErrorCodeDynamicDispatchClass,
+    TWTKVCValidatorErrorCodeDynamicDispatchInstance,
+    TWTKVCValidatorErrorCodeDynamicDispatchCollision,
+    TWTKVCValidatorErrorCodeCollisionNeverShouldHappen,
     TWTKVCValidatorErrorCodeKeyValueValidation
+
 };
 
 @interface TWTKeyValueCodingValidatorTests : TWTRandomizedTestCase
 
-@property (nonatomic, strong) id keyParameterProperty;
-@property (nonatomic, strong) id dynamicDispatchProperty;
+@property (nonatomic, strong) id keyParameterPropertyClass;
+@property (nonatomic, strong) id keyParameterPropertyInstance;
+@property (nonatomic, strong) id keyParameterPropertyCollision;
+@property (nonatomic, strong) id dynamicDispatchPropertyClass;
+@property (nonatomic, strong) id dynamicDispatchPropertyInstance;
+@property (nonatomic, strong) id dynamicDispatchPropertyCollision;
 @property (nonatomic, strong) id keyValueValidationProperty;
-@property (nonatomic, strong) id noValidatorsProperty;
-@property (nonatomic, strong) id nilValidatorsProperty;
+@property (nonatomic, strong) id noValidatorsPropertyClass;
+@property (nonatomic, strong) id noValidatorsPropertyInstance;
+@property (nonatomic, strong) id nilValidatorsPropertyClass;
+@property (nonatomic, strong) id nilValidatorsPropertyInstance;
 
 - (void)testInit;
 - (void)testCopy;
@@ -46,7 +58,9 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
 - (void)testValidateValueErrorNilAndNullObjects;
 - (void)testValidateValueErrorKeyParameter;
+- (void)testValidateValueErrorKeyParameterCollision;
 - (void)testValidateValueErrorDynamicDispatch;
+- (void)testValidateValueErrorDynamicDispatchCollision;
 - (void)testValidateValueErrorKeyValueValidation;
 - (void)testValidateValueErrorNoValidatorsProperty;
 - (void)testValidateValueErrorNilValidatorsProperty;
@@ -62,11 +76,17 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 - (void)setUp
 {
     [super setUp];
-    self.keyParameterProperty = [self randomObject];
-    self.dynamicDispatchProperty = [self randomObject];
+    self.keyParameterPropertyClass = [self randomObject];
+    self.keyParameterPropertyInstance = [self randomObject];
+    self.keyParameterPropertyCollision = [self randomObject];
+    self.dynamicDispatchPropertyClass = [self randomObject];
+    self.dynamicDispatchPropertyInstance = [self randomObject];
+    self.dynamicDispatchPropertyCollision = [self randomObject];
     self.keyValueValidationProperty = [self randomObject];
-    self.noValidatorsProperty = [self randomObject];
-    self.nilValidatorsProperty = [self randomObject];
+    self.noValidatorsPropertyClass = [self randomObject];
+    self.noValidatorsPropertyInstance = [self randomObject];
+    self.nilValidatorsPropertyClass = [self randomObject];
+    self.nilValidatorsPropertyInstance = [self randomObject];
 }
 
 
@@ -82,9 +102,13 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
 + (NSSet *)twt_validatorsForKey:(NSString *)key
 {
-    if ([key isEqualToString:@"keyParameterProperty"]) {
+    if ([key isEqualToString:@"keyParameterPropertyClass"]) {
         return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
-                                                                                        code:TWTKVCValidatorErrorCodeKeyParameter
+                                                                                        code:TWTKVCValidatorErrorCodeKeyParameterClass
+                                                                                    userInfo:nil]]];
+    } else if ([key isEqualToString:@"keyParameterPropertyCollision"]) {
+        return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                        code:TWTKVCValidatorErrorCodeCollisionNeverShouldHappen
                                                                                     userInfo:nil]]];
     }
 
@@ -92,21 +116,73 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 }
 
 
-+ (NSSet *)twt_validatorsForDynamicDispatchProperty
+- (NSSet *)twt_validatorsForKey:(NSString *)key
+{
+    if ([key isEqualToString:@"keyParameterPropertyInstance"]) {
+        return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                        code:TWTKVCValidatorErrorCodeKeyParameterInstance
+                                                                                    userInfo:nil]]];
+    } else if ([key isEqualToString:@"keyParameterPropertyCollision"]) {
+        return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                        code:TWTKVCValidatorErrorCodeKeyParameterCollision
+                                                                                    userInfo:nil]]];
+    }
+
+    return [super twt_validatorsForKey:key];
+}
+
+
++ (NSSet *)twt_validatorsForDynamicDispatchPropertyClass
 {
     return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
-                                                                                    code:TWTKVCValidatorErrorCodeDynamicDispatch
+                                                                                    code:TWTKVCValidatorErrorCodeDynamicDispatchClass
                                                                                 userInfo:nil]]];
 }
 
 
-+ (NSSet *)twt_validatorsForNoValidatorsProperty:(NSString *)key
+- (NSSet *)twt_validatorsForDynamicDispatchPropertyInstance
+{
+    return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                    code:TWTKVCValidatorErrorCodeDynamicDispatchInstance
+                                                                                userInfo:nil]]];
+}
+
+
++ (NSSet *)twt_validatorsForDynamicDispatchPropertyCollision
+{
+    return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                    code:TWTKVCValidatorErrorCodeCollisionNeverShouldHappen
+                                                                                userInfo:nil]]];
+}
+
+
+- (NSSet *)twt_validatorsForDynamicDispatchPropertyCollision
+{
+    return [NSSet setWithObject:[self failingValidatorWithError:[NSError errorWithDomain:TWTValidationErrorDomain
+                                                                                    code:TWTKVCValidatorErrorCodeDynamicDispatchCollision
+                                                                                userInfo:nil]]];
+}
+
+
++ (NSSet *)twt_validatorsForNoValidatorsPropertyClass
 {
     return [NSSet set];
 }
 
 
-+ (NSSet *)twt_validatorsForNilValidatorsProperty:(NSString *)key
+- (NSSet *)twt_validatorsForNoValidatorsPropertyInstance
+{
+    return [NSSet set];
+}
+
+
++ (NSSet *)twt_validatorsForNilValidatorsPropertyClass
+{
+    return nil;
+}
+
+
+- (NSSet *)twt_validatorsForNilValidatorsPropertyInstance
 {
     return nil;
 }
@@ -200,13 +276,27 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
 - (void)testValidateValueErrorKeyParameter
 {
-    [self assertValidationFailureWithKey:@"keyParameterProperty" errorCode:TWTKVCValidatorErrorCodeKeyParameter];
+    [self assertValidationFailureWithKey:@"keyParameterPropertyClass" errorCode:TWTKVCValidatorErrorCodeKeyParameterClass];
+    [self assertValidationFailureWithKey:@"keyParameterPropertyInstance" errorCode:TWTKVCValidatorErrorCodeKeyParameterInstance];
+}
+
+
+- (void)testValidateValueErrorKeyParameterCollision
+{
+    [self assertValidationFailureWithKey:@"keyParameterPropertyCollision" errorCode:TWTKVCValidatorErrorCodeKeyParameterCollision];
 }
 
 
 - (void)testValidateValueErrorDynamicDispatch
 {
-    [self assertValidationFailureWithKey:@"dynamicDispatchProperty" errorCode:TWTKVCValidatorErrorCodeDynamicDispatch];
+    [self assertValidationFailureWithKey:@"dynamicDispatchPropertyClass" errorCode:TWTKVCValidatorErrorCodeDynamicDispatchClass];
+    [self assertValidationFailureWithKey:@"dynamicDispatchPropertyInstance" errorCode:TWTKVCValidatorErrorCodeDynamicDispatchInstance];
+}
+
+
+- (void)testValidateValueErrorDynamicDispatchCollision
+{
+    [self assertValidationFailureWithKey:@"dynamicDispatchPropertyCollision" errorCode:TWTKVCValidatorErrorCodeDynamicDispatchCollision];
 }
 
 
@@ -218,14 +308,20 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
 - (void)testValidateValueErrorNoValidatorsProperty
 {
-    TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"noValidatorsProperty"]];
+    TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"noValidatorsPropertyClass"]];
+    XCTAssertTrue([validator validateValue:self error:NULL], @"no validators fails");
+
+    validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"noValidatorsPropertyInstance"]];
     XCTAssertTrue([validator validateValue:self error:NULL], @"no validators fails");
 }
 
 
 - (void)testValidateValueErrorNilValidatorsProperty
 {
-    TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"nilValidatorsProperty"]];
+    TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"nilValidatorsPropertyClass"]];
+    XCTAssertTrue([validator validateValue:self error:NULL], @"nil validators fails");
+
+    validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:[NSSet setWithObject:@"nilValidatorsPropertyInstance"]];
     XCTAssertTrue([validator validateValue:self error:NULL], @"nil validators fails");
 }
 
@@ -242,7 +338,7 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
 - (void)testValidateValueErrorMultipleKeys
 {
-    NSSet *keys = [NSSet setWithObjects:@"keyParameterProperty", @"dynamicDispatchProperty", nil];
+    NSSet *keys = [NSSet setWithObjects:@"keyParameterPropertyClass", @"dynamicDispatchPropertyInstance", nil];
     TWTKeyValueCodingValidator *validator = [[TWTKeyValueCodingValidator alloc] initWithKeys:keys];
 
     NSError *error = nil;
@@ -251,11 +347,11 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
 
     XCTAssertEqual(error.twt_underlyingErrorsByKey.count, keys.count, @"incorrect underlying errors by key");
 
-    NSArray *errors = error.twt_underlyingErrorsByKey[@"keyParameterProperty"];
-    XCTAssertEqual([errors.firstObject code], TWTKVCValidatorErrorCodeKeyParameter, @"incorrect underlying error code");
+    NSArray *errors = error.twt_underlyingErrorsByKey[@"keyParameterPropertyClass"];
+    XCTAssertEqual([errors.firstObject code], TWTKVCValidatorErrorCodeKeyParameterClass, @"incorrect underlying error code");
 
-    errors = error.twt_underlyingErrorsByKey[@"dynamicDispatchProperty"];
-    XCTAssertEqual([errors.firstObject code], TWTKVCValidatorErrorCodeDynamicDispatch, @"incorrect underlying error code");
+    errors = error.twt_underlyingErrorsByKey[@"dynamicDispatchPropertyInstance"];
+    XCTAssertEqual([errors.firstObject code], TWTKVCValidatorErrorCodeDynamicDispatchInstance, @"incorrect underlying error code");
 }
 
 @end
