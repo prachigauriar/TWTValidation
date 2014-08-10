@@ -46,7 +46,6 @@ static SEL TWTKeyValueCodingValidatorSelectorForKey(NSString *key)
 }
 
 
-
 #pragma mark -
 
 @implementation TWTKeyValueCodingValidator
