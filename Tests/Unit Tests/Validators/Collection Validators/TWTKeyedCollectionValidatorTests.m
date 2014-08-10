@@ -33,6 +33,7 @@
 - (void)testCopy;
 - (void)testHashAndIsEqual;
 
+- (void)testValidateValueErrorNilAndNullObjects;
 - (void)testValidateValueErrorCount;
 - (void)testValidateValueErrorKeys;
 - (void)testValidateValueErrorValues;
@@ -220,6 +221,31 @@
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator2, @"unequal objects are equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator3, @"unequal objects are equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator4, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorNilAndNullObjects
+{
+    TWTKeyedCollectionValidator *validator = [[TWTKeyedCollectionValidator alloc] initWithCountValidator:nil
+                                                                                           keyValidators:nil
+                                                                                         valueValidators:nil
+                                                                                  keyValuePairValidators:nil];
+
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes when value is nil");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNil, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, nil, @"incorrect validated value");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:[NSNull null] error:&error], @"passes when value is null");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
 }
 
 

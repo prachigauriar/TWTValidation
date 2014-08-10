@@ -32,6 +32,23 @@
 #import <TWTValidation/TWTValidationErrors.h>
 
 
+#pragma mark Functions
+
+static NSString *TWTCapitalizedKey(NSString *key)
+{
+    return key.length < 2 ? [key uppercaseString] : [[[key substringToIndex:1] uppercaseString] stringByAppendingString:[key substringFromIndex:1]];
+}
+
+
+static SEL TWTKeyValueCodingValidatorSelectorForKey(NSString *key)
+{
+    return NSSelectorFromString([NSString stringWithFormat:@"twt_validatorsFor%@", TWTCapitalizedKey(key)]);
+}
+
+
+
+#pragma mark -
+
 @implementation TWTKeyValueCodingValidator
 
 - (instancetype)init
@@ -72,18 +89,30 @@
 
 - (BOOL)validateValue:(id)object error:(out NSError *__autoreleasing *)outError
 {
+    if (![super validateValue:object error:outError]) {
+        return NO;
+    }
+
     NSMutableDictionary *errorsByKey = outError ? [[NSMutableDictionary alloc] init] : nil;
 
-    // For each key, get the validators from object (using +twt_validatorsFor«Key»). If object didn’t return any,
+    // For each key, get the validators from object (using -twt_validatorsForKey:). If object didn’t return any,
+    // ask the object’s class for its validators (using +twt_validatorsForKey:). If that didn’t return any either,
     // fall back on -validateValue:forKey:error: instead.
     BOOL validated = YES;
     for (NSString *key in self.keys) {
         NSError *error = nil;
         id value = [object valueForKey:key];
 
-        NSArray *validators = [[[object class] twt_validatorsForKey:key] allObjects];
-        if (validators) {
-            TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:validators];
+        // Ask the object
+        NSSet *validatorSet = [object twt_validatorsForKey:key];
+
+        // Ask the class
+        if (!validatorSet) {
+            validatorSet = [[object class] twt_validatorsForKey:key];
+        }
+
+        if (validatorSet) {
+            TWTCompoundValidator *andValidator = [TWTCompoundValidator andValidatorWithSubvalidators:[validatorSet allObjects]];
             if (![andValidator validateValue:value error:outError ? &error : NULL]) {
                 validated = NO;
                 if (error.twt_underlyingErrors) {
@@ -128,14 +157,7 @@
 
 + (NSSet *)twt_validatorsForKey:(NSString *)key
 {
-    NSString *capitalizedKey = nil;
-    if (key.length < 2) {
-        capitalizedKey = [key uppercaseString];
-    } else {
-        capitalizedKey = [[[key substringToIndex:1] uppercaseString] stringByAppendingString:[key substringFromIndex:1]];
-    }
-
-    SEL selector = NSSelectorFromString([NSString stringWithFormat:@"twt_validatorsFor%@", capitalizedKey]);
+    SEL selector = TWTKeyValueCodingValidatorSelectorForKey(key);
     NSSet *validators = objc_getAssociatedObject(self, selector);
     if (validators) {
         return [[NSNull null] isEqual:validators] ? nil : validators;
@@ -145,12 +167,27 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         validators = [self performSelector:selector];
-    }
 #pragma clang diagnostic pop
+    }
 
     objc_setAssociatedObject(self, selector, validators ? validators : [NSNull null], OBJC_ASSOCIATION_COPY_NONATOMIC);
 
     return validators;
+}
+
+
+- (NSSet *)twt_validatorsForKey:(NSString *)key
+{
+    SEL selector = TWTKeyValueCodingValidatorSelectorForKey(key);
+
+    if ([self respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self performSelector:selector];
+#pragma clang diagnostic pop
+    }
+
+    return nil;
 }
 
 @end

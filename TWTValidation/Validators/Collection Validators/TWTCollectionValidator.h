@@ -32,6 +32,8 @@
  validating arrays, sets, and the like. For keyed collections like dictionaries and map tables, use
  TWTKeyedCollectionValidator.
 
+ Values that are nil or the NSNull instance do not pass validation with collection validators.
+
  Collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
  validator will simply return the validator itself.
  */

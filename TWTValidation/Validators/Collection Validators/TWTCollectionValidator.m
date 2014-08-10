@@ -88,6 +88,10 @@
 
 - (BOOL)validateValue:(id)collection error:(out NSError *__autoreleasing *)outError
 {
+    if (![super validateValue:collection error:outError]) {
+        return NO;
+    }
+
     NSError *countValidationError = nil;
     BOOL countValidated = YES;
     if (self.countValidator) {
