@@ -96,10 +96,10 @@
         NSString *description = nil;
         switch (errorCode) {
             case TWTValidationErrorCodeValueNil:
-                description = TWTLocalizedString(@"TWTValueValidator.valueNil.validationError");
+                description = TWTLocalizedString(@"TWTValidator.valueNil.validationError");
                 break;
             case TWTValidationErrorCodeValueNull:
-                description = TWTLocalizedString(@"TWTValueValidator.valueNull.validationError");
+                description = TWTLocalizedString(@"TWTValidator.valueNull.validationError");
                 break;
             case TWTValidationErrorCodeValueHasIncorrectClass: {
                 NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");

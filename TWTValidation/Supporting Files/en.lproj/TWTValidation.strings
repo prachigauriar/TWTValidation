@@ -1,4 +1,4 @@
-/* 
+/*
   TWTValidation.strings
   TWTValidation
 
@@ -24,18 +24,20 @@
   THE SOFTWARE.
 */
 
+/* All validators */
+"TWTValidator.valueNil.validationError" = "value is nil";
+"TWTValidator.valueNull.validationError" = "value is null";
+
 /* Compound validators */
-"TWTCompoundValidator.not.validationError" = "subvalidator passed";
+"TWTCompoundValidator.not.validationError" = "subvalidator passes";
 "TWTCompoundValidator.and.validationError" = "one or more subvalidators fail";
 "TWTCompoundValidator.or.validationError" = "all subvalidators fail";
 "TWTCompoundValidator.mutualExclusion.validationError" = "number of passing subvalidators is not one";
 
 /* Key-value coding validator */
-"TWTKeyValueCodingValidator.validationError" = "one or more validators failed";
+"TWTKeyValueCodingValidator.validationError" = "one or more validators fail";
 
 /* Value validator */
-"TWTValueValidator.valueNil.validationError" = "value is nil";
-"TWTValueValidator.valueNull.validationError" = "value is null";
 "TWTValueValidator.valueHasIncorrectClass.validationError.format" = "value class (%1$@) is incompatible with required value class (%2$@)";
 
 /* Number validator */

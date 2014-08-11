@@ -182,6 +182,10 @@
 
 - (BOOL)validateValue:(id)keyedCollection error:(out NSError *__autoreleasing *)outError
 {
+    if (![super validateValue:keyedCollection error:outError]) {
+        return NO;
+    }
+
     NSError *countValidationError = nil;
     BOOL countValidated = YES;
     if (self.countValidator) {

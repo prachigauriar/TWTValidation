@@ -72,6 +72,10 @@
 
 - (BOOL)validateValue:(id)object error:(out NSError *__autoreleasing *)outError
 {
+    if (![super validateValue:object error:outError]) {
+        return NO;
+    }
+
     NSMutableDictionary *errorsByKey = outError ? [[NSMutableDictionary alloc] init] : nil;
 
     // For each key, get the validators from object (using +twt_validatorsFor«Key»). If object didn’t return any,
