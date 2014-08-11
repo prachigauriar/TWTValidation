@@ -58,7 +58,7 @@
             *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNil
                                             failingValidator:self
                                                        value:value
-                                        localizedDescription:TWTLocalizedString(@"TWTValueValidator.valueNil.validationError")];
+                                        localizedDescription:TWTLocalizedString(@"TWTValidator.valueNil.validationError")];
         }
 
         return NO;
@@ -67,7 +67,7 @@
             *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNull
                                             failingValidator:self
                                                        value:value
-                                        localizedDescription:TWTLocalizedString(@"TWTValueValidator.valueNull.validationError")];
+                                        localizedDescription:TWTLocalizedString(@"TWTValidator.valueNull.validationError")];
         }
 
         return NO;
