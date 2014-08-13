@@ -41,6 +41,8 @@
 
 - (void)testValidateValueErrorRegularExpression;
 
+- (void)testValidateValueErrorPrefix;
+
 @end
 
 
@@ -249,5 +251,59 @@
     XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
+
+
+- (void)testValidateValueErrorPrefix
+{
+    NSUInteger prefixLength = random() % 10 + 1;
+    NSString *prefix = UMKRandomAlphanumericStringWithLength(prefixLength);
+    NSString *value = [prefix uppercaseString];
+    
+    // validate with case sensitive
+    TWTStringValidator *validator = [TWTStringValidator stringValidatorWithPrefixString:prefix caseSensitive:YES];
+    XCTAssertFalse([validator validateValue:value error:NULL], @"does not fail case sensitive validation");
+    
+    // validate with case insensitive
+    validator = [TWTStringValidator stringValidatorWithPrefixString:prefix caseSensitive:NO];
+    XCTAssertTrue([validator validateValue:value error:NULL], @"fails with matching string");
+
+    // validate with invalid value
+    value = [@"1" stringByAppendingString:UMKRandomUnicodeString()];
+    NSError *error = nil;
+    
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with non-matching string");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueDoesNotMatchFormat, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+}
+
+- (void)testValidateValueErrorSuffix
+{
+    NSUInteger suffixLength = random() % 10 + 1;
+    NSString *suffix = UMKRandomAlphanumericStringWithLength(suffixLength);
+    NSString *value = [suffix uppercaseString];
+    
+    // validate with case sensitive
+    TWTStringValidator *validator = [TWTStringValidator stringValidatorWithSuffixString:suffix caseSensitive:YES];
+    XCTAssertFalse([validator validateValue:value error:NULL], @"does not fail case sensitive validation");
+    
+    // validate with case insensitive
+    validator = [TWTStringValidator stringValidatorWithSuffixString:suffix caseSensitive:NO];
+    XCTAssertTrue([validator validateValue:value error:NULL], @"fails with matching string");
+    
+    // validate with invalid value
+    value = [@"1" stringByAppendingString:UMKRandomUnicodeString()];
+    NSError *error = nil;
+    
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with non-matching string");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueDoesNotMatchFormat, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+}
+
 
 @end

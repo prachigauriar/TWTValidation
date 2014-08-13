@@ -47,6 +47,8 @@
 "TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format" = "string length (%1$lu) is less than minimum length (%2$lu)";
 "TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format" = "string length (%1$lu) is greater than maximum length (%2$lu)";
 "TWTRegularExpressionStringValidator.validationError" = "string does not match regular expression (%1$@)";
+"TWTPrefixStringValidator.validationError.format" = "string does not match specified prefix: (%1$@)";
+"TWTSuffixStringValidator.validationError.format" = "string does not match specified suffix: (%1$@)";
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";

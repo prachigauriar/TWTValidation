@@ -26,7 +26,19 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator;
+@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator;
+
+/*!
+ Protocol that specifies whether a conforming validator should verify the case of the string it is checking.
+ */
+@protocol TWTCaseSensitiveValidating <NSObject>
+
+/*!
+ @abstract Should the conforming validator validate the case of the string
+ */
+@property (nonatomic, assign, readonly) BOOL validatesCase;
+
+@end
 
 /*!
  TWTStringValidators validate that values are NSString instances. Its subclasses,
@@ -66,6 +78,24 @@
  @result A newly created string validator that validates that strings match the specified regular expression.
  */
 + (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
+
+
+/*!
+ @abstract Creates and returns a new string validator that validates that strings have the matching prefix
+ @param prefixString The prefix to validate
+ @param caseSensitive Should the validation be case sensitive
+ @return A newly created string validator that valdiates that strings have the correct prefix
+ */
++ (TWTPrefixStringValidator *)stringValidatorWithPrefixString:(NSString *)prefixString caseSensitive:(BOOL)caseSensitive;
+
+
+/*!
+ @abstract Creatse and returns a new string validator that validates that strings have the matching suffix
+ @param suffixString The suffix to validate
+ @param caseSensitive Should the valdiation be case sensitive
+ @return A newly created string validator that validates that strings have the correct suffix
+ */
++ (TWTSuffixStringValidator *)stringValidatorWithSuffixString:(NSString *)suffixString caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -131,5 +161,53 @@
  @result An initialized regular expression string length validator with the specified regular expression.
  */
 - (instancetype)initWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
+
+@end
+
+
+/*!
+ TWTPrefixStringValidators validate that a string matches a specified prefix. There is no need to create
+ instances of this directly. Instead use +[TWTStringValidator stringValidatorWithPrefixString:]. This 
+ class is exposed so that it may be easily subclassed if necessary.
+ */
+@interface TWTPrefixStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
+
+/*!
+ @abstract The prefix to use when validating a string.
+ @discussion nil by default
+ */
+@property (nonatomic, copy, readonly) NSString *prefix;
+
+/*!
+ @abstract Initializes a new prefix string validator with the specified prefix string.
+ @param prefix The prefix to use when validating a string
+ @param caseSensitive Should case be considered when validating the prefix
+ @return An initialized validator that checks the prefix of the value
+ */
+- (instancetype)initWithPrefixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
+
+@end
+
+
+/*!
+ TWTSuffixStringValidators validate that a string matches a specified prefix. There is no need to create
+ instances of this directly. Instead use +[TWTStringValidator stringValidatorsWithSuffixString:]. This 
+ class is exposed so that it may be easily subclassed if necessary.
+ */
+@interface TWTSuffixStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
+
+/*!
+ @abstract The suffix to use when validationg a string
+ @discussion nil by default
+ */
+@property (nonatomic, copy, readonly) NSString *suffix;
+
+/*!
+ @abstract Initializes a new suffix string validator with the specified suffix string.
+ @param suffix The suffix to use when validating a string
+ @param caseSensitive Should case be considered when validating
+ @return An initialized validator that checks the suffix of the value
+ */
+- (instancetype)initWithSuffixString:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
 
 @end
