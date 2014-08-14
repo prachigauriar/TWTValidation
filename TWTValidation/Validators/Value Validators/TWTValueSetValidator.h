@@ -1,5 +1,5 @@
 //
-//  TWTValueSetValidator.m
+//  TWTValueSetValidator.h
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 8/13/2014.
@@ -24,30 +24,12 @@
 //  THE SOFTWARE.
 //
 
-#import "TWTValueSetValidator.h"
+#import <TWTValidation/TWTValueValidator.h>
 
-@implementation TWTValueSetValidator
+@interface TWTValueSetValidator : TWTValueValidator <NSCopying>
 
-- (instancetype)init
-{
-    return [self initWithValueSet:nil];
-}
+@property (nonatomic, copy, readonly) NSSet *validValues;
 
-
-- (instancetype)initWithValueSet:(NSSet *)valueSet
-{
-    self = [super init];
-    if (self) {
-        _valueSet = [valueSet copy];
-    }
-
-    return self;
-}
-
-
-- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
-{
-    return NO;
-}
+- (instancetype)initWithValidValues:(NSSet *)validValues;
 
 @end

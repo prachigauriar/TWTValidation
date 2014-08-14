@@ -1,5 +1,5 @@
 //
-//  TWTValueSetValidator.h
+//  TWTValueSetValidatorTests.m
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 8/13/2014.
@@ -24,12 +24,12 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTValidator.h>
+#import "TWTRandomizedTestCase.h"
 
-@interface TWTValueSetValidator : TWTValidator
 
-@property (nonatomic, copy, readonly) NSSet *valueSet;
+@interface TWTValueSetValidatorTests : TWTRandomizedTestCase
+@end
 
-- (instancetype)initWithValueSet:(NSSet *)valueSet;
 
+@implementation TWTValueSetValidatorTests
 @end

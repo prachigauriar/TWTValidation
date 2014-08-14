@@ -26,6 +26,7 @@
 
 #import "TWTRandomizedTestCase.h"
 
+
 typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
     TWTKVCValidatorErrorCodeKeyParameterClass,
     TWTKVCValidatorErrorCodeKeyParameterInstance,
@@ -37,6 +38,7 @@ typedef NS_ENUM(NSInteger, TWTKVCValidatorErrorCode) {
     TWTKVCValidatorErrorCodeKeyValueValidation
 
 };
+
 
 @interface TWTKeyValueCodingValidatorTests : TWTRandomizedTestCase
 

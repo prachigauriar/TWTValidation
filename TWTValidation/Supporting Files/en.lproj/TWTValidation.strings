@@ -40,6 +40,9 @@
 /* Value validator */
 "TWTValueValidator.valueHasIncorrectClass.validationError.format" = "value class (%1$@) is incompatible with required value class (%2$@)";
 
+/* Value Set validator */
+"TWTValueSetValidator.valueNotInSet.validationError.format" = "value (%1$@) is not in acceptable value set (%2$@)";
+
 /* Number validator */
 "TWTNumberValidator.valueIsNotIntegral.validationError.format" = "number (%1$@) is not an integer";
 "TWTNumberValidator.valueLessThanMinimum.validationError.format" = "number (%1$@) is less than minimum (%2$@)";
