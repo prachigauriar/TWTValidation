@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValueSetValidator.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 8/13/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,25 +24,12 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
 #import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@interface TWTValueSetValidator : TWTValidator
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
+@property (nonatomic, copy, readonly) NSSet *valueSet;
 
-#import <TWTValidation/TWTCompoundValidator.h>
+- (instancetype)initWithValueSet:(NSSet *)valueSet;
 
-#import <TWTValidation/TWTKeyValueCodingValidator.h>
-
-#import <TWTValidation/TWTValueSetValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
-
-
-
+@end

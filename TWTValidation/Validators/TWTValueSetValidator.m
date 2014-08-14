@@ -1,8 +1,8 @@
 //
-//  TWTValidation.h
+//  TWTValueSetValidator.m
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
+//  Created by Prachi Gauriar on 8/13/2014.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,25 +24,30 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import "TWTValueSetValidator.h"
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
+@implementation TWTValueSetValidator
 
-#import <TWTValidation/TWTBlockValidator.h>
-
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
-
-#import <TWTValidation/TWTCompoundValidator.h>
-
-#import <TWTValidation/TWTKeyValueCodingValidator.h>
-
-#import <TWTValidation/TWTValueSetValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+- (instancetype)init
+{
+    return [self initWithValueSet:nil];
+}
 
 
+- (instancetype)initWithValueSet:(NSSet *)valueSet
+{
+    self = [super init];
+    if (self) {
+        _valueSet = [valueSet copy];
+    }
 
+    return self;
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return NO;
+}
+
+@end
