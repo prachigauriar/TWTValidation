@@ -31,43 +31,35 @@
 #import "TWTValidationLocalization.h"
 
 
-@interface TWTValueSetValidator ()
-
-@property (nonatomic, copy, readwrite) NSSet *validValues;
-
-@end
-
-
 @implementation TWTValueSetValidator
 
 - (instancetype)init
 {
-    return [self initWithValidValues:nil];
+    return [self initWithValidValues:nil allowsNil:NO];
 }
 
 
 - (instancetype)initWithValidValues:(NSSet *)validValues
 {
+    return [self initWithValidValues:validValues allowsNil:NO];
+}
+
+
+- (instancetype)initWithValidValues:(NSSet *)validValues allowsNil:(BOOL)allowsNil
+{
     self = [super init];
     if (self) {
         _validValues = [validValues copy];
+        _allowsNil = allowsNil;
     }
 
     return self;
 }
 
 
-- (instancetype)copyWithZone:(NSZone *)zone
-{
-    typeof(self) copy = [super copyWithZone:zone];
-    copy.validValues = self.validValues;
-    return copy;
-}
-
-
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.validValues.hash;
+    return [super hash] ^ self.allowsNil ^ self.validValues.hash;
 }
 
 
@@ -80,25 +72,30 @@
     }
 
     typeof(self) other = object;
-    return [self.validValues isEqualToSet:other.validValues];
+    return self.allowsNil == other.allowsNil && [self.validValues isEqualToSet:other.validValues];
 }
 
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    if (![super validateValue:value error:outError]) {
-        return NO;
-    } else if  ([self.validValues containsObject:value]) {
+    if ((!value && self.allowsNil) || [self.validValues containsObject:value]) {
         return YES;
     }
 
     if (outError) {
-        NSString *descriptionFormat = TWTLocalizedString(@"TWTValueSetValidator.valueNotInSet.validationError.format");
+        NSInteger code = 0;
+        NSString *description = nil;
 
-        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet
-                                        failingValidator:self
-                                                   value:value
-                                    localizedDescription:[NSString stringWithFormat:descriptionFormat, value, self.validValues]];
+        if (!value) {
+            code = TWTValidationErrorCodeValueNil;
+            description = TWTLocalizedString(@"TWTValidator.valueNil.validationError");
+        } else {
+            code = TWTValidationErrorCodeValueNotInSet;
+            NSString *descriptionFormat = TWTLocalizedString(@"TWTValueSetValidator.valueNotInSet.validationError.format");
+            description = [NSString stringWithFormat:descriptionFormat, value, self.validValues];
+        }
+
+        *outError = [NSError twt_validationErrorWithCode:code failingValidator:self value:value localizedDescription:description];
     }
 
     return NO;
