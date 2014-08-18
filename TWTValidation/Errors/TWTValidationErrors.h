@@ -102,7 +102,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 
     /*! Indicates a value is greater than the largest allowed value. */
     TWTValidationErrorCodeValueGreaterThanMaximum,
-    
+
     /*! Indicates a value does not match the required format. */
     TWTValidationErrorCodeValueDoesNotMatchFormat,
 
@@ -123,6 +123,9 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 
     /*! Indicates an error occurred in a keyed collection validator. */
     TWTValidationErrorCodeKeyedCollectionValidatorError,
+
+    /*! Indicates a value is not in the set of acceptable values. */
+    TWTValidationErrorCodeValueNotInSet
 };
 
 

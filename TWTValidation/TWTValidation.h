@@ -29,15 +29,20 @@
 #import <TWTValidation/TWTValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTKeyValueCodingValidator.h>
-
 #import <TWTValidation/TWTBlockValidator.h>
 
+#import <TWTValidation/TWTCollectionValidator.h>
+#import <TWTValidation/TWTKeyedCollectionValidator.h>
+
 #import <TWTValidation/TWTCompoundValidator.h>
+
+#import <TWTValidation/TWTKeyValueCodingValidator.h>
+
+#import <TWTValidation/TWTValueSetValidator.h>
 
 #import <TWTValidation/TWTValueValidator.h>
 #import <TWTValidation/TWTNumberValidator.h>
 #import <TWTValidation/TWTStringValidator.h>
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
+
+
