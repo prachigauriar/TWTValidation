@@ -68,6 +68,16 @@
 
 #pragma mark
 
+@interface TWTSubstringValidator ()
+
+@property (nonatomic, copy, readwrite) NSString *substring;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
+
+#pragma mark
+
 @implementation TWTStringValidator
 
 - (instancetype)init
@@ -108,6 +118,12 @@
 + (TWTSuffixStringValidator *)stringValidatorWithSuffixString:(NSString *)suffixString caseSensitive:(BOOL)caseSensitive
 {
     return [[TWTSuffixStringValidator alloc] initWithSuffixString:suffixString caseSensitive:caseSensitive];
+}
+
+
++ (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
+{
+    return [[TWTSubstringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
 }
 
 @end
@@ -327,7 +343,7 @@
     }
     
     typeof(self) other = object;
-    return other.prefix == self.prefix;
+    return [other.prefix isEqualToString:self.prefix];
 }
 
 
@@ -410,7 +426,7 @@
     }
     
     typeof(self) other = object;
-    return other.suffix == self.suffix;
+    return [other.suffix isEqualToString:self.suffix];
 }
 
 
@@ -442,6 +458,90 @@
     
     return NO;
 }
+
+@end
+
+
+#pragma mark
+
+@implementation TWTSubstringValidator
+
+- (instancetype)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+
+- (instancetype)initWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
+{
+    NSParameterAssert(substring);
+    self = [super init];
+    if (self) {
+        _substring = [substring copy];
+        _validatesCase = caseSensitive;
+    }
+    
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.substring = self.substring;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.substring.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.substring isEqualToString:self.substring];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value)) {
+        // This will only happen if nil or null is allowed
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    NSStringCompareOptions options = self.validatesCase ? 0 : NSCaseInsensitiveSearch;
+    NSRange range = [value rangeOfString:self.substring
+                                 options:options];
+    
+    if (range.length == 0) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+    
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSubstringValidator.validationError.format"), self.substring];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
 
 @end
 

@@ -49,6 +49,7 @@
 "TWTRegularExpressionStringValidator.validationError" = "string does not match regular expression (%1$@)";
 "TWTPrefixStringValidator.validationError.format" = "string does not match specified prefix: (%1$@)";
 "TWTSuffixStringValidator.validationError.format" = "string does not match specified suffix: (%1$@)";
+"TWTSubstringValidator.validationError.format" = "string does not contain specified substring: (%1$@)";
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";
