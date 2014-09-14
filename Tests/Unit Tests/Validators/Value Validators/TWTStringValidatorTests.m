@@ -335,4 +335,15 @@
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
+
+- (void)testPredicateValidateValueError
+{
+    NSString *seed = UMKRandomAlphanumericString();
+    NSString *fullString = [UMKRandomAlphanumericString() stringByAppendingString:seed];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self CONTAINS[cd] %@", [seed uppercaseString]];
+    
+    XCTAssertTrue([predicate evaluateWithObject:fullString], @"does not accurately find the thing");
+}
+
 @end

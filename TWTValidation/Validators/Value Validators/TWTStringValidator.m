@@ -78,6 +78,16 @@
 
 #pragma mark
 
+@interface TWTPatternedStringValidator ()
+
+@property (nonatomic, strong, readwrite) NSPredicate *predicate;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
+
+#pragma mark
+
 @implementation TWTStringValidator
 
 - (instancetype)init
@@ -124,6 +134,12 @@
 + (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
 {
     return [[TWTSubstringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
+}
+
+
++ (TWTPatternedStringValidator *)stringValidatorWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive
+{
+    return [[TWTPatternedStringValidator alloc] initWithPredicate:predicate caseSensitive:caseSensitive];
 }
 
 @end
@@ -542,6 +558,17 @@
     return NO;
 }
 
-
 @end
 
+
+#pragma mark
+
+@implementation TWTPatternedStringValidator
+
+- (instancetype)initWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive
+{
+    
+    return nil;
+}
+
+@end

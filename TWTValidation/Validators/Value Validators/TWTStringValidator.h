@@ -26,7 +26,7 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringValidator;
+@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringValidator, TWTPatternedStringValidator;
 
 /*!
  Protocol that specifies whether a conforming validator should verify the case of the string it is checking.
@@ -105,6 +105,17 @@
  @return A newly created string validator that validates that strings have the matching substrings
  */
 + (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
+
+
+/*!
+ @abstract Creates and returns a new string validator that validates that strings have the matching pattern as 
+    defined by the supplied predicate
+ @discussion Expects the predicate is in the form of "«string» LIKE «pattern»".
+ @param predicate Predicate to use for validating string
+ @param caseSensitive Should the validation be case sensitive
+ @return A newly created string validator that validates that strings have a matching pattern
+ */
++ (TWTPatternedStringValidator *)stringValidatorWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -242,5 +253,25 @@
  @return An initialized validator that checks the substring's existence in the value.
  */
 - (instancetype)initWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
+
+@end
+
+
+@interface TWTPatternedStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
+
+/*!
+ @abstract The predicate to use when validating a string
+ @discussion nil by default.
+ */
+@property (nonatomic, strong, readonly) NSPredicate *predicate;
+
+/*!
+ @abstract Initializes a new predicate based string validator with the specified predicate.
+ @discussion Expects the predicate is in the form of "«string» LIKE «pattern»".
+ @param predicate The predicate to use when validating a string
+ @param caseSensitive Should case be considered when validating
+ @return An initialized validator that checks the predicate to validate the value.
+ */
+- (instancetype)initWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive;
 
 @end
