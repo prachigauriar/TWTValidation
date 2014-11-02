@@ -75,6 +75,8 @@
     XCTAssertNil(validator.minimum, @"non-nil minimum");
     XCTAssertNil(validator.maximum, @"non-nil maximum");
     XCTAssertFalse(validator.requiresIntegralValue, @"requiresIntegralValue is YES");
+    XCTAssertFalse(validator.isMaximumExclusive, @"isMaximumExclusive is YES");
+    XCTAssertFalse(validator.isMinimumExclusive, @"isMinimumExclusive is YES");
 
     NSNumber *minimum = [self randomFloatingPointNumber];
     NSNumber *maximum = [self randomNumberGreaterThanNumber:minimum];
@@ -87,7 +89,9 @@
     XCTAssertEqualObjects(validator.minimum, minimum, @"minimum is not set correctly");
     XCTAssertEqualObjects(validator.maximum, maximum, @"maximum is not set correctly");
     XCTAssertFalse(validator.requiresIntegralValue, @"requiresIntegralValue is YES");
-    
+    XCTAssertFalse(validator.isMaximumExclusive, @"isMaximumExclusive is YES");
+    XCTAssertFalse(validator.isMinimumExclusive, @"isMinimumExclusive is YES");
+
     XCTAssertThrows([[TWTNumberValidator alloc] initWithMinimum:maximum maximum:minimum], @"does not throw when maximum < minimum");
 }
 
@@ -99,12 +103,16 @@
     BOOL allowsNil = UMKRandomBoolean();
     BOOL allowsNull = UMKRandomBoolean();
     BOOL requiresIntegralValue = UMKRandomBoolean();
-    
+    BOOL maximumExclusive = UMKRandomBoolean();
+    BOOL minimumExclusive = UMKRandomBoolean();
+
     TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:minimum maximum:maximum];
     validator.allowsNil = allowsNil;
     validator.allowsNull = allowsNull;
     validator.requiresIntegralValue = requiresIntegralValue;
-    
+    validator.maximumExclusive = maximumExclusive;
+    validator.minimumExclusive = minimumExclusive;
+
     TWTNumberValidator *copy = [validator copy];
     
     XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
@@ -112,8 +120,9 @@
     XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
     XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
     XCTAssertEqual(copy.requiresIntegralValue, requiresIntegralValue, @"requiresIntegralValue is not set correctly");
-    XCTAssertEqualObjects(copy.minimum, minimum, @"minimum is not set correctly");
     XCTAssertEqualObjects(copy.maximum, maximum, @"maximum is not set correctly");
+    XCTAssertEqual(copy.isMaximumExclusive, maximumExclusive, @"maximumExclusive is not set correctly");
+    XCTAssertEqual(copy.isMinimumExclusive, minimumExclusive, @"minimumExclusive is not set correctly");
 }
 
 
@@ -152,11 +161,29 @@
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
+    // Maximum exclusive
+    validator1.maximumExclusive = !validator2.isMaximumExclusive;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.maximumExclusive = validator1.isMaximumExclusive;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Minimum exclusive
+    validator1.minimumExclusive = !validator2.isMinimumExclusive;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.minimumExclusive = validator1.isMinimumExclusive;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
     // minimum
     validator2 = [[TWTNumberValidator alloc] initWithMinimum:[self randomNumberLessThanNumber:minimum] maximum:maximum];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     validator2.requiresIntegralValue = validator1.requiresIntegralValue;
+    validator2.maximumExclusive = validator1.maximumExclusive;
+    validator2.minimumExclusive = validator1.minimumExclusive;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
     // maximum
@@ -164,6 +191,8 @@
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     validator2.requiresIntegralValue = validator1.requiresIntegralValue;
+    validator2.maximumExclusive = validator1.maximumExclusive;
+    validator2.minimumExclusive = validator1.minimumExclusive;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 }
 
@@ -198,6 +227,18 @@
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueLessThanMinimum, @"incorrect error code");
     XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    validator.minimumExclusive = YES;
+    value = minimum;
+    XCTAssertFalse([validator validateValue:value error:NULL], @"passes with minimum number");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with minimum number");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueLessThanMinimum, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
 
@@ -216,7 +257,7 @@
     NSNumber *maximum = [self randomFloatingPointNumber];
     TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:nil maximum:maximum];
 
-    XCTAssertTrue([validator validateValue:maximum error:NULL], @"fails with minimum number");
+    XCTAssertTrue([validator validateValue:maximum error:NULL], @"fails with maximum number");
 
     NSNumber *value = [self randomNumberLessThanNumber:maximum];
     XCTAssertTrue([validator validateValue:value error:NULL], @"fails with smaller number");
@@ -229,6 +270,18 @@
     XCTAssertNotNil(error, @"returns nil error");
     XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueGreaterThanMaximum, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    validator.maximumExclusive = YES;
+    value = maximum;
+    XCTAssertFalse([validator validateValue:value error:NULL], @"passes with maximum number");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with maximum number");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueGreaterThanMaximum, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 

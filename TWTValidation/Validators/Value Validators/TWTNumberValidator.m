@@ -67,7 +67,9 @@
     typeof(self) copy = [super copyWithZone:zone];
     copy.requiresIntegralValue = self.requiresIntegralValue;
     copy.minimum = self.minimum;
+    copy.minimumExclusive = self.isMinimumExclusive;
     copy.maximum = self.maximum;
+    copy.maximumExclusive = self.isMaximumExclusive;
     return copy;
 }
 
@@ -88,6 +90,8 @@
     
     typeof(self) other = object;
     return other.requiresIntegralValue == self.requiresIntegralValue &&
+        other.isMaximumExclusive == self.isMaximumExclusive &&
+        other.isMinimumExclusive == self.isMinimumExclusive &&
         (self.minimum == other.minimum || (self.minimum && [other.minimum isEqualToNumber:self.minimum])) &&
         (self.maximum == other.maximum || (self.maximum && [other.maximum isEqualToNumber:self.maximum]));
 }
@@ -104,10 +108,13 @@
 
     NSInteger errorCode = -1;
     double doubleValue = [value doubleValue];
-    
-    if (self.minimum && [value compare:self.minimum] < NSOrderedSame) {
+
+    NSComparisonResult minimumComparisonResult = self.isMinimumExclusive ? NSOrderedSame : NSOrderedDescending;
+    NSComparisonResult maximumComparisonResult = self.isMaximumExclusive ? NSOrderedSame : NSOrderedAscending;
+
+    if (self.minimum && [self.minimum compare:value] >= minimumComparisonResult) {
         errorCode = TWTValidationErrorCodeValueLessThanMinimum;
-    } else if (self.maximum && [value compare:self.maximum] > NSOrderedSame) {
+    } else if (self.maximum && [self.maximum compare:value] <= maximumComparisonResult) {
         errorCode = TWTValidationErrorCodeValueGreaterThanMaximum;
     } else if (self.requiresIntegralValue && trunc(doubleValue) != doubleValue) {
         errorCode = TWTValidationErrorCodeValueIsNotIntegral;
