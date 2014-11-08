@@ -55,4 +55,6 @@
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";
+"TWTCollectionValidator.notCollectionError" = "value is not a collection";
 "TWTKeyedCollectionValidator.validationError" = "keyed collection is invalid";
+"TWTKeyedCollectionValidator.notKeyedCollectionError" = "value is not a keyed collection";

@@ -125,7 +125,13 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeKeyedCollectionValidatorError,
 
     /*! Indicates a value is not in the set of acceptable values. */
-    TWTValidationErrorCodeValueNotInSet
+    TWTValidationErrorCodeValueNotInSet,
+
+    /*! Indicates a value is not a collection for the purposes of collection validation. */
+    TWTValidationErrorCodeValueNotCollection,
+
+    /*! Indicates a value is not a keyed collection for the purposes of keyed collection validation. */
+    TWTValidationErrorCodeValueNotKeyedCollection
 };
 
 

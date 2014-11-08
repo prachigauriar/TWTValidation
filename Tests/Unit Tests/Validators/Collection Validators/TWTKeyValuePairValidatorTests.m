@@ -44,11 +44,7 @@
 {
     XCTAssertThrows([[TWTKeyValuePairValidator alloc] init], @"-init does not throw an exception");
 
-    id key = [self randomObject];
-    if (!key) {
-        key = [NSNull null];
-    }
-
+    id key = [self randomNonNilObject];
     TWTValidator *valueValidator = [self randomValidator];
     TWTKeyValuePairValidator *validator = [[TWTKeyValuePairValidator alloc] initWithKey:key valueValidator:valueValidator];
 
@@ -60,11 +56,7 @@
 
 - (void)testCopy
 {
-    id key = [self randomObject];
-    if (!key) {
-        key = [NSNull null];
-    }
-
+    id key = [self randomNonNilObject];
     TWTValidator *valueValidator = [self randomValidator];
     TWTKeyValuePairValidator *validator = [[TWTKeyValuePairValidator alloc] initWithKey:key valueValidator:valueValidator];
     TWTKeyValuePairValidator *copy = [validator copy];
@@ -97,11 +89,7 @@
 
 - (void)testValidateValueError
 {
-    id key = [self randomObject];
-    if (!key) {
-        key = [NSNull null];
-    }
-
+    id key = [self randomNonNilObject];
     TWTKeyValuePairValidator *validator = [[TWTKeyValuePairValidator alloc] initWithKey:key valueValidator:[self passingValidator]];
     XCTAssertTrue([validator validateValue:[self randomObject] error:NULL], @"fails with passing value validator");
 

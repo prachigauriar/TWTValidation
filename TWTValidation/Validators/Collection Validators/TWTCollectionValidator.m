@@ -90,6 +90,15 @@
 {
     if (![super validateValue:collection error:outError]) {
         return NO;
+    } else if (!([collection respondsToSelector:@selector(count)] && [collection conformsToProtocol:@protocol(NSFastEnumeration)])) {
+        if (outError) {
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotCollection
+                                            failingValidator:self
+                                                       value:collection
+                                        localizedDescription:TWTLocalizedString(@"TWTCollectionValidator.notCollectionError")];
+        }
+
+        return NO;
     }
 
     NSError *countValidationError = nil;
