@@ -42,14 +42,16 @@
 
 /*! 
  @abstract The validator for a collection’s count.
- @discussion If nil, collections with any number of objects will pass validation.
+ @discussion If nil, collections with any number of objects will pass validation. Collection validators 
+     get a collection’s count by sending it the -count message.
  */
 @property (nonatomic, strong, readonly) TWTValidator *countValidator;
 
 /*! 
  @abstract The validators for a collection’s elements.
  @discussion A collection is only valid if all its elements pass validation by all the element validators.
-     If nil, all elements in a collection will pass validation.
+     If nil, all elements in a collection will pass validation. Collection validators get a collection’s
+     keys using fast enumeration.
  */
 @property (nonatomic, copy, readonly) NSArray *elementValidators;
 
