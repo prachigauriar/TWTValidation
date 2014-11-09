@@ -27,6 +27,21 @@
 #import "TWTRandomizedTestCase.h"
 
 
+#pragma mark Invalid Collection Class Interfaces
+
+@interface TWTNoCountCollection : NSObject <NSFastEnumeration>
+@end
+
+
+@interface TWTNoFastEnumerationCollection : NSObject
+
+- (NSUInteger)count;
+
+@end
+
+
+#pragma mark
+
 @interface TWTCollectionValidatorTests : TWTRandomizedTestCase
 
 - (void)testInit;
@@ -34,6 +49,7 @@
 - (void)testHashAndIsEqual;
 
 - (void)testValidateValueErrorNilAndNullObjects;
+- (void)testValidateValueErrorNonCollectionObjects;
 - (void)testValidateValueErrorCount;
 - (void)testValidateValueErrorElements;
 
@@ -120,6 +136,39 @@
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
     XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
+}
+
+
+- (void)testValidateValueErrorNonCollectionObjects
+{
+    TWTCollectionValidator *validator = [[TWTCollectionValidator alloc] initWithCountValidator:nil elementValidators:nil];
+
+    NSError *error = nil;
+    id value = [[TWTNoCountCollection alloc] init];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value does not respond to -count");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    value = [[TWTNoFastEnumerationCollection alloc] init];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value does not conform to NSFastEnumeration");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    // Make sure the random object is not the NSNull instance
+    while ((value = [self randomNonNilObject]) && (value == [NSNull null]));
+
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value is not a collection");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
 
@@ -219,6 +268,28 @@
         XCTAssertEqualObjects(error.twt_validatedValue, collection, @"incorrect validated value");
         XCTAssertEqualObjects(error.twt_elementValidationErrors, cumulativeErrors, @"element validation errors is not set correctly");
     }
+}
+
+@end
+
+
+#pragma mark - Invalid Collection Class Implementations
+
+@implementation TWTNoCountCollection
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id [])buffer count:(NSUInteger)len
+{
+    return 0;
+}
+
+@end
+
+
+@implementation TWTNoFastEnumerationCollection
+
+- (NSUInteger)count
+{
+    return 0;
 }
 
 @end

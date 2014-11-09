@@ -64,23 +64,12 @@
 }
 
 
-- (id)randomNonNilObject
-{
-    id object = nil;
-    while (!(object = [self randomObject]));
-    return object;
-}
-
-
 - (void)testValidationErrorWithCodeValueLocalizedDescription
 {
     // It’s okay to ignore deprecation warnings on +twt_validationErrorWithCode:value:localizedDescription:
     // in this test, as that’s the method we’re testing
     NSInteger code = random();
-    id value = [self randomObject];
-    while (!value) {
-        value = [self randomObject];
-    };
+    id value = [self randomNonNilObject];
 
     NSString *description = UMKRandomUnicodeString();
 
@@ -108,10 +97,7 @@
     // It’s okay to ignore deprecation warnings on +twt_validationErrorWithCode:value:localizedDescription:underlyingErrors:
     // in this test, as that’s the method we’re testing
     NSInteger code = random();
-    id value = [self randomObject];
-    while (!value) {
-        value = [self randomObject];
-    };
+    id value = [self randomNonNilObject];
 
     NSString *description = UMKRandomUnicodeString();
     NSArray *errors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {
@@ -148,10 +134,7 @@
 - (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescription
 {
     NSInteger code = random();
-    id value = [self randomObject];
-    while (!value) {
-        value = [self randomObject];
-    };
+    id value = [self randomNonNilObject];
 
     NSString *description = UMKRandomUnicodeString();
     TWTValidator *validator = [self randomValidator];
@@ -173,10 +156,7 @@
 - (void)testValidationErrorWithCodeFailingValidatorValueLocalizedDescriptionUnderlyingErrors
 {
     NSInteger code = random();
-    id value = [self randomObject];
-    while (!value) {
-        value = [self randomObject];
-    };
+    id value = [self randomNonNilObject];
 
     NSString *description = UMKRandomUnicodeString();
     NSArray *errors = UMKGeneratedArrayWithElementCount(random() % 10 + 1, ^id(NSUInteger index) {

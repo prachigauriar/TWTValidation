@@ -30,7 +30,8 @@
  TWTKeyedCollectionValidators validate keyed collection, e.g., dictionaries and map tables. Keyed collection
  validators validate a collection’s count, keys, values, and specific key-value pairs. 
 
- Values that are nil or the NSNull instance do not pass validation with keyed collection validators.
+ In order to pass validation with a keyed collection validator, an object must minimally conform to the 
+ NSFastEnumeration protocol and respond to -count and -objectForKey:.
 
  Keyed collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
  validator will simply return the validator itself.
@@ -39,7 +40,8 @@
 
 /*!
  @abstract The validator for a keyed collection’s count.
- @discussion If nil, keyed collections with any number of objects will pass validation.
+ @discussion If nil, keyed collections with any number of objects will pass validation. Keyed collection
+     validators get a collection’s count by sending it the -count message.
  */
 @property (nonatomic, strong, readonly) TWTValidator *countValidator;
 

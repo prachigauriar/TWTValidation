@@ -119,7 +119,13 @@
 
 - (id)randomObject
 {
-    switch (random() % 6) {
+    return random() % 6 != 0 ? [self randomNonNilObject] : nil;
+}
+
+
+- (id)randomNonNilObject
+{
+    switch (random() % 5) {
         case 0:
             return [NSNull null];
         case 1:
@@ -128,27 +134,29 @@
             return UMKRandomUnicodeString();
         case 3:
             return UMKRandomAlphanumericString();
-        case 4:
-            return UMKRandomHTTPURL();
         default:
-            return nil;
+            return UMKRandomHTTPURL();
     }
 }
 
 
 - (Class)randomClass
 {
-    switch (random() % 5) {
+    return random() % 5 != 0 ? [self randomNonNilClass] : Nil;
+}
+
+
+- (Class)randomNonNilClass
+{
+    switch (random() % 4) {
         case 0:
             return [NSNull class];
         case 1:
             return [NSNumber class];
         case 2:
             return [NSString class];
-        case 3:
-            return [NSURL class];
         default:
-            return Nil;
+            return [NSURL class];
     }
 }
 

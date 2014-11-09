@@ -193,7 +193,7 @@
 
 - (void)testValidateValueErrorBoundedLengthMinimum
 {
-    NSUInteger minimumLength = random() % 100 + 1;
+    NSUInteger minimumLength = random() % 100 + 2;
 
     TWTBoundedLengthStringValidator *validator = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:NSUIntegerMax];
     NSString *value = UMKRandomUnicodeStringWithLength(minimumLength);

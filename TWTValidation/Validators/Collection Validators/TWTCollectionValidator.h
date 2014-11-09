@@ -32,7 +32,8 @@
  validating arrays, sets, and the like. For keyed collections like dictionaries and map tables, use
  TWTKeyedCollectionValidator.
 
- Values that are nil or the NSNull instance do not pass validation with collection validators.
+ In order to pass validation with a collection validator, an object must minimally respond to -count and 
+ conform to the NSFastEnumeration protocol.
 
  Collection validators are immutable objects. As such, sending -copy or -copyWithZone: to a collection
  validator will simply return the validator itself.
@@ -41,14 +42,16 @@
 
 /*! 
  @abstract The validator for a collection’s count.
- @discussion If nil, collections with any number of objects will pass validation.
+ @discussion If nil, collections with any number of objects will pass validation. Collection validators 
+     get a collection’s count by sending it the -count message.
  */
 @property (nonatomic, strong, readonly) TWTValidator *countValidator;
 
 /*! 
  @abstract The validators for a collection’s elements.
  @discussion A collection is only valid if all its elements pass validation by all the element validators.
-     If nil, all elements in a collection will pass validation.
+     If nil, all elements in a collection will pass validation. Collection validators get a collection’s
+     keys using fast enumeration.
  */
 @property (nonatomic, copy, readonly) NSArray *elementValidators;
 

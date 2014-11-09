@@ -184,7 +184,19 @@
 {
     if (![super validateValue:keyedCollection error:outError]) {
         return NO;
+    } else if (!([keyedCollection respondsToSelector:@selector(count)] &&
+                 [keyedCollection respondsToSelector:@selector(objectForKey:)] &&
+                 [keyedCollection conformsToProtocol:@protocol(NSFastEnumeration)])) {
+        if (outError) {
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotKeyedCollection
+                                            failingValidator:self
+                                                       value:keyedCollection
+                                        localizedDescription:TWTLocalizedString(@"TWTKeyedCollectionValidator.notKeyedCollectionError")];
+        }
+
+        return NO;
     }
+
 
     NSError *countValidationError = nil;
     BOOL countValidated = YES;

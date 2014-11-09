@@ -51,11 +51,25 @@
 - (id)randomObject;
 
 /*!
+ @abstract Returns a random object.
+ @discussion The returned object is either a random number, string, URL, or NSNull.
+ @result A random object.
+ */
+- (id)randomNonNilObject;
+
+/*!
  @abstract Returns a random class or Nil.
  @discussion If the return value is non-Nil, it is either NSNumber, NSString, NSURL, or NSNull.
  @result A random class.
  */
 - (Class)randomClass;
+
+/*!
+ @abstract Returns a random class.
+ @discussion The returned class is either NSNumber, NSString, NSURL, or NSNull.
+ @result A random class.
+ */
+- (Class)randomNonNilClass;
 
 /*!
  @abstract Returns a random class that has a mutable variant.
