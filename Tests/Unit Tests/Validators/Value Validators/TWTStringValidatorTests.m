@@ -41,9 +41,10 @@
 
 - (void)testValidateValueErrorRegularExpression;
 
-- (void)testPrefixValidateValueError;
-- (void)testSuffixValidateValueError;
+- (void)testPatternExpressionValidateValueError;
 - (void)testSubstringValidateValueError;
+- (void)testSuffixValidateValueError;
+- (void)testPrefixValidateValueError;
 
 @end
 
@@ -336,7 +337,7 @@
 }
 
 
-- (void)testWildcardMatchingValidateValueError
+- (void)testPatternExpressionValidateValueError
 {
     NSString *seed = UMKRandomAlphanumericString();
     
