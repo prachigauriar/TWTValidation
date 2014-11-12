@@ -172,7 +172,7 @@
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
-    // Allows nil
+    // Allows null
     validator1.allowsNull = !validator2.allowsNull;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
@@ -197,7 +197,7 @@
 
 - (void)testValidateValueErrorBoundedLengthMinimum
 {
-    NSUInteger minimumLength = random() % 100 + 1;
+    NSUInteger minimumLength = random() % 100 + 2;
 
     TWTBoundedLengthStringValidator *validator = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:NSUIntegerMax];
     NSString *value = UMKRandomUnicodeStringWithLength(minimumLength);

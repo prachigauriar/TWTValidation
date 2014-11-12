@@ -43,7 +43,7 @@ typedef NS_ENUM(NSUInteger, TWTCompoundValidatorType) {
 
 
 /*!
- TWTCompoundValidator validate values by aggregating the validation results of zero or more subvalidators.
+ TWTCompoundValidators validate values by aggregating the validation results of zero or more subvalidators.
  There are four types of compound validators: Not validators, And validators, Or validators, and Mutual
  Exclusion validators. These behave as one would expect: Not validators pass validation only if its
  subvalidator fails. And validators pass if and only if validation passes for all its subvalidators. For Or

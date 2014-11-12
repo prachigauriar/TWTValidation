@@ -27,12 +27,40 @@
 #import "TWTRandomizedTestCase.h"
 
 
+#pragma mark Invalid Keyed Collection Class Interfaces
+
+@interface TWTNoCountKeyedCollection : NSObject <NSFastEnumeration>
+
+- (id)objectForKey:(id)key;
+
+@end
+
+
+@interface TWTNoFastEnumerationKeyedCollection : NSObject
+
+- (NSUInteger)count;
+- (id)objectForKey:(id)key;
+
+@end
+
+
+@interface TWTNoObjectForKeyKeyedCollection : NSObject <NSFastEnumeration>
+
+- (NSUInteger)count;
+
+@end
+
+
+#pragma mark
+
 @interface TWTKeyedCollectionValidatorTests : TWTRandomizedTestCase
 
 - (void)testInit;
 - (void)testCopy;
 - (void)testHashAndIsEqual;
 
+- (void)testValidateValueErrorNilAndNullObjects;
+- (void)testValidateValueErrorNonKeyedCollectionObjects;
 - (void)testValidateValueErrorCount;
 - (void)testValidateValueErrorKeys;
 - (void)testValidateValueErrorValues;
@@ -88,8 +116,7 @@
     NSMapTable *mapTable = [NSMapTable strongToStrongObjectsMapTable];
     NSUInteger elementCount = random() % 10 + 1;
     for (NSUInteger i = 0; i < elementCount; ++i) {
-        id object = [self randomObject];
-        [mapTable setObject:(object ? object : [NSNull null]) forKey:UMKRandomUnicodeStringWithLength(random() % 10 + 1)];
+        [mapTable setObject:[self randomNonNilObject] forKey:UMKRandomUnicodeStringWithLength(random() % 10 + 1)];
     }
 
     return mapTable;
@@ -220,6 +247,75 @@
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator2, @"unequal objects are equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator3, @"unequal objects are equal");
     XCTAssertNotEqualObjects(equalValidator1, unequalValidator4, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorNilAndNullObjects
+{
+    TWTKeyedCollectionValidator *validator = [[TWTKeyedCollectionValidator alloc] initWithCountValidator:nil
+                                                                                           keyValidators:nil
+                                                                                         valueValidators:nil
+                                                                                  keyValuePairValidators:nil];
+
+    NSError *error = nil;
+    XCTAssertFalse([validator validateValue:nil error:&error], @"passes when value is nil");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNil, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, nil, @"incorrect validated value");
+
+    error = nil;
+    XCTAssertFalse([validator validateValue:[NSNull null] error:&error], @"passes when value is null");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNull, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, [NSNull null], @"incorrect validated value");
+}
+
+
+- (void)testValidateValueErrorNonKeyedCollectionObjects
+{
+    TWTKeyedCollectionValidator *validator = [[TWTKeyedCollectionValidator alloc] initWithCountValidator:nil
+                                                                                           keyValidators:nil
+                                                                                         valueValidators:nil
+                                                                                  keyValuePairValidators:nil];
+
+    NSError *error = nil;
+    id value = [[TWTNoCountKeyedCollection alloc] init];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value does not respond to -count");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotKeyedCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    value = [[TWTNoFastEnumerationKeyedCollection alloc] init];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value does not conform to NSFastEnumeration");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotKeyedCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    value = [[TWTNoObjectForKeyKeyedCollection alloc] init];
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value does not respond to -objectForKey:");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotKeyedCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+
+    // Make sure the random object is not the NSNull instance
+    while ((value = [self randomNonNilObject]) && (value == [NSNull null]));
+
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes when value is not a keyed collection");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueNotKeyedCollection, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
 
@@ -497,6 +593,57 @@
         XCTAssertNil(error.twt_valueValidationErrors, @"error contains value validation errors, but none occurred");
         XCTAssertEqualObjects(error.twt_keyValuePairValidationErrors, expectedErrors, @"key-value pair validation errors is not set correctly");
     }
+}
+
+@end
+
+
+#pragma mark - Invalid Keyed Collection Class Implementations
+
+
+@implementation TWTNoCountKeyedCollection
+
+- (id)objectForKey:(id)key
+{
+    return nil;
+}
+
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id [])buffer count:(NSUInteger)len
+{
+    return 0;
+}
+
+@end
+
+
+@implementation TWTNoFastEnumerationKeyedCollection
+
+- (NSUInteger)count
+{
+    return 0;
+}
+
+
+- (id)objectForKey:(id)key
+{
+    return nil;
+}
+
+@end
+
+
+@implementation TWTNoObjectForKeyKeyedCollection
+
+- (NSUInteger)count
+{
+    return 0;
+}
+
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id [])buffer count:(NSUInteger)len
+{
+    return 0;
 }
 
 @end

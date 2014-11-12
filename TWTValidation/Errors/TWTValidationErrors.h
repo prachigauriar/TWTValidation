@@ -26,8 +26,6 @@
 
 @import Foundation;
 
-#import <AvailabilityMacros.h>
-
 @class TWTValidator;
 
 /*!
@@ -36,7 +34,7 @@
 extern NSString *const TWTValidationErrorDomain;
 
 /*!
- @abstract userInfo key whose value is the validator instance for which the error applies.
+ @abstract userInfo key whose value is the validator that failed.
  */
 extern NSString *const TWTValidationFailingValidatorKey;
 
@@ -104,7 +102,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 
     /*! Indicates a value is greater than the largest allowed value. */
     TWTValidationErrorCodeValueGreaterThanMaximum,
-    
+
     /*! Indicates a value does not match the required format. */
     TWTValidationErrorCodeValueDoesNotMatchFormat,
     
@@ -125,6 +123,15 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 
     /*! Indicates an error occurred in a keyed collection validator. */
     TWTValidationErrorCodeKeyedCollectionValidatorError,
+
+    /*! Indicates a value is not in the set of acceptable values. */
+    TWTValidationErrorCodeValueNotInSet,
+
+    /*! Indicates a value is not a collection for the purposes of collection validation. */
+    TWTValidationErrorCodeValueNotCollection,
+
+    /*! Indicates a value is not a keyed collection for the purposes of keyed collection validation. */
+    TWTValidationErrorCodeValueNotKeyedCollection
 };
 
 
@@ -184,7 +191,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
                          underlyingErrors:nil];
 
  @param code The error code for the new error.
- @param validator The validator reporting the new error.
+ @param validator The validator that failed.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
      corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
  @param description A human-readable description of the error. If non-nil, this string will be the
@@ -200,7 +207,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
  @abstract Creates and returns a new error in the TWTValidationErrorDomain domain with the specified code,
      failing validator, validated value, localized description, and underlying errors.
  @param code The error code for the new error.
- @param validator The validator reporting the new error.
+ @param validator The validator that failed.
  @param value The value being validated when the error occured. If non-nil, this object will be the value
      corresponding to TWTValidationValidatedValueKey in the error’s userInfo dictionary.
  @param description A human-readable description of the error. If non-nil, this string will be the

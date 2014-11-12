@@ -1,4 +1,4 @@
-/* 
+/*
   TWTValidation.strings
   TWTValidation
 
@@ -24,19 +24,24 @@
   THE SOFTWARE.
 */
 
+/* All validators */
+"TWTValidator.valueNil.validationError" = "value is nil";
+"TWTValidator.valueNull.validationError" = "value is null";
+
 /* Compound validators */
-"TWTCompoundValidator.not.validationError" = "subvalidator passed";
+"TWTCompoundValidator.not.validationError" = "subvalidator passes";
 "TWTCompoundValidator.and.validationError" = "one or more subvalidators fail";
 "TWTCompoundValidator.or.validationError" = "all subvalidators fail";
 "TWTCompoundValidator.mutualExclusion.validationError" = "number of passing subvalidators is not one";
 
 /* Key-value coding validator */
-"TWTKeyValueCodingValidator.validationError" = "one or more validators failed";
+"TWTKeyValueCodingValidator.validationError" = "one or more validators fail";
 
 /* Value validator */
-"TWTValueValidator.valueNil.validationError" = "value is nil";
-"TWTValueValidator.valueNull.validationError" = "value is null";
 "TWTValueValidator.valueHasIncorrectClass.validationError.format" = "value class (%1$@) is incompatible with required value class (%2$@)";
+
+/* Value Set validator */
+"TWTValueSetValidator.valueNotInSet.validationError.format" = "value (%1$@) is not in acceptable value set (%2$@)";
 
 /* Number validator */
 "TWTNumberValidator.valueIsNotIntegral.validationError.format" = "number (%1$@) is not an integer";
@@ -53,4 +58,6 @@
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";
+"TWTCollectionValidator.notCollectionError" = "value is not a collection";
 "TWTKeyedCollectionValidator.validationError" = "keyed collection is invalid";
+"TWTKeyedCollectionValidator.notKeyedCollectionError" = "value is not a keyed collection";
