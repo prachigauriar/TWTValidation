@@ -80,8 +80,8 @@
 
 @interface TWTPatternExpressionStringValidator ()
 
+@property (nonatomic, strong) NSPredicate *predicate;
 @property (nonatomic, copy) NSString *patternString;
-@property (nonatomic, copy) NSString *predicateFormat;
 @property (nonatomic, assign, readwrite) BOOL validatesCase;
 
 @end
@@ -562,8 +562,7 @@
 
 - (instancetype)init
 {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return [self initWithPatternString:nil caseSensitive:YES];
 }
 
 
@@ -573,7 +572,11 @@
     if (self) {
         _patternString = [patternString copy];
         _validatesCase = caseSensitive;
-        _predicateFormat = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[cd]"];
+        
+        if (_patternString) {
+            NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[c]"];
+            _predicate = [NSPredicate predicateWithFormat:predicateString, _patternString];
+        }
     }
     return self;
 }
@@ -617,9 +620,7 @@
     
     NSInteger errorCode = -1;
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:self.predicateFormat, self.patternString];
-    BOOL matches = [predicate evaluateWithObject:value];
-    
+    BOOL matches = [self.predicate evaluateWithObject:value];
     if (!matches) {
         errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
     } else {

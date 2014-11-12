@@ -186,7 +186,7 @@
 
 
 /*!
- TWTPrefixStringValidators validate that a string matches a specified prefix. There is no need to create
+ TWTPrefixStringValidators validate that a string has a specified prefix. There is no need to create
  instances of this directly. Instead use +[TWTStringValidator stringValidatorWithPrefixString:]. This 
  class is exposed so that it may be easily subclassed if necessary.
  */
@@ -210,7 +210,7 @@
 
 
 /*!
- TWTSuffixStringValidators validate that a string matches a specified prefix. There is no need to create
+ TWTSuffixStringValidators validate that a string has a specified prefix. There is no need to create
  instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSuffixString:]. This
  class is exposed so that it may be easily subclassed if necessary.
  */
@@ -234,7 +234,7 @@
 
 
 /*!
- TWTSubstringValidators validate that a string matches a specified substring. There is no need
+ TWTSubstringValidators validate that a string has a specified substring. There is no need
  to create instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSubstring:caseSensitive:].
  This class is exposed so that it may be easily subclassed if necessary.
  */
