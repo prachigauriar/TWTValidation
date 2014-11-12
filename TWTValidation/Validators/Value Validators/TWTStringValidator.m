@@ -634,7 +634,7 @@
     }
 
     if (outError) {
-        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSubstringValidator.validationError.format"), self.matchingString];
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"), self.matchingString];
         *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
     
