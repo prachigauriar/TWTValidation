@@ -39,6 +39,21 @@
 @property (nonatomic, assign) BOOL requiresIntegralValue;
 
 /*!
+ @abstract Whether the validator’s maximum check is exclusive.
+ @discussion The default is NO. When set to YES, the validator checks if a value is greater than the
+     maximum value. Otherwise, it checks if a value is greater than or equal to the maximum value.
+ */
+@property (nonatomic, assign, getter = isMaximumExclusive) BOOL maximumExclusive;
+
+/*!
+ @abstract Whether the validator’s minimum check is exclusive.
+ @discussion The default is NO. When set to YES, the validator checks if a value is less than the
+     minimum value. Otherwise, it checks if a value is less than or equal to the minimum value.
+ */
+@property (nonatomic, assign, getter = isMinimumExclusive) BOOL minimumExclusive;
+
+
+/*!
  @abstract The minimum value that the validator considers valid.
  @discussion If nil, there is no minimum value. The default is nil.
  */
