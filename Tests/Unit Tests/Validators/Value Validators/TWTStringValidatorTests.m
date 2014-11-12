@@ -336,14 +336,44 @@
 }
 
 
-- (void)testPredicateValidateValueError
+- (void)testWildcardMatchingValidateValueError
 {
     NSString *seed = UMKRandomAlphanumericString();
-    NSString *fullString = [UMKRandomAlphanumericString() stringByAppendingString:seed];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self CONTAINS[cd] %@", [seed uppercaseString]];
+    // validate with case sensitive with * character
+    NSString *matchingString = [NSString stringWithFormat:@"%@.*", seed];
+    TWTWildcardMatchingStringValidatator *validator = [TWTSubstringValidator stringValidatorWithMatchingString:matchingString caseSensitive:YES];
     
-    XCTAssertTrue([predicate evaluateWithObject:fullString], @"does not accurately find the thing");
+    NSString *wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
+    XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
+    
+    // validate with case insensitive with * character
+    validator = [TWTSubstringValidator stringValidatorWithMatchingString:matchingString caseSensitive:NO];
+    wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
+    XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
+    
+    // validate with case sensitive with ? character
+    matchingString = [NSString stringWithFormat:@"%@.?", seed];
+    validator = [TWTSubstringValidator stringValidatorWithMatchingString:matchingString caseSensitive:YES];
+    
+    wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
+    XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
+    
+    // validate with case insensitive with ? character
+    validator = [TWTSubstringValidator stringValidatorWithMatchingString:matchingString caseSensitive:NO];
+    wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
+    XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
+    
+    // validate with invalid value
+    NSString *value = UMKRandomAlphanumericString();
+    NSError *error = nil;
+    
+    XCTAssertFalse([validator validateValue:value error:&error], @"passes with non-matching string");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueDoesNotMatchFormat, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
 }
 
 @end

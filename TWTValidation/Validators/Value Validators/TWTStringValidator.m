@@ -78,9 +78,10 @@
 
 #pragma mark
 
-@interface TWTPatternedStringValidator ()
+@interface TWTWildcardMatchingStringValidatator ()
 
-@property (nonatomic, strong, readwrite) NSPredicate *predicate;
+@property (nonatomic, copy) NSString *matchingString;
+@property (nonatomic, copy) NSString *predicateFormat;
 @property (nonatomic, assign, readwrite) BOOL validatesCase;
 
 @end
@@ -137,9 +138,9 @@
 }
 
 
-+ (TWTPatternedStringValidator *)stringValidatorWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive
++ (TWTWildcardMatchingStringValidatator *)stringValidatorWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTPatternedStringValidator alloc] initWithPredicate:predicate caseSensitive:caseSensitive];
+    return [[TWTWildcardMatchingStringValidatator alloc] initWithMatchingString:matchingString caseSensitive:caseSensitive];
 }
 
 @end
@@ -563,12 +564,82 @@
 
 #pragma mark
 
-@implementation TWTPatternedStringValidator
+@implementation TWTWildcardMatchingStringValidatator
 
-- (instancetype)initWithPredicate:(NSPredicate *)predicate caseSensitive:(BOOL)caseSensitive
+- (instancetype)init
 {
-    
+    [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
+
+
+- (instancetype)initWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive
+{
+    NSParameterAssert(matchingString);
+    self = [super init];
+    if (self) {
+        _matchingString = [matchingString copy];
+        _validatesCase = caseSensitive;
+        _predicateFormat = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[cd]"];
+    }
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.matchingString = self.matchingString;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.matchingString.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.matchingString isEqualToString:self.matchingString];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value)) {
+        // This will only happen if nil or null is allowed
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:self.predicateFormat, self.matchingString];
+    BOOL matches = [predicate evaluateWithObject:value];
+    
+    if (!matches) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSubstringValidator.validationError.format"), self.matchingString];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
 
 @end
