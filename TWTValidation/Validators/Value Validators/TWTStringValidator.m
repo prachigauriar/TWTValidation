@@ -377,7 +377,7 @@
     NSRange range = [value rangeOfString:self.prefix
                                  options:options];
 
-    if (range.length == 0) {
+    if (range.location == NSNotFound) {
         errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
     } else {
         return YES;
@@ -458,7 +458,7 @@
     NSRange range = [value rangeOfString:self.suffix
                                  options:options];
     
-    if (range.length == 0) {
+    if (range.location == NSNotFound) {
         errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
     } else {
         return YES;
@@ -539,7 +539,7 @@
     NSRange range = [value rangeOfString:self.substring
                                  options:options];
     
-    if (range.length == 0) {
+    if (range.location == NSNotFound) {
         errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
     } else {
         return YES;
