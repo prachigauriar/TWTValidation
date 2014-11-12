@@ -85,7 +85,7 @@
  @abstract Creates and returns a new string validator that validates that strings have the matching prefix
  @param prefixString The prefix to validate
  @param caseSensitive Should the validation be case sensitive
- @return A newly created string validator that valdiates that strings have the correct prefix
+ @result A newly created string validator that valdiates that strings have the correct prefix
  */
 + (TWTPrefixStringValidator *)stringValidatorWithPrefixString:(NSString *)prefixString caseSensitive:(BOOL)caseSensitive;
 
@@ -94,7 +94,7 @@
  @abstract Create and returns a new string validator that validates that strings have the matching suffix
  @param suffixString The suffix to validate
  @param caseSensitive Should the valdiation be case sensitive
- @return A newly created string validator that validates that strings have the correct suffix
+ @result A newly created string validator that validates that strings have the correct suffix
  */
 + (TWTSuffixStringValidator *)stringValidatorWithSuffixString:(NSString *)suffixString caseSensitive:(BOOL)caseSensitive;
 
@@ -103,7 +103,7 @@
  @abstract Creates and returns a new string validator that validates that strings have the matching substring
  @param substring The substring to validate
  @param caseSensitive Should the validation be case sensitive
- @return A newly created string validator that validates that strings have the matching substrings
+ @result A newly created string validator that validates that strings have the matching substrings
  */
 + (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
 
@@ -113,7 +113,7 @@
  @param patternString The pattern string to use when validating. This string can support the use of
     '?' to match 1 character or '*' to match zero or more characters.
  @param caseSensitive Should case be considered when validating
- @return An initialized validator that checks the predicate to validate the value.
+ @result An initialized validator that checks the predicate to validate the value.
  */
 + (TWTPatternExpressionStringValidator *)stringValidatorWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive;
 
