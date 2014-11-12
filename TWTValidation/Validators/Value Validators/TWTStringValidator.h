@@ -35,6 +35,7 @@
 
 /*!
  @abstract Should the conforming validator validate the case of the string
+ @discussion Conforming validators should default to YES.
  */
 @property (nonatomic, assign, readonly) BOOL validatesCase;
 

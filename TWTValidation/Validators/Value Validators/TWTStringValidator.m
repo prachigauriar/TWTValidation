@@ -319,14 +319,12 @@
 
 - (instancetype)init
 {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return [self initWithPrefixString:nil caseSensitive:YES];
 }
 
 
 - (instancetype)initWithPrefixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
 {
-    NSParameterAssert(prefix);
     self = [super init];
     if (self) {
         _prefix = [prefix copy];
@@ -368,8 +366,8 @@
 {
     if (![super validateValue:value error:outError]) {
         return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value)) {
-        // This will only happen if nil or null is allowed
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.prefix) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
     
@@ -402,14 +400,12 @@
 
 - (instancetype)init
 {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return [self initWithSuffixString:nil caseSensitive:YES];
 }
 
 
 - (instancetype)initWithSuffixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
 {
-    NSParameterAssert(prefix);
     self = [super init];
     if (self) {
         _suffix = [prefix copy];
@@ -451,8 +447,8 @@
 {
     if (![super validateValue:value error:outError]) {
         return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value)) {
-        // This will only happen if nil or null is allowed
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.suffix) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
     
@@ -485,14 +481,12 @@
 
 - (instancetype)init
 {
-    [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return [self initWithSubstring:nil caseSensitive:YES];
 }
 
 
 - (instancetype)initWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
 {
-    NSParameterAssert(substring);
     self = [super init];
     if (self) {
         _substring = [substring copy];
@@ -534,8 +528,8 @@
 {
     if (![super validateValue:value error:outError]) {
         return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value)) {
-        // This will only happen if nil or null is allowed
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.substring) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
     
@@ -575,8 +569,6 @@
 
 - (instancetype)initWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive
 {
-    NSParameterAssert(patternString);
-    
     self = [super init];
     if (self) {
         _patternString = [patternString copy];
@@ -618,8 +610,8 @@
 {
     if (![super validateValue:value error:outError]) {
         return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value)) {
-        // This will only happen if nil or null is allowed
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.patternString) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
     
