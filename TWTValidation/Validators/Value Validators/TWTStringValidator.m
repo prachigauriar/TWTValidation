@@ -78,9 +78,9 @@
 
 #pragma mark
 
-@interface TWTWildcardMatchingStringValidatator ()
+@interface TWTPatternExpressionStringValidator ()
 
-@property (nonatomic, copy) NSString *matchingString;
+@property (nonatomic, copy) NSString *patternString;
 @property (nonatomic, copy) NSString *predicateFormat;
 @property (nonatomic, assign, readwrite) BOOL validatesCase;
 
@@ -138,9 +138,9 @@
 }
 
 
-+ (TWTWildcardMatchingStringValidatator *)stringValidatorWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive
++ (TWTPatternExpressionStringValidator *)stringValidatorWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTWildcardMatchingStringValidatator alloc] initWithMatchingString:matchingString caseSensitive:caseSensitive];
+    return [[TWTPatternExpressionStringValidator alloc] initWithPatternString:patternString caseSensitive:caseSensitive];
 }
 
 @end
@@ -564,7 +564,7 @@
 
 #pragma mark
 
-@implementation TWTWildcardMatchingStringValidatator
+@implementation TWTPatternExpressionStringValidator
 
 - (instancetype)init
 {
@@ -573,12 +573,13 @@
 }
 
 
-- (instancetype)initWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive
+- (instancetype)initWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive
 {
-    NSParameterAssert(matchingString);
+    NSParameterAssert(patternString);
+    
     self = [super init];
     if (self) {
-        _matchingString = [matchingString copy];
+        _patternString = [patternString copy];
         _validatesCase = caseSensitive;
         _predicateFormat = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[cd]"];
     }
@@ -589,14 +590,14 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     typeof(self) copy = [super copyWithZone:zone];
-    copy.matchingString = self.matchingString;
+    copy.patternString = self.patternString;
     return copy;
 }
 
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.matchingString.hash;
+    return [super hash] ^ self.patternString.hash;
 }
 
 
@@ -609,7 +610,7 @@
     }
     
     typeof(self) other = object;
-    return [other.matchingString isEqualToString:self.matchingString];
+    return [other.patternString isEqualToString:self.patternString];
 }
 
 
@@ -624,7 +625,7 @@
     
     NSInteger errorCode = -1;
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:self.predicateFormat, self.matchingString];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:self.predicateFormat, self.patternString];
     BOOL matches = [predicate evaluateWithObject:value];
     
     if (!matches) {
@@ -634,7 +635,7 @@
     }
 
     if (outError) {
-        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"), self.matchingString];
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"), self.patternString];
         *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
     

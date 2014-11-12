@@ -26,7 +26,7 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringValidator, TWTWildcardMatchingStringValidatator;
+@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringValidator, TWTPatternExpressionStringValidator;
 
 /*!
  Protocol that specifies whether a conforming validator should verify the case of the string it is checking.
@@ -108,13 +108,13 @@
 
 
 /*!
- @abstract Creates and returns a new wildcard based string validator with the specified wild card based string.
- @param matchingString The matching string to use when validating. This string can support the use of
- '?' to match 1 character or '*' to match zero or more characters.
+ @abstract Creates and returns a new wildcard based pattern expression string validator with the specified wild card based string.
+ @param patternString The pattern string to use when validating. This string can support the use of
+    '?' to match 1 character or '*' to match zero or more characters.
  @param caseSensitive Should case be considered when validating
  @return An initialized validator that checks the predicate to validate the value.
  */
-+ (TWTWildcardMatchingStringValidatator *)stringValidatorWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive;
++ (TWTPatternExpressionStringValidator *)stringValidatorWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -256,15 +256,15 @@
 @end
 
 
-@interface TWTWildcardMatchingStringValidatator : TWTStringValidator <TWTCaseSensitiveValidating>
+@interface TWTPatternExpressionStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
 
 /*!
- @abstract Initializes a new wildcard based string validator with the specified wild card based string.
- @param matchingString The matching string to use when validating. This string can support the use of
+ @abstract Initializes a new pattern-expression based string validator with the specified wild card based string.
+ @param patternString The pattern string to use when validating. This string can support the use of
     '?' to match 1 character or '*' to match zero or more characters.
  @param caseSensitive Should case be considered when validating
  @return An initialized validator that checks the predicate to validate the value.
  */
-- (instancetype)initWithMatchingString:(NSString *)matchingString caseSensitive:(BOOL)caseSensitive;
+- (instancetype)initWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive;
 
 @end
