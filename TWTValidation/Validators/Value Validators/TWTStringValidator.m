@@ -120,15 +120,15 @@
 }
 
 
-+ (TWTPrefixStringValidator *)stringValidatorWithPrefixString:(NSString *)prefixString caseSensitive:(BOOL)caseSensitve
++ (TWTPrefixStringValidator *)stringValidatorWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitve
 {
-    return [[TWTPrefixStringValidator alloc] initWithPrefixString:prefixString caseSensitive:caseSensitve];
+    return [[TWTPrefixStringValidator alloc] initWithPrefix:prefix caseSensitive:caseSensitve];
 }
 
 
-+ (TWTSuffixStringValidator *)stringValidatorWithSuffixString:(NSString *)suffixString caseSensitive:(BOOL)caseSensitive
++ (TWTSuffixStringValidator *)stringValidatorWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTSuffixStringValidator alloc] initWithSuffixString:suffixString caseSensitive:caseSensitive];
+    return [[TWTSuffixStringValidator alloc] initWithSuffix:suffix caseSensitive:caseSensitive];
 }
 
 
@@ -138,9 +138,9 @@
 }
 
 
-+ (TWTPatternExpressionStringValidator *)stringValidatorWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive
++ (TWTPatternExpressionStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTPatternExpressionStringValidator alloc] initWithPatternString:patternString caseSensitive:caseSensitive];
+    return [[TWTPatternExpressionStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
 }
 
 @end
@@ -319,11 +319,11 @@
 
 - (instancetype)init
 {
-    return [self initWithPrefixString:nil caseSensitive:YES];
+    return [self initWithPrefix:nil caseSensitive:YES];
 }
 
 
-- (instancetype)initWithPrefixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
+- (instancetype)initWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
 {
     self = [super init];
     if (self) {
@@ -400,11 +400,11 @@
 
 - (instancetype)init
 {
-    return [self initWithSuffixString:nil caseSensitive:YES];
+    return [self initWithSuffix:nil caseSensitive:YES];
 }
 
 
-- (instancetype)initWithSuffixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
+- (instancetype)initWithSuffix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
 {
     self = [super init];
     if (self) {
@@ -562,15 +562,15 @@
 
 - (instancetype)init
 {
-    return [self initWithPatternString:nil caseSensitive:YES];
+    return [self initWithPattern:nil caseSensitive:YES];
 }
 
 
-- (instancetype)initWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive
+- (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
 {
     self = [super init];
     if (self) {
-        _patternString = [patternString copy];
+        _patternString = [pattern copy];
         _validatesCase = caseSensitive;
         
         if (_patternString) {

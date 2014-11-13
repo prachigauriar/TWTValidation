@@ -83,20 +83,20 @@
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings have the matching prefix
- @param prefixString The prefix to validate
+ @param prefix The prefix to validate
  @param caseSensitive Should the validation be case sensitive
  @result A newly created string validator that valdiates that strings have the correct prefix
  */
-+ (TWTPrefixStringValidator *)stringValidatorWithPrefixString:(NSString *)prefixString caseSensitive:(BOOL)caseSensitive;
++ (TWTPrefixStringValidator *)stringValidatorWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
 
 
 /*!
  @abstract Create and returns a new string validator that validates that strings have the matching suffix
- @param suffixString The suffix to validate
+ @param suffix The suffix to validate
  @param caseSensitive Should the valdiation be case sensitive
  @result A newly created string validator that validates that strings have the correct suffix
  */
-+ (TWTSuffixStringValidator *)stringValidatorWithSuffixString:(NSString *)suffixString caseSensitive:(BOOL)caseSensitive;
++ (TWTSuffixStringValidator *)stringValidatorWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
 
 
 /*!
@@ -110,12 +110,12 @@
 
 /*!
  @abstract Creates and returns a new wildcard based pattern expression string validator with the specified wild card based string.
- @param patternString The pattern string to use when validating. This string can support the use of
+ @param pattern The pattern string to use when validating. This string can support the use of
     '?' to match 1 character or '*' to match zero or more characters.
  @param caseSensitive Should case be considered when validating
  @result An initialized validator that checks the predicate to validate the value.
  */
-+ (TWTPatternExpressionStringValidator *)stringValidatorWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive;
++ (TWTPatternExpressionStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -204,7 +204,7 @@
  @param caseSensitive Should case be considered when validating the prefix
  @return An initialized validator that checks the prefix of the value
  */
-- (instancetype)initWithPrefixString:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
+- (instancetype)initWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -228,7 +228,7 @@
  @param caseSensitive Should case be considered when validating
  @return An initialized validator that checks the suffix of the value
  */
-- (instancetype)initWithSuffixString:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
+- (instancetype)initWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -261,11 +261,11 @@
 
 /*!
  @abstract Initializes a new pattern-expression based string validator with the specified wild card based string.
- @param patternString The pattern string to use when validating. This string can support the use of
+ @param pattern The pattern string to use when validating. This string can support the use of
     '?' to match 1 character or '*' to match zero or more characters.
  @param caseSensitive Should case be considered when validating
  @return An initialized validator that checks the predicate to validate the value.
  */
-- (instancetype)initWithPatternString:(NSString *)patternString caseSensitive:(BOOL)caseSensitive;
+- (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 
 @end

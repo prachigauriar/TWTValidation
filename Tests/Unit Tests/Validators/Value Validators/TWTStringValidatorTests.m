@@ -263,11 +263,11 @@
     NSString *value = [prefix uppercaseString];
     
     // validate with case sensitive
-    TWTPrefixStringValidator *validator = [[TWTPrefixStringValidator alloc] initWithPrefixString:prefix caseSensitive:YES];
+    TWTPrefixStringValidator *validator = [[TWTPrefixStringValidator alloc] initWithPrefix:prefix caseSensitive:YES];
     XCTAssertFalse([validator validateValue:value error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive
-    validator = [TWTStringValidator stringValidatorWithPrefixString:prefix caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:NO];
     XCTAssertTrue([validator validateValue:value error:NULL], @"fails with matching string");
 
     // validate with invalid value
@@ -290,11 +290,11 @@
     NSString *value = [suffix uppercaseString];
     
     // validate with case sensitive
-    TWTSuffixStringValidator *validator = [[TWTSuffixStringValidator alloc] initWithSuffixString:suffix caseSensitive:YES];
+    TWTSuffixStringValidator *validator = [[TWTSuffixStringValidator alloc] initWithSuffix:suffix caseSensitive:YES];
     XCTAssertFalse([validator validateValue:value error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive
-    validator = [TWTStringValidator stringValidatorWithSuffixString:suffix caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:NO];
     XCTAssertTrue([validator validateValue:value error:NULL], @"fails with matching string");
     
     // validate with invalid value
@@ -343,25 +343,25 @@
     
     // validate with case sensitive with * character
     NSString *patternString = [NSString stringWithFormat:@"%@.*", seed];
-    TWTPatternExpressionStringValidator *validator = [[TWTPatternExpressionStringValidator alloc] initWithPatternString:patternString caseSensitive:YES];
+    TWTPatternExpressionStringValidator *validator = [[TWTPatternExpressionStringValidator alloc] initWithPattern:patternString caseSensitive:YES];
     
     NSString *wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
     XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive with * character
-    validator = [TWTStringValidator stringValidatorWithPatternString:patternString caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:NO];
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
     XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
     
     // validate with case sensitive with ? character
     patternString = [NSString stringWithFormat:@"%@.?", seed];
-    validator = [TWTStringValidator stringValidatorWithPatternString:patternString caseSensitive:YES];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:YES];
     
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
     XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive with ? character
-    validator = [TWTStringValidator stringValidatorWithPatternString:patternString caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:NO];
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
     XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
     
