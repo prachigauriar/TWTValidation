@@ -47,6 +47,45 @@
 
 @end
 
+#pragma mark
+
+@interface TWTPrefixStringValidator ()
+
+@property (nonatomic, copy, readwrite) NSString *prefix;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
+#pragma mark
+
+@interface TWTSuffixStringValidator ()
+
+@property (nonatomic, copy, readwrite) NSString *suffix;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
+
+#pragma mark
+
+@interface TWTSubstringValidator ()
+
+@property (nonatomic, copy, readwrite) NSString *substring;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
+
+#pragma mark
+
+@interface TWTPatternExpressionStringValidator ()
+
+@property (nonatomic, strong) NSPredicate *predicate;
+@property (nonatomic, copy) NSString *patternString;
+@property (nonatomic, assign, readwrite) BOOL validatesCase;
+
+@end
+
 
 #pragma mark
 
@@ -78,6 +117,30 @@
 + (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options
 {
     return [[TWTRegularExpressionStringValidator alloc] initWithRegularExpression:regularExpression options:options];
+}
+
+
++ (TWTPrefixStringValidator *)stringValidatorWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitve
+{
+    return [[TWTPrefixStringValidator alloc] initWithPrefix:prefix caseSensitive:caseSensitve];
+}
+
+
++ (TWTSuffixStringValidator *)stringValidatorWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive
+{
+    return [[TWTSuffixStringValidator alloc] initWithSuffix:suffix caseSensitive:caseSensitive];
+}
+
+
++ (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
+{
+    return [[TWTSubstringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
+}
+
+
++ (TWTPatternExpressionStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
+{
+    return [[TWTPatternExpressionStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
 }
 
 @end
@@ -247,5 +310,330 @@
 
     return NO;
 }
+
+@end
+
+#pragma mark
+
+@implementation TWTPrefixStringValidator
+
+- (instancetype)init
+{
+    return [self initWithPrefix:nil caseSensitive:YES];
+}
+
+
+- (instancetype)initWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
+{
+    self = [super init];
+    if (self) {
+        _prefix = [prefix copy];
+        _validatesCase = caseSensitive;
+    }
+    
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.prefix = self.prefix;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.prefix.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.prefix isEqualToString:self.prefix];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.prefix) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    NSStringCompareOptions options = (self.validatesCase ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch;
+    NSRange range = [value rangeOfString:self.prefix
+                                 options:options];
+
+    if (range.location == NSNotFound) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+    
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTPrefixStringValidator.validationError.format"), self.prefix];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTSuffixStringValidator
+
+- (instancetype)init
+{
+    return [self initWithSuffix:nil caseSensitive:YES];
+}
+
+
+- (instancetype)initWithSuffix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive
+{
+    self = [super init];
+    if (self) {
+        _suffix = [prefix copy];
+        _validatesCase = caseSensitive;
+    }
+    
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.suffix = self.suffix;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.suffix.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.suffix isEqualToString:self.suffix];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.suffix) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    NSStringCompareOptions options = (self.validatesCase ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch | NSBackwardsSearch;
+    NSRange range = [value rangeOfString:self.suffix
+                                 options:options];
+    
+    if (range.location == NSNotFound) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+    
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSuffixStringValidator.validationError.format"), self.suffix];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTSubstringValidator
+
+- (instancetype)init
+{
+    return [self initWithSubstring:nil caseSensitive:YES];
+}
+
+
+- (instancetype)initWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
+{
+    self = [super init];
+    if (self) {
+        _substring = [substring copy];
+        _validatesCase = caseSensitive;
+    }
+    
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.substring = self.substring;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.substring.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.substring isEqualToString:self.substring];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.substring) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    NSStringCompareOptions options = self.validatesCase ? 0 : NSCaseInsensitiveSearch;
+    NSRange range = [value rangeOfString:self.substring
+                                 options:options];
+    
+    if (range.location == NSNotFound) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+    
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSubstringValidator.validationError.format"), self.substring];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTPatternExpressionStringValidator
+
+- (instancetype)init
+{
+    return [self initWithPattern:nil caseSensitive:YES];
+}
+
+
+- (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
+{
+    self = [super init];
+    if (self) {
+        _patternString = [pattern copy];
+        _validatesCase = caseSensitive;
+        
+        if (_patternString) {
+            NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[c]"];
+            _predicate = [NSPredicate predicateWithFormat:predicateString, _patternString];
+        }
+    }
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.patternString = self.patternString;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.patternString.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.patternString isEqualToString:self.patternString];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.patternString) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
+        return YES;
+    }
+    
+    NSInteger errorCode = -1;
+    
+    BOOL matches = [self.predicate evaluateWithObject:value];
+    if (!matches) {
+        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
+    } else {
+        return YES;
+    }
+
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"), self.patternString];
+        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+    }
+    
+    return NO;
+}
+
 
 @end

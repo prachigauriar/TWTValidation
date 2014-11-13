@@ -105,7 +105,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
 
     /*! Indicates a value does not match the required format. */
     TWTValidationErrorCodeValueDoesNotMatchFormat,
-
+    
     /*! Indicates a value’s length is less than the smallest allowed length. */
     TWTValidationErrorCodeLengthLessThanMinimum,
 

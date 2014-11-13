@@ -52,6 +52,10 @@
 "TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format" = "string length (%1$lu) is less than minimum length (%2$lu)";
 "TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format" = "string length (%1$lu) is greater than maximum length (%2$lu)";
 "TWTRegularExpressionStringValidator.validationError" = "string does not match regular expression (%1$@)";
+"TWTPrefixStringValidator.validationError.format" = "string does not match prefix (%1$@)";
+"TWTSuffixStringValidator.validationError.format" = "string does not match suffix (%1$@)";
+"TWTSubstringValidator.validationError.format" = "string does not contain substring (%1$@)";
+"TWTWildcardMatchingStringValidatator.validationError.format" = "string does not match the pattern (%1$@)";
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";
