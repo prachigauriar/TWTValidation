@@ -52,7 +52,7 @@
 @interface TWTPrefixStringValidator ()
 
 @property (nonatomic, copy, readwrite) NSString *prefix;
-@property (nonatomic, assign, readwrite) BOOL validatesCase;
+@property (nonatomic, assign, readwrite, getter = isCaseSensitive) BOOL caseSensitive;
 
 @end
 
@@ -61,28 +61,28 @@
 @interface TWTSuffixStringValidator ()
 
 @property (nonatomic, copy, readwrite) NSString *suffix;
-@property (nonatomic, assign, readwrite) BOOL validatesCase;
+@property (nonatomic, assign, readwrite, getter = isCaseSensitive) BOOL caseSensitive;
 
 @end
 
 
 #pragma mark
 
-@interface TWTSubstringValidator ()
+@interface TWTSubstringStringValidator ()
 
 @property (nonatomic, copy, readwrite) NSString *substring;
-@property (nonatomic, assign, readwrite) BOOL validatesCase;
+@property (nonatomic, assign, readwrite, getter = isCaseSensitive) BOOL caseSensitive;
 
 @end
 
 
 #pragma mark
 
-@interface TWTPatternExpressionStringValidator ()
+@interface TWTWildcardPatternStringValidator ()
 
 @property (nonatomic, strong) NSPredicate *predicate;
-@property (nonatomic, copy) NSString *patternString;
-@property (nonatomic, assign, readwrite) BOOL validatesCase;
+@property (nonatomic, copy) NSString *wildcardPattern;
+@property (nonatomic, assign, readwrite, getter = isCaseSensitive) BOOL caseSensitive;
 
 @end
 
@@ -132,15 +132,15 @@
 }
 
 
-+ (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
++ (TWTSubstringStringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTSubstringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
+    return [[TWTSubstringStringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
 }
 
 
-+ (TWTPatternExpressionStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
++ (TWTWildcardPatternStringValidator *)stringValidatorWithWildcardPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
 {
-    return [[TWTPatternExpressionStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
+    return [[TWTWildcardPatternStringValidator alloc] initWithWildcardPattern:pattern caseSensitive:caseSensitive];
 }
 
 @end
@@ -328,7 +328,7 @@
     self = [super init];
     if (self) {
         _prefix = [prefix copy];
-        _validatesCase = caseSensitive;
+        _caseSensitive = caseSensitive;
     }
     
     return self;
@@ -339,6 +339,7 @@
 {
     typeof(self) copy = [super copyWithZone:zone];
     copy.prefix = self.prefix;
+    copy.caseSensitive = self.isCaseSensitive;
     return copy;
 }
 
@@ -358,7 +359,7 @@
     }
     
     typeof(self) other = object;
-    return [other.prefix isEqualToString:self.prefix];
+    return other.isCaseSensitive == self.isCaseSensitive && [other.prefix isEqualToString:self.prefix];
 }
 
 
@@ -370,22 +371,18 @@
         // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
-    
-    NSInteger errorCode = -1;
-    
-    NSStringCompareOptions options = (self.validatesCase ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch;
-    NSRange range = [value rangeOfString:self.prefix
-                                 options:options];
 
-    if (range.location == NSNotFound) {
-        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
-    } else {
+    NSRange range = [value rangeOfString:self.prefix options:(self.isCaseSensitive ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch];
+    if (range.location != NSNotFound) {
         return YES;
     }
-    
+
     if (outError) {
         NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTPrefixStringValidator.validationError.format"), self.prefix];
-        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
     }
     
     return NO;
@@ -409,7 +406,7 @@
     self = [super init];
     if (self) {
         _suffix = [prefix copy];
-        _validatesCase = caseSensitive;
+        _caseSensitive = caseSensitive;
     }
     
     return self;
@@ -420,6 +417,7 @@
 {
     typeof(self) copy = [super copyWithZone:zone];
     copy.suffix = self.suffix;
+    copy.caseSensitive = self.isCaseSensitive;
     return copy;
 }
 
@@ -439,7 +437,7 @@
     }
     
     typeof(self) other = object;
-    return [other.suffix isEqualToString:self.suffix];
+    return other.isCaseSensitive == self.isCaseSensitive && [other.suffix isEqualToString:self.suffix];
 }
 
 
@@ -452,21 +450,17 @@
         return YES;
     }
     
-    NSInteger errorCode = -1;
-    
-    NSStringCompareOptions options = (self.validatesCase ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch | NSBackwardsSearch;
-    NSRange range = [value rangeOfString:self.suffix
-                                 options:options];
-    
-    if (range.location == NSNotFound) {
-        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
-    } else {
+    NSRange range = [value rangeOfString:self.suffix options:(self.isCaseSensitive ? 0 : NSCaseInsensitiveSearch) | NSAnchoredSearch | NSBackwardsSearch];
+    if (range.location != NSNotFound) {
         return YES;
     }
     
     if (outError) {
         NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSuffixStringValidator.validationError.format"), self.suffix];
-        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
     }
     
     return NO;
@@ -477,7 +471,7 @@
 
 #pragma mark
 
-@implementation TWTSubstringValidator
+@implementation TWTSubstringStringValidator
 
 - (instancetype)init
 {
@@ -490,7 +484,7 @@
     self = [super init];
     if (self) {
         _substring = [substring copy];
-        _validatesCase = caseSensitive;
+        _caseSensitive = caseSensitive;
     }
     
     return self;
@@ -500,6 +494,7 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     typeof(self) copy = [super copyWithZone:zone];
+    copy.caseSensitive = self.isCaseSensitive;
     copy.substring = self.substring;
     return copy;
 }
@@ -520,7 +515,7 @@
     }
     
     typeof(self) other = object;
-    return [other.substring isEqualToString:self.substring];
+    return other.isCaseSensitive == self.isCaseSensitive && [other.substring isEqualToString:self.substring];
 }
 
 
@@ -535,7 +530,7 @@
     
     NSInteger errorCode = -1;
     
-    NSStringCompareOptions options = self.validatesCase ? 0 : NSCaseInsensitiveSearch;
+    NSStringCompareOptions options = self.caseSensitive ? 0 : NSCaseInsensitiveSearch;
     NSRange range = [value rangeOfString:self.substring
                                  options:options];
     
@@ -558,24 +553,24 @@
 
 #pragma mark
 
-@implementation TWTPatternExpressionStringValidator
+@implementation TWTWildcardPatternStringValidator
 
 - (instancetype)init
 {
-    return [self initWithPattern:nil caseSensitive:YES];
+    return [self initWithWildcardPattern:nil caseSensitive:YES];
 }
 
 
-- (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
+- (instancetype)initWithWildcardPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
 {
     self = [super init];
     if (self) {
-        _patternString = [pattern copy];
-        _validatesCase = caseSensitive;
+        _wildcardPattern = [pattern copy];
+        _caseSensitive = caseSensitive;
         
-        if (_patternString) {
+        if (_wildcardPattern) {
             NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[c]"];
-            _predicate = [NSPredicate predicateWithFormat:predicateString, _patternString];
+            _predicate = [NSPredicate predicateWithFormat:predicateString, _wildcardPattern];
         }
     }
     return self;
@@ -585,14 +580,16 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     typeof(self) copy = [super copyWithZone:zone];
-    copy.patternString = self.patternString;
+    copy.wildcardPattern = self.wildcardPattern;
+    copy.caseSensitive = self.isCaseSensitive;
+    copy.predicate = self.predicate;
     return copy;
 }
 
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.patternString.hash;
+    return [super hash] ^ self.wildcardPattern.hash;
 }
 
 
@@ -605,7 +602,7 @@
     }
     
     typeof(self) other = object;
-    return [other.patternString isEqualToString:self.patternString];
+    return other.isCaseSensitive == self.isCaseSensitive && [other.wildcardPattern isEqualToString:self.wildcardPattern];
 }
 
 
@@ -613,23 +610,22 @@
 {
     if (![super validateValue:value error:outError]) {
         return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value) || !self.patternString) {
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.wildcardPattern) {
         // This will only happen if nil or null is allowed or the default expectations are not met
         return YES;
     }
     
-    NSInteger errorCode = -1;
-    
-    BOOL matches = [self.predicate evaluateWithObject:value];
-    if (!matches) {
-        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
-    } else {
+    if ([self.predicate evaluateWithObject:value]) {
         return YES;
     }
 
     if (outError) {
-        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"), self.patternString];
-        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardMatchingStringValidatator.validationError.format"),
+                                                           self.wildcardPattern];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
     }
     
     return NO;
