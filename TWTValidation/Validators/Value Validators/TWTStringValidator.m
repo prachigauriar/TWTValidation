@@ -528,21 +528,17 @@
         return YES;
     }
     
-    NSInteger errorCode = -1;
-    
-    NSStringCompareOptions options = self.caseSensitive ? 0 : NSCaseInsensitiveSearch;
-    NSRange range = [value rangeOfString:self.substring
-                                 options:options];
-    
-    if (range.location == NSNotFound) {
-        errorCode = TWTValidationErrorCodeValueDoesNotMatchFormat;
-    } else {
+    NSRange range = [value rangeOfString:self.substring options:(self.isCaseSensitive ? 0 : NSCaseInsensitiveSearch)];
+    if (range.location != NSNotFound) {
         return YES;
     }
     
     if (outError) {
         NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTSubstringValidator.validationError.format"), self.substring];
-        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
     }
     
     return NO;
@@ -630,6 +626,5 @@
     
     return NO;
 }
-
 
 @end
