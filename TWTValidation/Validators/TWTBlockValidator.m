@@ -26,6 +26,8 @@
 
 #import <TWTValidation/TWTBlockValidator.h>
 
+#import <TWTValidation/TWTValidationErrors.h>
+
 
 @interface TWTBlockValidator ()
 
@@ -74,7 +76,23 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    return !self.block || self.block(value, outError);
+    if (!self.block) {
+        return YES;
+    }
+
+    NSError *error = nil;
+    BOOL valid = self.block(value, outError ? &error : NULL);
+    if (!valid && outError && error) {
+        if (error.twt_failingValidator) {
+            *outError = error;
+        } else {
+            NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
+            userInfo[TWTValidationFailingValidatorKey] = self;
+            *outError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
+        }
+    }
+
+    return valid;
 }
 
 @end

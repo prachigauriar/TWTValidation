@@ -102,8 +102,12 @@
     NSUInteger randomLength = 1 + random() % 10;
     NSError *randomError = UMKRandomError();
     TWTValidationBlock validationBlock = [self stringValidationBlockWithLength:randomLength error:randomError];
+
     validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
-    
+    NSMutableDictionary *userInfo = [randomError.userInfo mutableCopy];
+    userInfo[TWTValidationFailingValidatorKey] = validator;
+    randomError = [NSError errorWithDomain:randomError.domain code:randomError.code userInfo:userInfo];
+
     // Validation succeeds
     error = nil;
     XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength) error:NULL], @"validator returns NO");
