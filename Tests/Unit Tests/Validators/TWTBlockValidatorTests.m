@@ -104,9 +104,6 @@
     TWTValidationBlock validationBlock = [self stringValidationBlockWithLength:randomLength error:randomError];
 
     validator = [[TWTBlockValidator alloc] initWithBlock:validationBlock];
-    NSMutableDictionary *userInfo = [randomError.userInfo mutableCopy];
-    userInfo[TWTValidationFailingValidatorKey] = validator;
-    randomError = [NSError errorWithDomain:randomError.domain code:randomError.code userInfo:userInfo];
 
     // Validation succeeds
     error = nil;
@@ -114,9 +111,15 @@
     XCTAssertTrue([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength) error:&error], @"validator returns NO");
 
     // Validation fails
+    NSString *value = UMKRandomUnicodeStringWithLength(randomLength + 1 + random() % 10);
+    NSMutableDictionary *userInfo = [randomError.userInfo mutableCopy];
+    userInfo[TWTValidationFailingValidatorKey] = validator;
+    userInfo[TWTValidationValidatedValueKey] = value;
+    randomError = [NSError errorWithDomain:randomError.domain code:randomError.code userInfo:userInfo];
+
     error = nil;
-    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength + 1 + random() % 10) error:NULL], @"validator returns YES");
-    XCTAssertFalse([validator validateValue:UMKRandomUnicodeStringWithLength(randomLength + 1 + random() % 10) error:&error], @"validator returns YES");
+    XCTAssertFalse([validator validateValue:value error:NULL], @"validator returns YES");
+    XCTAssertFalse([validator validateValue:value error:&error], @"validator returns YES");
     XCTAssertEqualObjects(error, randomError, @"returns incorrect error");
 }
 

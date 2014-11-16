@@ -30,6 +30,8 @@
  @abstract The block signature for validation blocks.
  @param value The value to validate.
  @param outError A pointer to an error object to return indirectly. If NULL, no error should be returned.
+     TWTBlockValidators will automatically add the failing validator and validated value to this error’s
+     userInfo dictionary.
  @result Whether the specified value is valid.
  */
 typedef BOOL (^TWTValidationBlock)(id value, NSError *__autoreleasing *outError);

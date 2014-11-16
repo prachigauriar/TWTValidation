@@ -82,14 +82,14 @@
 
     NSError *error = nil;
     BOOL valid = self.block(value, outError ? &error : NULL);
-    if (!valid && outError && error) {
-        if (error.twt_failingValidator) {
-            *outError = error;
-        } else {
-            NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
-            userInfo[TWTValidationFailingValidatorKey] = self;
-            *outError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
+    if (!valid && error) {
+        NSMutableDictionary *userInfo = [error.userInfo mutableCopy];
+        userInfo[TWTValidationFailingValidatorKey] = self;
+        if (value) {
+            userInfo[TWTValidationValidatedValueKey] = value;
         }
+
+        *outError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
     }
 
     return valid;
