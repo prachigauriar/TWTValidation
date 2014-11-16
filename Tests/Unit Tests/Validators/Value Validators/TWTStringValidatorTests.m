@@ -716,12 +716,12 @@
     NSString *pattern = UMKRandomUnicodeString();
     BOOL caseSensitive = UMKRandomBoolean();
 
-    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithWildcardPattern:pattern caseSensitive:caseSensitive];
+    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqualObjects(validator.wildcardPattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqualObjects(validator.pattern, pattern, @"pattern is not set correctly");
     XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
 
     validator = [[TWTWildcardPatternStringValidator alloc] init];
@@ -729,15 +729,15 @@
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertNil(validator.wildcardPattern, @"pattern is non-nil");
+    XCTAssertNil(validator.pattern, @"pattern is non-nil");
     XCTAssertTrue(validator.isCaseSensitive, @"caseSensitive is initially NO");
 
-    validator = [[TWTWildcardPatternStringValidator alloc] initWithWildcardPattern:pattern caseSensitive:caseSensitive];
+    validator = [[TWTWildcardPatternStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqualObjects(validator.wildcardPattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqualObjects(validator.pattern, pattern, @"pattern is not set correctly");
     XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
 }
 
@@ -749,7 +749,7 @@
     NSString *pattern = UMKRandomUnicodeString();
     BOOL caseSensitive = UMKRandomBoolean();
 
-    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithWildcardPattern:pattern caseSensitive:caseSensitive];
+    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
     validator.allowsNil = allowsNil;
     validator.allowsNull = allowsNull;
 
@@ -759,7 +759,7 @@
     XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
     XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
     XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
-    XCTAssertEqualObjects(copy.wildcardPattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqualObjects(copy.pattern, pattern, @"pattern is not set correctly");
     XCTAssertEqual(copy.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
 }
 
@@ -769,8 +769,8 @@
     NSString *pattern = UMKRandomUnicodeString();
     BOOL caseSensitive = UMKRandomBoolean();
 
-    TWTWildcardPatternStringValidator *validator1 = [TWTStringValidator stringValidatorWithWildcardPattern:pattern caseSensitive:caseSensitive];
-    TWTWildcardPatternStringValidator *validator2 = [TWTStringValidator stringValidatorWithWildcardPattern:pattern caseSensitive:caseSensitive];
+    TWTWildcardPatternStringValidator *validator1 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
+    TWTWildcardPatternStringValidator *validator2 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
 
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
@@ -792,13 +792,13 @@
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
     // WildcardPattern
-    validator2 = [TWTStringValidator stringValidatorWithWildcardPattern:[pattern stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
+    validator2 = [TWTStringValidator stringValidatorWithPattern:[pattern stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
     // Case-sensitive
-    validator2 = [TWTStringValidator stringValidatorWithWildcardPattern:pattern caseSensitive:!caseSensitive];
+    validator2 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:!caseSensitive];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
@@ -811,25 +811,25 @@
     
     // validate with case sensitive with * character
     NSString *patternString = [NSString stringWithFormat:@"%@.*", seed];
-    TWTWildcardPatternStringValidator *validator = [[TWTWildcardPatternStringValidator alloc] initWithWildcardPattern:patternString caseSensitive:YES];
+    TWTWildcardPatternStringValidator *validator = [[TWTWildcardPatternStringValidator alloc] initWithPattern:patternString caseSensitive:YES];
     
     NSString *wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
     XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive with * character
-    validator = [TWTStringValidator stringValidatorWithWildcardPattern:patternString caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:NO];
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
     XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
     
     // validate with case sensitive with ? character
     patternString = [NSString stringWithFormat:@"%@.?", seed];
-    validator = [TWTStringValidator stringValidatorWithWildcardPattern:patternString caseSensitive:YES];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:YES];
     
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
     XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive with ? character
-    validator = [TWTStringValidator stringValidatorWithWildcardPattern:patternString caseSensitive:NO];
+    validator = [TWTStringValidator stringValidatorWithPattern:patternString caseSensitive:NO];
     wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericStringWithLength(1)];
     XCTAssertTrue([validator validateValue:wildcardValue error:NULL], @"fails with matching string");
     

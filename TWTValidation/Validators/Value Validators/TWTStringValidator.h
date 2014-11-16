@@ -115,7 +115,7 @@
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @result A newly created string validator that validates that strings match the specified wildcard pattern.
  */
-+ (TWTWildcardPatternStringValidator *)stringValidatorWithWildcardPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
++ (TWTWildcardPatternStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -269,7 +269,7 @@
  @discussion The '?' wildcard matches one character, and the '*' wildcard matches zero or more characters.
      If nil, all strings are considered valid. nil by default.
  */
-@property (nonatomic, copy, readonly) NSString *wildcardPattern;
+@property (nonatomic, copy, readonly) NSString *pattern;
 
 /*!
  @abstract Initializes a new wildcard pattern string validator with the specified wildcard pattern.
@@ -278,6 +278,6 @@
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @return An initialized wildcard pattern validator with the specified wildcard pattern.
  */
-- (instancetype)initWithWildcardPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
+- (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 
 @end
