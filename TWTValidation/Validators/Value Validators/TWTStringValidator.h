@@ -78,7 +78,7 @@
 /*!
  @abstract Creates and returns a new string validator that validates that strings match the specified regular
      expression.
- @param regularExpression The regular expression.
+ @param regularExpression The regular expression. If nil, all strings pass validation.
  @param options The regular expression matching options to use when validating values.
  @result A newly created string validator that validates that strings match the specified regular expression.
  */
@@ -86,7 +86,7 @@
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings have the specified prefix.
- @param prefix The string that must prefix valid strings.
+ @param prefix The string that must prefix valid strings. If nil, all strings pass validation.
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @result A newly created string validator that validates that strings have the specified prefix.
  */
@@ -94,7 +94,7 @@
 
 /*!
  @abstract Create and returns a new string validator that validates that strings have the specified suffix.
- @param suffix The string that must suffix valid strings.
+ @param suffix The string that must suffix valid strings. If nil, all strings pass validation.
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @result A newly created string validator that validates that strings have the specified suffix.
  */
@@ -102,7 +102,7 @@
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings contain the specified substring.
- @param substring The substring that valid strings must contain.
+ @param substring The substring that valid strings must contain. If nil, all strings pass validation.
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @result A newly created string validator that validates that strings contain the specified substring.
  */
@@ -111,7 +111,7 @@
 /*!
  @abstract Creates and returns a new wildcard pattern string validator with the specified wildcard pattern.
  @param pattern The wildcard pattern that valid strings must match. The '?' wildcard matches one character,
-     and the '*' wildcard matches zero or more characters.
+     and the '*' wildcard matches zero or more characters. If nil, all strings pass validation.
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
  @result A newly created string validator that validates that strings match the specified wildcard pattern.
  */

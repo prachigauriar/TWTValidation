@@ -14,7 +14,7 @@ TWTValidation 1.1 adds several new validators and updates existing validators to
 * `TWTValueSetValidator` validates that a value is in a set of valid values.
 * `TWTPrefixStringValidator` ensures that a string has a given prefix.
 * `TWTSuffixStringValidator` ensures that a string has a given suffix.
-* `TWTSubstringStringValidators` validate that a string contains a particular substring.
+* `TWTSubstringStringValidator` validates that a string contains a particular substring.
 * `TWTWildcardPatternStringValidator` validates that a string matches a wildcard pattern. Wildcard
   patterns support the use of the `*` and `?` wildcard characters.
 
