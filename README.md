@@ -5,6 +5,35 @@ validating individual objects and collections, and for combining multiple valida
 operators to create more complex validations.
 
 
+## What’s New in 1.1
+
+TWTValidation 1.1 adds several new validators and updates existing validators to be more flexible.
+
+### Additions
+
+* `TWTValueSetValidator` validates that a value is in a set of valid values.
+* `TWTPrefixStringValidator` ensures that a string has a given prefix.
+* `TWTSuffixStringValidator` ensures that a string has a given suffix.
+* `TWTSubstringStringValidator` validates that a string contains a particular substring.
+* `TWTWildcardPatternStringValidator` validates that a string matches a wildcard pattern. Wildcard
+  patterns support the use of the `*` and `?` wildcard characters.
+
+### Updates
+  
+* `TWTCollectionValidator` checks that values respond to `-count` and conform to the
+  `NSFastEnumeration` protocol before attempting to validate the value. Previously, if value did not
+  meet those criteria, a crash would occur inside `-validateValue:error:`.
+* Similarly, `TWTKeyedCollectionValidator` checks that values respond to `-count` and `-objectForKey:`
+  and conform to the `NSFastEnumeration` protocol before attempting to validate the value. 
+* `TWTNumberValidator` now allows for exclusive minimum and maximum values, which validate that a
+  value is strictly greater than a minimum or strictly less than a maximum, respectively.
+* `TWTKeyValueCodingValidator` now attempts to get a key’s validators using `-twt_validatorsForKey:`
+  before using `+twt_validatorsForKey`. This enables dynamic validators based on an instance’s state.
+  See the class documentation for more information.
+* All validation errors now include the failing validator in the error’s `userInfo` dictionary. This 
+  can be retrieved using `-[NSError twt_failingValidator]`.
+
+
 ## Features
 
 * Simple, well-documented, and well-tested Objective-C API
@@ -26,7 +55,7 @@ operators to create more complex validations.
 
 The easiest way to start using TWTValidation is to install it with CocoaPods.
 
-    pod 'TWTValidation', '~> 1.0.1'
+    pod 'TWTValidation', '~> 1.1'
 
 You can also build it and include the built products in your project. For OS X, just add
 `TWTValidation.framework` to your project. For iOS, add TWTValidation’s public headers to your
@@ -64,8 +93,9 @@ not `nil`, and not the `NSNull` instance.
     [validator validateValue:nil error:&error];             // Returns NO
     
 More useful validations are performed by `TWTValueValidator`’s subclasses, `TWTStringValidator` and 
-`TWTNumberValidator`. String validators can validate that a value is a string and either matches a 
-specified regular expression or has a length within a specified range:
+`TWTNumberValidator`. String validators can validate that a value is a string and has a given prefix or
+suffix; contains a given substring; matches a specified wildcard pattern or regular expression;
+or has a length within a specified range:
 
     NSRegularExpression *regEx = [[NSRegularExpression alloc] initWithPattern:@"^[A-Z][a-z]+$"
                                                                       options:0
@@ -80,6 +110,23 @@ specified regular expression or has a length within a specified range:
     validator = [TWTStringValidator stringValidatorWithMinimumLength:4 maximumLength:10];
     [validator validateValue:@"Foobar" error:&error];       // Returns YES
     [validator validateValue:@"Foo" error:&error];          // Returns NO
+
+    validator = [TWTStringValidator stringValidatorWithPrefix:@"foob" caseSensitive:NO];
+    [validator validateValue:@"Foobar" error:&error];       // Returns YES
+    [validator validateValue:@"Foo" error:&error];          // Returns NO
+
+    validator = [TWTStringValidator stringValidatorWithSuffix:@"oo" caseSensitive:YES];
+    [validator validateValue:@"Foobar" error:&error];       // Returns NO
+    [validator validateValue:@"Foo" error:&error];          // Returns YES
+
+    validator = [TWTStringValidator stringValidatorWithSubstring:@"OBA" caseSensitive:NO];
+    [validator validateValue:@"Foobar" error:&error];       // Returns YES
+    [validator validateValue:@"Foo" error:&error];          // Returns NO
+
+    validator = [TWTStringValidator stringValidatorWithPattern:@"*oo*" caseSensitive:YES];
+    [validator validateValue:@"Foobar" error:&error];       // Returns YES
+    [validator validateValue:@"Foo" error:&error];          // Returns YES
+
     
 Number validators ensure that a number is within a specified range and optionally has no fractional
 part.
@@ -89,6 +136,9 @@ part.
     NSError *error = nil;
     [validator validateValue:@15.333 error:&error];         // Returns YES
     [validator validateValue:@3 error:&error];              // Returns NO
+
+    validator.exclusiveMinimum = YES;
+    [validator validateValue:@10 error:&error];              // Returns NO
 
     validator.requiresIntegralValue = YES;
     [validator validateValue:@15.333 error:&error];         // Returns NO
@@ -130,10 +180,8 @@ using logical operations like AND, OR, and NOT.
 
 `TWTBlockValidator`s allow you to specify a block to perform arbitrary validations.
 
-    NSSet *allowedValues = [NSSet setWithObjects:@"value1", @"value2", @"value3", nil];
-
     TWTBlockValidator *validator = [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError **error) {
-        BOOL validated = [allowedValues containsObject:value];
+        BOOL validated = [value isKindOfClass:[NSNumber class]] && value.integerValue % 2 == 0;
         if (!validated && error) {
             *error = [NSError twt_validationErrorWithCode:5 
                                                     value:value 
@@ -265,12 +313,12 @@ explained using an example:
     }
 
 
-    // Key-value coding validators get the validators for their KVC keys by invoking +twt_validatorsForKey:
-    // on the value’s class. The base implementation simply checks to see if the class implements 
-    // +twt_validatorsFor«Key», where «Key» is the capitalized form of the KVC key. When you have multiple
-    // keys that use the same validators, you can override this implementation. Here, we return the same
-    // validators for firstName and lastName, but rely on the superclass implementation to invoke 
-    // +twt_validatorsForAge to get the validators for the age key.
+    // Key-value coding validators get the validators for their KVC keys by invoking -twt_validatorsForKey:
+    // and +twt_validatorsForKey: on the value’s class. The base implementations of those methods simply check
+    // to see if the class implements -twt_validatorsFor«Key» and +twt_validatorsFor«Key», where «Key» is the
+    // capitalized form of the KVC key. When you have multiple keys that use the same validators, you can override
+    // this implementation. Here, we return the same validators for firstName and lastName, but rely on the 
+    // superclass implementation to invoke -twt_validatorsForAge to get the validators for the age key.
 
     + (NSSet *)twt_validatorsForKey:(NSString *)key
     {
@@ -282,7 +330,7 @@ explained using an example:
     }
 
     
-    + (NSSet *)twt_validatorsForAge
+    - (NSSet *)twt_validatorsForAge
     {
         return [NSSet setWithObject:[[TWTNumberValidator alloc] initWithMinimum:@0 maximum:@130]];
     }

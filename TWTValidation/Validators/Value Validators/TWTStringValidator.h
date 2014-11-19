@@ -26,20 +26,24 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringValidator, TWTPatternExpressionStringValidator;
+@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator,
+       TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringStringValidator,
+       TWTWildcardPatternStringValidator;
+
 
 /*!
- Protocol that specifies whether a conforming validator should verify the case of the string it is checking.
+ Protocol that specifies whether a conforming validator should perform case-sensitive string comparisons.
  */
 @protocol TWTCaseSensitiveValidating <NSObject>
 
 /*!
- @abstract Should the conforming validator validate the case of the string
- @discussion Conforming validators should default to YES.
+ @abstract Whether the receiver should perform case-sensitive string comparisons.
+ @discussion The default should be YES.
  */
-@property (nonatomic, assign, readonly) BOOL validatesCase;
+@property (nonatomic, assign, readonly, getter = isCaseSensitive) BOOL caseSensitive;
 
 @end
+
 
 /*!
  TWTStringValidators validate that values are NSString instances. Its subclasses,
@@ -74,48 +78,44 @@
 /*!
  @abstract Creates and returns a new string validator that validates that strings match the specified regular
      expression.
- @param regularExpression The regular expression.
+ @param regularExpression The regular expression. If nil, all strings pass validation.
  @param options The regular expression matching options to use when validating values.
  @result A newly created string validator that validates that strings match the specified regular expression.
  */
 + (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
 
-
 /*!
- @abstract Creates and returns a new string validator that validates that strings have the matching prefix
- @param prefix The prefix to validate
- @param caseSensitive Should the validation be case sensitive
- @result A newly created string validator that valdiates that strings have the correct prefix
+ @abstract Creates and returns a new string validator that validates that strings have the specified prefix.
+ @param prefix The string that must prefix valid strings. If nil, all strings pass validation.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result A newly created string validator that validates that strings have the specified prefix.
  */
 + (TWTPrefixStringValidator *)stringValidatorWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
 
-
 /*!
- @abstract Create and returns a new string validator that validates that strings have the matching suffix
- @param suffix The suffix to validate
- @param caseSensitive Should the valdiation be case sensitive
- @result A newly created string validator that validates that strings have the correct suffix
+ @abstract Create and returns a new string validator that validates that strings have the specified suffix.
+ @param suffix The string that must suffix valid strings. If nil, all strings pass validation.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result A newly created string validator that validates that strings have the specified suffix.
  */
 + (TWTSuffixStringValidator *)stringValidatorWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
 
+/*!
+ @abstract Creates and returns a new string validator that validates that strings contain the specified substring.
+ @param substring The substring that valid strings must contain. If nil, all strings pass validation.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result A newly created string validator that validates that strings contain the specified substring.
+ */
++ (TWTSubstringStringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
 
 /*!
- @abstract Creates and returns a new string validator that validates that strings have the matching substring
- @param substring The substring to validate
- @param caseSensitive Should the validation be case sensitive
- @result A newly created string validator that validates that strings have the matching substrings
+ @abstract Creates and returns a new wildcard pattern string validator with the specified wildcard pattern.
+ @param pattern The wildcard pattern that valid strings must match. The '?' wildcard matches one character,
+     and the '*' wildcard matches zero or more characters. If nil, all strings pass validation.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result A newly created string validator that validates that strings match the specified wildcard pattern.
  */
-+ (TWTSubstringValidator *)stringValidatorWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
-
-
-/*!
- @abstract Creates and returns a new wildcard based pattern expression string validator with the specified wild card based string.
- @param pattern The pattern string to use when validating. This string can support the use of
-    '?' to match 1 character or '*' to match zero or more characters.
- @param caseSensitive Should case be considered when validating
- @result An initialized validator that checks the predicate to validate the value.
- */
-+ (TWTPatternExpressionStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
++ (TWTWildcardPatternStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 
 @end
 
@@ -178,7 +178,7 @@
  @param regularExpression The regular expression that values must match to be considered valid. If nil, all
      strings are considered valid.
  @param options The matching options to use when checking if a string matches the regular expression.
- @result An initialized regular expression string length validator with the specified regular expression.
+ @result An initialized regular expression string validator with the specified regular expression.
  */
 - (instancetype)initWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options;
 
@@ -187,22 +187,22 @@
 
 /*!
  TWTPrefixStringValidators validate that a string has a specified prefix. There is no need to create
- instances of this directly. Instead use +[TWTStringValidator stringValidatorWithPrefixString:]. This 
- class is exposed so that it may be easily subclassed if necessary.
+ instances of this directly. Instead use +[TWTStringValidator stringValidatorWithPrefix:caseSensitive:].
+ This class is exposed so that it may be easily subclassed if necessary.
  */
 @interface TWTPrefixStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
 
 /*!
- @abstract The prefix to use when validating a string.
- @discussion nil by default
+ @abstract The prefix that strings must have to be considered valid.
+ @discussion If nil, all strings are considered valid. nil by default.
  */
 @property (nonatomic, copy, readonly) NSString *prefix;
 
 /*!
- @abstract Initializes a new prefix string validator with the specified prefix string.
- @param prefix The prefix to use when validating a string
- @param caseSensitive Should case be considered when validating the prefix
- @return An initialized validator that checks the prefix of the value
+ @abstract Initializes a new prefix string validator with the specified prefix.
+ @param prefix The string that must prefix valid strings.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result An initialized prefix string validator with the specified prefix.
  */
 - (instancetype)initWithPrefix:(NSString *)prefix caseSensitive:(BOOL)caseSensitive;
 
@@ -211,22 +211,22 @@
 
 /*!
  TWTSuffixStringValidators validate that a string has a specified prefix. There is no need to create
- instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSuffixString:]. This
- class is exposed so that it may be easily subclassed if necessary.
+ instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSuffix:caseSensitive:].
+ This class is exposed so that it may be easily subclassed if necessary.
  */
 @interface TWTSuffixStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
 
 /*!
- @abstract The suffix to use when validationg a string
- @discussion nil by default
+ @abstract The suffix that strings must have to be considered valid.
+ @discussion If nil, all strings are considered valid. nil by default.
  */
 @property (nonatomic, copy, readonly) NSString *suffix;
 
 /*!
- @abstract Initializes a new suffix string validator with the specified suffix string.
- @param suffix The suffix to use when validating a string
- @param caseSensitive Should case be considered when validating
- @return An initialized validator that checks the suffix of the value
+ @abstract Initializes a new suffix string validator with the specified suffix.
+ @param suffix The string that must suffix valid strings.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result An initialized suffix string validator with the specified suffix.
  */
 - (instancetype)initWithSuffix:(NSString *)suffix caseSensitive:(BOOL)caseSensitive;
 
@@ -234,37 +234,49 @@
 
 
 /*!
- TWTSubstringValidators validate that a string has a specified substring. There is no need
- to create instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSubstring:caseSensitive:].
- This class is exposed so that it may be easily subclassed if necessary.
+ TWTSubstringStringValidators validate that a string contains a specified substring. There is no need
+ to create instances of this directly. Instead use +[TWTStringValidator stringValidatorWithSubstring:
+ caseSensitive:]. This class is exposed so that it may be easily subclassed if necessary.
  */
-@interface TWTSubstringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
+@interface TWTSubstringStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
 
 /*!
- @abstract The substring to search for in the matching string
- @discussion nil by default
+ @abstract The substring that strings must contain to be considered valid.
+ @discussion If nil, all strings are considered valid. nil by default.
  */
 @property (nonatomic, copy, readonly) NSString *substring;
 
 /*!
- @abstract Initializes a new substring validator with the specified substring to search for
- @param substring The substring to use when validating a string
- @param caseSensitive Should case be considered when validating
- @return An initialized validator that checks the substring's existence in the value.
+ @abstract Initializes a new substring string validator with the specified substring.
+ @param substring The substring that valid strings must contain.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @result An initialized substring string validator with the specified substring.
  */
 - (instancetype)initWithSubstring:(NSString *)substring caseSensitive:(BOOL)caseSensitive;
 
 @end
 
 
-@interface TWTPatternExpressionStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
+/*!
+ TWTWildcardPatternStringValidators validate that a string matches a specified wildcard pattern. There is
+ no need to create instances of this directly. Instead use +[TWTStringValidator stringValidatorWithPattern:
+ caseSensitive:]. This class is exposed so that it may be easily subclassed if necessary.
+ */
+@interface TWTWildcardPatternStringValidator : TWTStringValidator <TWTCaseSensitiveValidating>
 
 /*!
- @abstract Initializes a new pattern-expression based string validator with the specified wild card based string.
- @param pattern The pattern string to use when validating. This string can support the use of
-    '?' to match 1 character or '*' to match zero or more characters.
- @param caseSensitive Should case be considered when validating
- @return An initialized validator that checks the predicate to validate the value.
+ @abstract The wildcard pattern that strings must match to be considered valid.
+ @discussion The '?' wildcard matches one character, and the '*' wildcard matches zero or more characters.
+     If nil, all strings are considered valid. nil by default.
+ */
+@property (nonatomic, copy, readonly) NSString *pattern;
+
+/*!
+ @abstract Initializes a new wildcard pattern string validator with the specified wildcard pattern.
+ @param pattern The wildcard pattern that valid strings must match. The '?' wildcard matches one character,
+     and the '*' wildcard matches zero or more characters.
+ @param caseSensitive Whether the validator should perform case-sensitive comparisons.
+ @return An initialized wildcard pattern validator with the specified wildcard pattern.
  */
 - (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
 

@@ -30,21 +30,37 @@
 @interface TWTStringValidatorTests : TWTRandomizedTestCase
 
 - (void)testInit;
-- (void)testBoundedLengthInit;
-- (void)testRegularExpressionInit;
 
-- (void)testCopy;
-- (void)testHashAndIsEqual;
-
+- (void)testInitBoundedLength;
+- (void)testCopyBoundedLength;
+- (void)testHashAndIsEqualBoundedLength;
 - (void)testValidateValueErrorBoundedLengthMinimum;
 - (void)testValidateValueErrorBoundedLengthMaximum;
 
+- (void)testInitRegularExpression;
+- (void)testCopyRegularExpression;
+- (void)testHashAndIsEqualRegularExpression;
 - (void)testValidateValueErrorRegularExpression;
 
-- (void)testPatternExpressionValidateValueError;
-- (void)testSubstringValidateValueError;
-- (void)testSuffixValidateValueError;
-- (void)testPrefixValidateValueError;
+- (void)testInitPrefix;
+- (void)testCopyPrefix;
+- (void)testHashAndIsEqualPrefix;
+- (void)testValidateValueErrorPrefix;
+
+- (void)testInitSuffix;
+- (void)testCopySuffix;
+- (void)testHashAndIsEqualSuffix;
+- (void)testValidateValueErrorSuffix;
+
+- (void)testInitSubstring;
+- (void)testCopySubstring;
+- (void)testHashAndIsEqualSubstring;
+- (void)testValidateValueErrorSubstring;
+
+- (void)testInitWildcardPattern;
+- (void)testCopyWildcardPattern;
+- (void)testHashAndIsEqualWildcardPattern;
+- (void)testValidateValueErrorWildcardPattern;
 
 @end
 
@@ -61,7 +77,9 @@
 }
 
 
-- (void)testBoundedLengthInit
+#pragma mark - Bounded Length
+
+- (void)testInitBoundedLength
 {
     NSUInteger length = random();
     TWTBoundedLengthStringValidator *validator = [TWTStringValidator stringValidatorWithLength:length];
@@ -69,98 +87,67 @@
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqual([validator minimumLength], length, @"minimum length is not set correctly");
-    XCTAssertEqual([validator maximumLength], length, @"maximum length is not set correctly");
+    XCTAssertEqual(validator.minimumLength, length, @"minimum length is not set correctly");
+    XCTAssertEqual(validator.maximumLength, length, @"maximum length is not set correctly");
 
     NSUInteger minimumLength = random();
     NSUInteger maximumLength = random() + minimumLength;
-    validator = (TWTBoundedLengthStringValidator *)[TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength];
+    validator = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqual([validator minimumLength], minimumLength, @"minimum length is not set correctly");
-    XCTAssertEqual([validator maximumLength], maximumLength, @"maximum length is not set correctly");
+    XCTAssertEqual(validator.minimumLength, minimumLength, @"minimum length is not set correctly");
+    XCTAssertEqual(validator.maximumLength, maximumLength, @"maximum length is not set correctly");
 
     validator = [[TWTBoundedLengthStringValidator alloc] init];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqual([validator minimumLength], (NSUInteger)0, @"minimum length is not set correctly");
-    XCTAssertEqual([validator maximumLength], NSUIntegerMax, @"maximum length is not set correctly");
+    XCTAssertEqual(validator.minimumLength, (NSUInteger)0, @"minimum length is not set correctly");
+    XCTAssertEqual(validator.maximumLength, NSUIntegerMax, @"maximum length is not set correctly");
 
     validator = [[TWTBoundedLengthStringValidator alloc] initWithMinimumLength:minimumLength maximumLength:maximumLength];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
     XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
     XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqual([validator minimumLength], minimumLength, @"minimum length is not set correctly");
-    XCTAssertEqual([validator maximumLength], maximumLength, @"maximum length is not set correctly");
+    XCTAssertEqual(validator.minimumLength, minimumLength, @"minimum length is not set correctly");
+    XCTAssertEqual(validator.maximumLength, maximumLength, @"maximum length is not set correctly");
 }
 
 
-- (void)testRegularExpressionInit
-{
-    TWTRegularExpressionStringValidator *validator = [TWTStringValidator stringValidatorWithRegularExpression:nil options:0];
-    XCTAssertNotNil(validator, @"returns nil");
-    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
-    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
-    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertNil(validator.regularExpression, @"regular expression is not set correctly");
-    XCTAssertEqual(validator.options, (NSMatchingOptions)0, @"options is not set correctly");
-
-    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"[A-Za-z_]\\w+-[0-9]{3}" options:0 error:NULL];
-    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
-    validator = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
-    XCTAssertNotNil(validator, @"returns nil");
-    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
-    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
-    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqualObjects(validator.regularExpression, regularExpression, @"regular expression is not set correctly");
-    XCTAssertEqual(validator.options, options, @"options is not set correctly");
-
-    regularExpression = [[NSRegularExpression alloc] initWithPattern:@"[^ ][a-zA-Z]+---" options:0 error:NULL];
-    options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
-    validator = [[TWTRegularExpressionStringValidator alloc] initWithRegularExpression:regularExpression options:options];
-    XCTAssertNotNil(validator, @"returns nil");
-    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
-    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
-    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
-    XCTAssertEqualObjects(validator.regularExpression, regularExpression, @"regular expression is not set correctly");
-    XCTAssertEqual(validator.options, options, @"options is not set correctly");
-}
-
-
-- (void)testCopy
+- (void)testCopyBoundedLength
 {
     BOOL allowsNil = UMKRandomBoolean();
     BOOL allowsNull = UMKRandomBoolean();
 
-    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\(\\d{3}\\) \\d{3}-\\d{4}" options:0 error:NULL];
-    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
-    TWTRegularExpressionStringValidator *validator = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+    NSUInteger minimumLength = random();
+    NSUInteger maximumLength = random() + minimumLength;
+
+    TWTBoundedLengthStringValidator *validator = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength];
     validator.allowsNil = allowsNil;
     validator.allowsNull = allowsNull;
 
-    TWTRegularExpressionStringValidator *copy = [validator copy];
+    TWTBoundedLengthStringValidator *copy = [validator copy];
 
     XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
     XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
     XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
     XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
-    XCTAssertEqualObjects(copy.regularExpression, regularExpression, @"regular expression is not set correctly");
-    XCTAssertEqual(copy.options, options, @"options is not set correctly");
+    XCTAssertEqual(copy.minimumLength, minimumLength, @"minimum length is not set correctly");
+    XCTAssertEqual(copy.maximumLength, maximumLength, @"maximum length is not set correctly");
 }
 
 
-- (void)testHashAndIsEqual
+- (void)testHashAndIsEqualBoundedLength
 {
-    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\d{5}" options:0 error:NULL];
-    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
+    NSUInteger minimumLength = random() + 100;
+    NSUInteger maximumLength = minimumLength + random() % 1024;
 
-    TWTRegularExpressionStringValidator *validator1 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
-    TWTRegularExpressionStringValidator *validator2 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+    TWTBoundedLengthStringValidator *validator1 = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength];
+    TWTBoundedLengthStringValidator *validator2 = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength];
 
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
@@ -181,15 +168,14 @@
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
 
-    // Regular expression
-    NSRegularExpression *otherRegularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\w+" options:0 error:NULL];
-    validator2 = [TWTStringValidator stringValidatorWithRegularExpression:otherRegularExpression options:options];
+    // Minimum length
+    validator2 = [TWTStringValidator stringValidatorWithMinimumLength:(minimumLength - random() % 100) maximumLength:maximumLength];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
 
-    // Options
-    validator2 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:NSMatchingWithoutAnchoringBounds];
+    // Maximum length
+    validator2 = [TWTStringValidator stringValidatorWithMinimumLength:minimumLength maximumLength:maximumLength + random() % 100];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;
     XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
@@ -238,6 +224,104 @@
 }
 
 
+#pragma mark - Regular Expression
+
+- (void)testInitRegularExpression
+{
+    TWTRegularExpressionStringValidator *validator = [TWTStringValidator stringValidatorWithRegularExpression:nil options:0];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.regularExpression, @"regular expression is not set correctly");
+    XCTAssertEqual(validator.options, (NSMatchingOptions)0, @"options is not set correctly");
+
+    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"[A-Za-z_]\\w+-[0-9]{3}" options:0 error:NULL];
+    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
+    validator = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.regularExpression, regularExpression, @"regular expression is not set correctly");
+    XCTAssertEqual(validator.options, options, @"options is not set correctly");
+
+    regularExpression = [[NSRegularExpression alloc] initWithPattern:@"[^ ][a-zA-Z]+---" options:0 error:NULL];
+    options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
+    validator = [[TWTRegularExpressionStringValidator alloc] initWithRegularExpression:regularExpression options:options];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.regularExpression, regularExpression, @"regular expression is not set correctly");
+    XCTAssertEqual(validator.options, options, @"options is not set correctly");
+}
+
+
+- (void)testCopyRegularExpression
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+
+    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\(\\d{3}\\) \\d{3}-\\d{4}" options:0 error:NULL];
+    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
+    TWTRegularExpressionStringValidator *validator = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+
+    TWTRegularExpressionStringValidator *copy = [validator copy];
+
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.regularExpression, regularExpression, @"regular expression is not set correctly");
+    XCTAssertEqual(copy.options, options, @"options is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualRegularExpression
+{
+    NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\d{5}" options:0 error:NULL];
+    NSMatchingOptions options = UMKRandomBoolean() ? NSMatchingAnchored : 0;
+
+    TWTRegularExpressionStringValidator *validator1 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+    TWTRegularExpressionStringValidator *validator2 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:options];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Regular expression
+    NSRegularExpression *otherRegularExpression = [[NSRegularExpression alloc] initWithPattern:@"\\w+" options:0 error:NULL];
+    validator2 = [TWTStringValidator stringValidatorWithRegularExpression:otherRegularExpression options:options];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    // Options
+    validator2 = [TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:NSMatchingWithoutAnchoringBounds];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
 - (void)testValidateValueErrorRegularExpression
 {
     NSRegularExpression *regularExpression = [[NSRegularExpression alloc] initWithPattern:@"^[A-Z][a-z]+ [0-9]+$" options:0 error:NULL];
@@ -256,7 +340,103 @@
 }
 
 
-- (void)testPrefixValidateValueError
+#pragma mark - Prefix
+
+- (void)testInitPrefix
+{
+    NSString *prefix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTPrefixStringValidator *validator = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.prefix, prefix, @"prefix is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+
+    validator = [[TWTPrefixStringValidator alloc] init];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.prefix, @"prefix is non-nil");
+    XCTAssertTrue(validator.isCaseSensitive, @"caseSensitive is initially NO");
+
+    validator = [[TWTPrefixStringValidator alloc] initWithPrefix:prefix caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.prefix, prefix, @"prefix is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testCopyPrefix
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+    NSString *prefix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTPrefixStringValidator *validator = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:caseSensitive];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+
+    TWTPrefixStringValidator *copy = [validator copy];
+
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.prefix, prefix, @"prefix is not set correctly");
+    XCTAssertEqual(copy.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualPrefix
+{
+    NSString *prefix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTPrefixStringValidator *validator1 = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:caseSensitive];
+    TWTPrefixStringValidator *validator2 = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:caseSensitive];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Prefix
+    validator2 = [TWTStringValidator stringValidatorWithPrefix:[prefix stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    // Case-sensitive
+    validator2 = [TWTStringValidator stringValidatorWithPrefix:prefix caseSensitive:!caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorPrefix
 {
     NSUInteger prefixLength = random() % 10 + 10;
     NSString *prefix = UMKRandomAlphanumericStringWithLength(prefixLength);
@@ -283,7 +463,103 @@
 }
 
 
-- (void)testSuffixValidateValueError
+#pragma mark - Suffix
+
+- (void)testInitSuffix
+{
+    NSString *suffix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSuffixStringValidator *validator = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.suffix, suffix, @"suffix is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+
+    validator = [[TWTSuffixStringValidator alloc] init];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.suffix, @"suffix is non-nil");
+    XCTAssertTrue(validator.isCaseSensitive, @"caseSensitive is initially NO");
+
+    validator = [[TWTSuffixStringValidator alloc] initWithSuffix:suffix caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.suffix, suffix, @"suffix is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testCopySuffix
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+    NSString *suffix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSuffixStringValidator *validator = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:caseSensitive];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+
+    TWTSuffixStringValidator *copy = [validator copy];
+
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.suffix, suffix, @"suffix is not set correctly");
+    XCTAssertEqual(copy.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualSuffix
+{
+    NSString *suffix = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSuffixStringValidator *validator1 = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:caseSensitive];
+    TWTSuffixStringValidator *validator2 = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:caseSensitive];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Suffix
+    validator2 = [TWTStringValidator stringValidatorWithSuffix:[suffix stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    // Case-sensitive
+    validator2 = [TWTStringValidator stringValidatorWithSuffix:suffix caseSensitive:!caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorSuffix
 {
     NSUInteger suffixLength = random() % 10 + 10;
     NSString *suffix = UMKRandomAlphanumericStringWithLength(suffixLength);
@@ -310,14 +586,110 @@
 }
 
 
-- (void)testSubstringValidateValueError
+#pragma mark - Substring
+
+- (void)testInitSubstring
+{
+    NSString *substring = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSubstringStringValidator *validator = [TWTStringValidator stringValidatorWithSubstring:substring caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.substring, substring, @"substring is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+
+    validator = [[TWTSubstringStringValidator alloc] init];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.substring, @"substring is non-nil");
+    XCTAssertTrue(validator.isCaseSensitive, @"caseSensitive is initially NO");
+
+    validator = [[TWTSubstringStringValidator alloc] initWithSubstring:substring caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.substring, substring, @"substring is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testCopySubstring
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+    NSString *substring = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSubstringStringValidator *validator = [TWTStringValidator stringValidatorWithSubstring:substring caseSensitive:caseSensitive];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+
+    TWTSubstringStringValidator *copy = [validator copy];
+
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.substring, substring, @"substring is not set correctly");
+    XCTAssertEqual(copy.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualSubstring
+{
+    NSString *substring = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTSubstringStringValidator *validator1 = [TWTStringValidator stringValidatorWithSubstring:substring caseSensitive:caseSensitive];
+    TWTSubstringStringValidator *validator2 = [TWTStringValidator stringValidatorWithSubstring:substring caseSensitive:caseSensitive];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Substring
+    validator2 = [TWTStringValidator stringValidatorWithSubstring:[substring stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    // Case-sensitive
+    validator2 = [TWTStringValidator stringValidatorWithSubstring:substring caseSensitive:!caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorSubstring
 {
     NSUInteger substringLength = random() % 10 + 10;
     NSString *substring = UMKRandomAlphanumericStringWithLength(substringLength);
     NSString *value = [[substring uppercaseString] stringByAppendingString:UMKRandomAlphanumericString()];
     
     // validate with case sensitive
-    TWTSubstringValidator *validator = [[TWTSubstringValidator alloc] initWithSubstring:substring caseSensitive:YES];
+    TWTSubstringStringValidator *validator = [[TWTSubstringStringValidator alloc] initWithSubstring:substring caseSensitive:YES];
     XCTAssertFalse([validator validateValue:value error:NULL], @"does not fail case sensitive validation");
     
     // validate with case insensitive
@@ -337,13 +709,109 @@
 }
 
 
-- (void)testPatternExpressionValidateValueError
+#pragma mark - Wildcard Pattern
+
+- (void)testInitWildcardPattern
+{
+    NSString *pattern = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.pattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+
+    validator = [[TWTWildcardPatternStringValidator alloc] init];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.pattern, @"pattern is non-nil");
+    XCTAssertTrue(validator.isCaseSensitive, @"caseSensitive is initially NO");
+
+    validator = [[TWTWildcardPatternStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.pattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqual(validator.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testCopyWildcardPattern
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+    NSString *pattern = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTWildcardPatternStringValidator *validator = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+
+    TWTWildcardPatternStringValidator *copy = [validator copy];
+
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.pattern, pattern, @"pattern is not set correctly");
+    XCTAssertEqual(copy.isCaseSensitive, caseSensitive, @"caseSensitive is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualWildcardPattern
+{
+    NSString *pattern = UMKRandomUnicodeString();
+    BOOL caseSensitive = UMKRandomBoolean();
+
+    TWTWildcardPatternStringValidator *validator1 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
+    TWTWildcardPatternStringValidator *validator2 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:caseSensitive];
+
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+
+    // WildcardPattern
+    validator2 = [TWTStringValidator stringValidatorWithPattern:[pattern stringByAppendingString:UMKRandomUnicodeString()] caseSensitive:caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+
+    // Case-sensitive
+    validator2 = [TWTStringValidator stringValidatorWithPattern:pattern caseSensitive:!caseSensitive];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
+- (void)testValidateValueErrorWildcardPattern
 {
     NSString *seed = UMKRandomAlphanumericString();
     
     // validate with case sensitive with * character
     NSString *patternString = [NSString stringWithFormat:@"%@.*", seed];
-    TWTPatternExpressionStringValidator *validator = [[TWTPatternExpressionStringValidator alloc] initWithPattern:patternString caseSensitive:YES];
+    TWTWildcardPatternStringValidator *validator = [[TWTWildcardPatternStringValidator alloc] initWithPattern:patternString caseSensitive:YES];
     
     NSString *wildcardValue = [NSString stringWithFormat:@"%@.%@", seed.uppercaseString, UMKRandomAlphanumericString()];
     XCTAssertFalse([validator validateValue:wildcardValue error:NULL], @"does not fail case sensitive validation");

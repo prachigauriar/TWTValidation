@@ -60,14 +60,14 @@
 
 
 /*!
- The TWTKeyValueCodingValidator category on NSObject declares a two method, -twt_validatorsForKey: and 
+ The TWTKeyValueCodingValidator category on NSObject declares two methods, -twt_validatorsForKey: and
  +twt_validatorsForKey:, which TWTKeyValueCodingValidator instances use to get the validators for an object’s
  KVC-compliant keys.
  
  Typically, instead of overriding -twt_validatorsForKey: and +twt_validatorsForKey:, subclasses should implement
  -twt_validatorsFor«Key» or +twt_validatorsFor«Key», with «Key» being the capitalized form of the KVC key. The
  base implementations of -twt_validatorsForKey: and +twt_validatorsForKey: simply check to see the receiver 
- responds to the key-specific form of the message, and if so, returns the value of that.
+ responds to the key-specific form of the message, and if so, return the value of that.
  
  -twt_validatorsForKey: is meant to return validators that depend on the runtime state of an object. If your
  object’s validators are static, it is better ot use +twt_validatorsForKey:, as these validators can be cached
