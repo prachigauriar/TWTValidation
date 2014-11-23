@@ -61,6 +61,10 @@
 - (void)testCopyWildcardPattern;
 - (void)testHashAndIsEqualWildcardPattern;
 - (void)testValidateValueErrorWildcardPattern;
+
+- (void)testInitCharacterSet;
+- (void)testCopyCharacterSet;
+- (void)testHashAndIsEqualCharacterSet;
 - (void)testValidateValueErrorCharacterSet;
 
 @end
@@ -847,11 +851,94 @@
 }
 
 
+#pragma mark - Character Set
+
+- (void)testInitCharacterSet
+{
+    NSCharacterSet *characterSet = [NSCharacterSet alphanumericCharacterSet];
+    
+    TWTCharacterSetStringValidator *validator = [TWTStringValidator stringValidatorWithCharacterSet:characterSet];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.characterSet, characterSet, @"character set is not set correctly");
+    
+    validator = [[TWTCharacterSetStringValidator alloc] init];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertNil(validator.characterSet, @"character set is non-nil");
+    
+    validator = [[TWTCharacterSetStringValidator alloc] initWithCharacterSet:characterSet];
+    XCTAssertNotNil(validator, @"returns nil");
+    XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
+    XCTAssertFalse(validator.allowsNull, @"allowsNull is YES");
+    XCTAssertEqualObjects(validator.valueClass, [NSString class], @"value class is not NSString");
+    XCTAssertEqualObjects(validator.characterSet, characterSet, @"character set is not set correctly");
+}
+
+
+- (void)testCopyCharacterSet
+{
+    BOOL allowsNil = UMKRandomBoolean();
+    BOOL allowsNull = UMKRandomBoolean();
+    NSCharacterSet *characterSet = [NSCharacterSet alphanumericCharacterSet];
+    
+    TWTCharacterSetStringValidator *validator = [TWTStringValidator stringValidatorWithCharacterSet:characterSet];
+    validator.allowsNil = allowsNil;
+    validator.allowsNull = allowsNull;
+    
+    TWTCharacterSetStringValidator *copy = [validator copy];
+    
+    XCTAssertEqualObjects(validator, copy, @"copy is not equal to original");
+    XCTAssertEqualObjects(copy.valueClass, [NSString class], @"value class is not set correctly");
+    XCTAssertEqual(copy.allowsNil, allowsNil, @"allowsNil is not set correctly");
+    XCTAssertEqual(copy.allowsNull, allowsNull, @"allowsNull is not set correctly");
+    XCTAssertEqualObjects(copy.characterSet, characterSet, @"character set is not set correctly");
+}
+
+
+- (void)testHashAndIsEqualCharacterSet
+{
+    NSCharacterSet *characterSet = [NSCharacterSet alphanumericCharacterSet];
+    
+    TWTCharacterSetStringValidator *validator1 = [TWTStringValidator stringValidatorWithCharacterSet:characterSet];
+    TWTCharacterSetStringValidator *validator2 = [TWTStringValidator stringValidatorWithCharacterSet:characterSet];
+    
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+    
+    // Allows nil
+    validator1.allowsNil = !validator2.allowsNil;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+    
+    validator2.allowsNil = validator1.allowsNil;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+    
+    // Allows null
+    validator1.allowsNull = !validator2.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+    
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
+    XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
+    
+    // WildcardPattern
+    validator2 = [TWTStringValidator stringValidatorWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
+    validator2.allowsNil = validator1.allowsNil;
+    validator2.allowsNull = validator1.allowsNull;
+    XCTAssertNotEqualObjects(validator1, validator2, @"unequal objects are equal");
+}
+
+
 - (void)testValidateValueErrorCharacterSet
 {
     NSString *stringValue = UMKRandomAlphanumericString();
     NSCharacterSet *characterSet = [NSCharacterSet characterSetWithCharactersInString:stringValue];
-    NSCharacterSet *failingCharacterSet = [NSCharacterSet decimalDigitCharacterSet];
+    NSCharacterSet *failingCharacterSet = [NSCharacterSet punctuationCharacterSet];
     
     TWTCharacterSetStringValidator *validator = [[TWTCharacterSetStringValidator alloc] initWithCharacterSet:characterSet];
     XCTAssertTrue([validator validateValue:stringValue error:NULL], @"fails when character set created from same string");

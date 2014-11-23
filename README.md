@@ -125,13 +125,13 @@ or has a length within a specified range:
     [validator validateValue:@"Foobar" error:&error];       // Returns YES
     [validator validateValue:@"Foo" error:&error];          // Returns NO
 
-    validator = [TWTStringValidator stringValidatorWithPattern:@"*oo*" caseSensitive:YES];
-    [validator validateValue:@"Foobar" error:&error];       // Returns YES
-    [validator validateValue:@"Foo" error:&error];          // Returns YES
+    validator = [TWTStringValidator stringValidatorWithPattern:@"*b*" caseSensitive:YES];
+    [validator validateValue:@"Foobar" error:&error];        // Returns YES
+    [validator validateValue:@"Foo" error:&error];           // Returns NO
 
     validator = [TWTStringValidator stringValidatorWithCharacterSet:[NSCharacterSet letterCharacterSet]];
     [validator validateValue:@"Foobar" error:&error];       // Returns YES
-    [validator validateValue:@"Foo" error:&error];          // Returns YES
+    [validator validateValue:@":)" error:&error];           // Returns NO
 
     
 Number validators ensure that a number is within a specified range and optionally has no fractional

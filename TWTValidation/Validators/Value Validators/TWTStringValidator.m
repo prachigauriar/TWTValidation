@@ -90,7 +90,8 @@
 
 @interface TWTCharacterSetStringValidator ()
 
-@property (nonatomic, strong, readwrite) NSCharacterSet *characterSet;
+@property (nonatomic, copy, readwrite) NSCharacterSet *characterSet;
+@property (nonatomic, copy) NSCharacterSet *invertedCharacterSet;
 
 @end
 
@@ -690,6 +691,15 @@
 }
 
 
+- (NSCharacterSet *)invertedCharacterSet
+{
+    if (!_invertedCharacterSet) {
+        _invertedCharacterSet = self.characterSet.invertedSet;
+    }
+    return _invertedCharacterSet;
+}
+
+
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
     if (![super validateValue:value error:outError]) {
@@ -699,14 +709,13 @@
         return YES;
     }
     
-    NSCharacterSet *invalidCharacterSet = self.characterSet.invertedSet;
-    NSRange range = [value rangeOfCharacterFromSet:invalidCharacterSet];
+    NSRange range = [value rangeOfCharacterFromSet:self.invertedCharacterSet];
     if (range.location == NSNotFound) {
         return YES;
     }
     
     if (outError) {
-        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTCharacterSetStringValidator.validationError.format"), self.characterSet.description];
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTCharacterSetStringValidator.validationError"), self.characterSet.description];
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
                                         failingValidator:self
                                                    value:value
