@@ -86,6 +86,14 @@
 
 @end
 
+#pragma mark
+
+@interface TWTCharacterSetStringValidator ()
+
+@property (nonatomic, strong, readwrite) NSCharacterSet *characterSet;
+
+@end
+
 
 #pragma mark
 
@@ -141,6 +149,12 @@
 + (TWTWildcardPatternStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive
 {
     return [[TWTWildcardPatternStringValidator alloc] initWithPattern:pattern caseSensitive:caseSensitive];
+}
+
+
++ (TWTCharacterSetStringValidator *)stringValidatorWithCharacterSet:(NSCharacterSet *)characterSet
+{
+    return [[TWTCharacterSetStringValidator alloc] initWithCharacterSet:characterSet];
 }
 
 @end
@@ -617,6 +631,82 @@
 
     if (outError) {
         NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTWildcardPatternStringValidatator.validationError.format"), self.pattern];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:description];
+    }
+    
+    return NO;
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTCharacterSetStringValidator
+
+- (instancetype)init
+{
+    return [self initWithCharacterSet:nil];
+}
+
+
+- (instancetype)initWithCharacterSet:(NSCharacterSet *)characterSet
+{
+    self = [super init];
+    if (self) {
+        _characterSet = characterSet;
+    }
+    return self;
+}
+
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    typeof(self) copy = [super copyWithZone:zone];
+    copy.characterSet = self.characterSet;
+    return copy;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.characterSet.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+    
+    typeof(self) other = object;
+    return [other.characterSet isEqual:self.characterSet];
+}
+
+
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    if (![super validateValue:value error:outError]) {
+        return NO;
+    } else if (TWTValidatorValueIsNilOrNull(value) || !self.characterSet) {
+        // This will only happen if nil or null is allowed or the default expectations are not met
+        return YES;
+    }
+    
+    NSCharacterSet *invalidCharacterSet = self.characterSet.invertedSet;
+    NSRange range = [value rangeOfCharacterFromSet:invalidCharacterSet];
+    if (range.location == NSNotFound) {
+        return YES;
+    }
+    
+    if (outError) {
+        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTCharacterSetStringValidator.validationError.format"), self.characterSet.description];
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
                                         failingValidator:self
                                                    value:value

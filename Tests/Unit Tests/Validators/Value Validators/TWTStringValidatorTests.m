@@ -61,6 +61,7 @@
 - (void)testCopyWildcardPattern;
 - (void)testHashAndIsEqualWildcardPattern;
 - (void)testValidateValueErrorWildcardPattern;
+- (void)testValidateValueErrorCharacterSet;
 
 @end
 
@@ -843,6 +844,29 @@
     XCTAssertEqual(error.code, TWTValidationErrorCodeValueDoesNotMatchFormat, @"incorrect error code");
     XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
     XCTAssertEqualObjects(error.twt_validatedValue, value, @"incorrect validated value");
+}
+
+
+- (void)testValidateValueErrorCharacterSet
+{
+    NSString *stringValue = UMKRandomAlphanumericString();
+    NSCharacterSet *characterSet = [NSCharacterSet characterSetWithCharactersInString:stringValue];
+    NSCharacterSet *failingCharacterSet = [NSCharacterSet decimalDigitCharacterSet];
+    
+    TWTCharacterSetStringValidator *validator = [[TWTCharacterSetStringValidator alloc] initWithCharacterSet:characterSet];
+    XCTAssertTrue([validator validateValue:stringValue error:NULL], @"fails when character set created from same string");
+    
+    validator = [TWTStringValidator stringValidatorWithCharacterSet:failingCharacterSet];
+    
+    // validate with invalid value
+    NSError *error = nil;
+    
+    XCTAssertFalse([validator validateValue:stringValue error:&error], @"should fail when string doesn't match character set");
+    XCTAssertNotNil(error, @"returns nil error");
+    XCTAssertEqualObjects(error.domain, TWTValidationErrorDomain, @"incorrect error domain");
+    XCTAssertEqual(error.code, TWTValidationErrorCodeValueDoesNotMatchFormat, @"incorrect error code");
+    XCTAssertEqualObjects(error.twt_failingValidator, validator, @"incorrect failing validator");
+    XCTAssertEqualObjects(error.twt_validatedValue, stringValue, @"incorrect validated value");
 }
 
 @end

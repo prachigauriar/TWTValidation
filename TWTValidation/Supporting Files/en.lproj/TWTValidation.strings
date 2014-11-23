@@ -56,6 +56,7 @@
 "TWTSuffixStringValidator.validationError.format" = "string does not have suffix (%1$@)";
 "TWTSubstringStringValidator.validationError.format" = "string does not contain substring (%1$@)";
 "TWTWildcardPatternStringValidatator.validationError.format" = "string does not match pattern (%1$@)";
+"TWTCharacterSetStringValidator.validationError.format" = "string contains characters not in character set (%1$@)";
 
 /* Collection validators */
 "TWTCollectionValidator.validationError" = "collection is invalid";

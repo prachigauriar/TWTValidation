@@ -28,7 +28,7 @@
 
 @class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator,
        TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringStringValidator,
-       TWTWildcardPatternStringValidator;
+       TWTWildcardPatternStringValidator, TWTCharacterSetStringValidator;
 
 
 /*!
@@ -116,6 +116,14 @@
  @result A newly created string validator that validates that strings match the specified wildcard pattern.
  */
 + (TWTWildcardPatternStringValidator *)stringValidatorWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
+
+/*!
+ @abstract Creates and returns a new character set string validator with the specified character set.
+ @param characterSet The set of characters that can result in a valid string.
+ @result An newly created string validator that validates that strings have only characters in the 
+    specified character set.
+ */
++ (TWTCharacterSetStringValidator *)stringValidatorWithCharacterSet:(NSCharacterSet *)characterSet;
 
 @end
 
@@ -276,8 +284,31 @@
  @param pattern The wildcard pattern that valid strings must match. The '?' wildcard matches one character,
      and the '*' wildcard matches zero or more characters.
  @param caseSensitive Whether the validator should perform case-sensitive comparisons.
- @return An initialized wildcard pattern validator with the specified wildcard pattern.
+ @result An initialized wildcard pattern validator with the specified wildcard pattern.
  */
 - (instancetype)initWithPattern:(NSString *)pattern caseSensitive:(BOOL)caseSensitive;
+
+@end
+
+
+/*!
+ TWTCharacterSetStringValidators validate that a string has only the characters specified in the given 
+ character set. There is no need to create instance of this directly. Instead use +[TWTStringValidator 
+ stringValidatorWithCharacterSet:]. This class is exposed so that it may be easily subclassed if necessary.
+ */
+@interface TWTCharacterSetStringValidator : TWTStringValidator
+
+/*!
+ @abstract The character set of characters that valid strings must contain.
+ @discussion If nil, all strings are considered valid. nil by default.
+ */
+@property (nonatomic, strong, readonly) NSCharacterSet *characterSet;
+
+/*!
+ @abstract Initializes a new character set string validator with the specified character set.
+ @param characterSet The set of characters that can result in a valid string.
+ @result An initialized character set validator with the specified character set.
+ */
+- (instancetype)initWithCharacterSet:(NSCharacterSet *)characterSet;
 
 @end
