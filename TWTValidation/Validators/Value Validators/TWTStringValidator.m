@@ -694,7 +694,7 @@
 - (NSCharacterSet *)invertedCharacterSet
 {
     if (!_invertedCharacterSet) {
-        _invertedCharacterSet = self.characterSet.invertedSet;
+        _invertedCharacterSet = [self.characterSet.invertedSet copy];
     }
     return _invertedCharacterSet;
 }
