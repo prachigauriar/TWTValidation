@@ -926,7 +926,7 @@
     XCTAssertEqual(validator1.hash, validator2.hash, @"hashes are not equal for equal objects");
     XCTAssertEqualObjects(validator1, validator2, @"equal objects are not equal");
     
-    // WildcardPattern
+    // Character Set
     validator2 = [TWTStringValidator stringValidatorWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
     validator2.allowsNil = validator1.allowsNil;
     validator2.allowsNull = validator1.allowsNull;

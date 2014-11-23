@@ -715,7 +715,7 @@
     }
     
     if (outError) {
-        NSString *description = [NSString stringWithFormat:TWTLocalizedString(@"TWTCharacterSetStringValidator.validationError"), self.characterSet.description];
+        NSString *description = TWTLocalizedString(@"TWTCharacterSetStringValidator.validationError");
         *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueDoesNotMatchFormat
                                         failingValidator:self
                                                    value:value
