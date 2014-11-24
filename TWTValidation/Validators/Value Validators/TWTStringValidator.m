@@ -578,11 +578,6 @@
     if (self) {
         _pattern = [pattern copy];
         _caseSensitive = caseSensitive;
-        
-        if (_pattern) {
-            NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", caseSensitive ? @"" : @"[c]"];
-            _predicate = [NSPredicate predicateWithFormat:predicateString, _pattern];
-        }
     }
     return self;
 }
@@ -593,7 +588,6 @@
     typeof(self) copy = [super copyWithZone:zone];
     copy.pattern = self.pattern;
     copy.caseSensitive = self.isCaseSensitive;
-    copy.predicate = self.predicate;
     return copy;
 }
 
@@ -601,6 +595,17 @@
 - (NSUInteger)hash
 {
     return [super hash] ^ self.pattern.hash;
+}
+
+
+- (NSPredicate *)predicate
+{
+    if (!_predicate) {
+        NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", self.isCaseSensitive ? @"" : @"[c]"];
+        self.predicate = [NSPredicate predicateWithFormat:predicateString, self.pattern];
+    }
+
+    return _predicate;
 }
 
 
@@ -694,8 +699,9 @@
 - (NSCharacterSet *)invertedCharacterSet
 {
     if (!_invertedCharacterSet) {
-        _invertedCharacterSet = [self.characterSet.invertedSet copy];
+        self.invertedCharacterSet = [self.characterSet.invertedSet copy];
     }
+
     return _invertedCharacterSet;
 }
 
