@@ -600,7 +600,7 @@
 
 - (NSPredicate *)predicate
 {
-    if (!_predicate) {
+    if (self.pattern && !_predicate) {
         NSString *predicateString = [NSString stringWithFormat:@"SELF LIKE%@ %%@", self.isCaseSensitive ? @"" : @"[c]"];
         self.predicate = [NSPredicate predicateWithFormat:predicateString, self.pattern];
     }
