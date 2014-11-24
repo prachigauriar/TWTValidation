@@ -17,6 +17,8 @@ TWTValidation 1.1 adds several new validators and updates existing validators to
 * `TWTSubstringStringValidator` validates that a string contains a particular substring.
 * `TWTWildcardPatternStringValidator` validates that a string matches a wildcard pattern. Wildcard
   patterns support the use of the `*` and `?` wildcard characters.
+* `TWTCharacterSetStringValidator` validates that a string only contains characters in a given 
+  character set.
 
 ### Updates
   
@@ -123,9 +125,13 @@ or has a length within a specified range:
     [validator validateValue:@"Foobar" error:&error];       // Returns YES
     [validator validateValue:@"Foo" error:&error];          // Returns NO
 
-    validator = [TWTStringValidator stringValidatorWithPattern:@"*oo*" caseSensitive:YES];
+    validator = [TWTStringValidator stringValidatorWithPattern:@"*b*" caseSensitive:YES];
+    [validator validateValue:@"Foobar" error:&error];        // Returns YES
+    [validator validateValue:@"Foo" error:&error];           // Returns NO
+
+    validator = [TWTStringValidator stringValidatorWithCharacterSet:[NSCharacterSet letterCharacterSet]];
     [validator validateValue:@"Foobar" error:&error];       // Returns YES
-    [validator validateValue:@"Foo" error:&error];          // Returns YES
+    [validator validateValue:@":)" error:&error];           // Returns NO
 
     
 Number validators ensure that a number is within a specified range and optionally has no fractional
