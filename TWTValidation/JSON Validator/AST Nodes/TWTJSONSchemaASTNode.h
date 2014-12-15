@@ -46,9 +46,9 @@ typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
 @property (nonatomic, copy) NSString *schemaDescription;
 @property (nonatomic, copy) NSSet *validValues;
 @property (nonatomic, copy) NSSet *validTypes;
-@property (nonatomic, copy) NSArray *allOfSchemas;
-@property (nonatomic, copy) NSArray *anyOfSchemas;
-@property (nonatomic, copy) NSArray *oneOfSchemas;
+@property (nonatomic, copy) NSArray *andSchemas;
+@property (nonatomic, copy) NSArray *orSchemas;
+@property (nonatomic, copy) NSArray *exactlyOneOfSchemas;
 @property (nonatomic, copy) NSDictionary *notSchema;
 @property (nonatomic, copy) NSDictionary *definitions;
 
