@@ -27,24 +27,15 @@
 #import "TWTJSONSchemaASTNode.h"
 
 
-#pragma mark Constants
-typedef NS_ENUM(NSUInteger, TWTAdditionalItemsState) {
-    TWTAdditionalItemsStateNotPresent,
-    TWTAdditionalItemsStateFalse,
-    TWTAdditionalItemsStateTrue,
-    TWTAdditionalItemsStateObject
-};
-
-
 #pragma mark -
 
 @interface TWTJSONSchemaArrayASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, copy) NSArray *items;
-@property (nonatomic, assign, readonly) TWTAdditionalItemsState additionalItemsState;
-@property (nonatomic, copy, readonly) NSDictionary *additionalItemsObject;
+@property (nonatomic, copy) NSArray *itemSchemas;
+@property (nonatomic, assign, readonly) TWTJSONValueType additionalItemsValueType;
+@property (nonatomic, copy, readonly) NSDictionary *validSchemaForAdditionalItems;
 
 - (void)setAdditionalItemsToBoolean:(BOOL)additionalItems;
-- (void)setAdditionalItemsToObject:(NSDictionary *)additionalItemsObject;
+- (void)setAdditionalItemsToSchema:(NSDictionary *)additionalItemsObject;
 
 @end

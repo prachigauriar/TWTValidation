@@ -29,8 +29,8 @@
 
 @interface TWTJSONSchemaArrayASTNode ()
 
-@property (nonatomic, assign, readwrite) TWTAdditionalItemsState additionalItemsState;
-@property (nonatomic, copy, readwrite) NSDictionary *additionalItemsObject;
+@property (nonatomic, assign, readwrite) TWTJSONValueType additionalItemsValueType;
+@property (nonatomic, copy, readwrite) NSDictionary *validSchemaForAdditionalItems;
 
 @end
 
@@ -42,7 +42,7 @@
     self = [super init];
 
     if (self) {
-        _additionalItemsState = TWTAdditionalItemsStateNotPresent;
+        _additionalItemsValueType = TWTJSONValueTypeTrue;
     }
 
     return self;
@@ -51,15 +51,15 @@
 
 - (void)setAdditionalItemsToBoolean:(BOOL)additionalItems
 {
-    self.additionalItemsObject = nil;
-    self.additionalItemsState = additionalItems ? TWTAdditionalItemsStateTrue : TWTAdditionalItemsStateFalse;
+    self.validSchemaForAdditionalItems = nil;
+    self.additionalItemsValueType = additionalItems ? TWTJSONValueTypeTrue : TWTJSONValueTypeFalse;
 }
 
 
-- (void)setAdditionalItemsToObject:(NSDictionary *)additionalItemsObject
+- (void)setAdditionalItemsToSchema:(NSDictionary *)additionalItemsSchema
 {
-    self.additionalItemsObject = additionalItemsObject;
-    self.additionalItemsState = TWTAdditionalItemsStateObject;
+    self.validSchemaForAdditionalItems = additionalItemsSchema;
+    self.additionalItemsValueType = TWTJSONValueTypeSchema;
 }
 
 

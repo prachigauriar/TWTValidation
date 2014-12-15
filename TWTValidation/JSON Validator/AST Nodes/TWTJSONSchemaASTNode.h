@@ -27,6 +27,14 @@
 #import <Foundation/Foundation.h>
 
 
+#pragma mark Constants
+typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
+    TWTJSONValueTypeFalse,
+    TWTJSONValueTypeTrue,
+    TWTJSONValueTypeSchema
+};
+
+
 #pragma mark -
 
 @protocol TWTJSONSchemaASTProcessor;
@@ -34,13 +42,13 @@
 
 @interface TWTJSONSchemaASTNode : NSObject
 
-@property (nonatomic, copy) NSString *titleOfSchema;
-@property (nonatomic, copy) NSString *descriptionOfSchema;
-@property (nonatomic, copy) NSSet *enumSet;
-@property (nonatomic, copy) NSSet *type;
-@property (nonatomic, copy) NSArray *allOf;
-@property (nonatomic, copy) NSArray *anyOf;
-@property (nonatomic, copy) NSArray *oneOf;
+@property (nonatomic, copy) NSString *schemaTitle;
+@property (nonatomic, copy) NSString *schemaDescription;
+@property (nonatomic, copy) NSSet *validValues;
+@property (nonatomic, copy) NSSet *validTypes;
+@property (nonatomic, copy) NSArray *allOfSchemas;
+@property (nonatomic, copy) NSArray *anyOfSchemas;
+@property (nonatomic, copy) NSArray *oneOfSchemas;
 @property (nonatomic, copy) NSDictionary *notSchema;
 @property (nonatomic, copy) NSDictionary *definitions;
 

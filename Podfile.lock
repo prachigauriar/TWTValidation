@@ -1,13 +1,17 @@
 PODS:
   - SOCKit (1.1)
+  - URLMock/SubclassResponsibility (1.2.1):
+    - SOCKit (~> 1.1)
+    - URLMock/TestHelpers
   - URLMock/TestHelpers (1.2.1):
     - SOCKit (~> 1.1)
 
 DEPENDENCIES:
+  - URLMock/SubclassResponsibility (~> 1.2.1)
   - URLMock/TestHelpers (~> 1.2.1)
 
 SPEC CHECKSUMS:
   SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
   URLMock: c7523520317292adc44771c036af625e79da6836
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.35.0

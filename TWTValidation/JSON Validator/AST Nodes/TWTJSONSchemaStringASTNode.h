@@ -31,6 +31,6 @@
 
 @property (nonatomic, assign) NSUInteger maxLength;
 @property (nonatomic, assign) NSUInteger minLength;
-@property (nonatomic, strong) NSRegularExpression *pattern;
+@property (nonatomic, strong) NSRegularExpression *regularExpression;
 
 @end

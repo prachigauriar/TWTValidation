@@ -26,12 +26,15 @@
 
 #import "TWTJSONSchemaASTNode.h"
 
+#import <URLMock/NSException+UMKSubclassResponsibility.h>
+
 
 @implementation TWTJSONSchemaASTNode
 
 - (void)acceptProcessor:(id)processor
 {
-    // Subclasses must override
+    [NSException umk_subclassResponsibilityExceptionWithReceiver:self selector:_cmd];
 }
 
 @end
+

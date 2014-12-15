@@ -27,29 +27,20 @@
 #import "TWTJSONSchemaASTNode.h"
 
 
-#pragma mark Constants
-typedef NS_ENUM(NSUInteger, TWTAdditionalPropertiesState) {
-    TWTAdditionalPropertiesStateNotPresent,
-    TWTAdditionalPropertiesStateFalse,
-    TWTAdditionalPropertiesStateTrue,
-    TWTAdditionalPropertiesStateObject
-};
-
-
 #pragma mark -
 
 @interface TWTJSONSchemaObjectASTNode : TWTJSONSchemaASTNode
 
 @property (nonatomic, assign) NSUInteger maxProperties;
 @property (nonatomic, assign) NSUInteger minProperties;
-@property (nonatomic, copy) NSSet *required;
+@property (nonatomic, copy) NSSet *requiredPropertyNames;
 @property (nonatomic, copy) NSDictionary *properties;
 @property (nonatomic, copy) NSDictionary *patternProperties;
-@property (nonatomic, assign, readonly) TWTAdditionalPropertiesState additionalPropertiesState;
-@property (nonatomic, copy, readonly) NSDictionary *additionalPropertiesObject;
-@property (nonatomic, copy) NSDictionary *dependencies;
+@property (nonatomic, assign, readonly) TWTJSONValueType additionalPropertiesValueType;
+@property (nonatomic, copy, readonly) NSDictionary *validSchemaForAdditionalProperties;
+@property (nonatomic, copy) NSDictionary *propertyDependencies;
 
 - (void)setAdditionalPropertiesToBoolean:(BOOL)additionalProperties;
-- (void)setAdditionalPropertiesToObject:(NSDictionary *)additionalPropertiesObject;
+- (void)setAdditionalPropertiesToObject:(NSDictionary *)additionalPropertiesSchema;
 
 @end
