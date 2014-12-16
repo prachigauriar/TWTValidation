@@ -41,6 +41,6 @@
 @property (nonatomic, copy) NSDictionary *propertyDependencies;
 
 - (void)setAdditionalPropertiesToBoolean:(BOOL)additionalProperties;
-- (void)setAdditionalPropertiesToObject:(NSDictionary *)additionalPropertiesSchema;
+- (void)setAdditionalPropertiesToSchema:(NSDictionary *)additionalPropertiesSchema;
 
 @end

@@ -29,6 +29,24 @@
 
 @implementation TWTJSONSchemaNumberASTNode
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _validTypes = [NSSet setWithObject:@"number"];
+    }
+    return self;
+}
+
+
+- (void)setOnlyAllowIntegers:(BOOL)onlyAllowIntegers
+{
+    _onlyAllowIntegers = onlyAllowIntegers;
+    _validTypes = [NSSet setWithObject:(onlyAllowIntegers ? @"integer" : @"number")];
+    
+}
+
+
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processNumberNode:self];

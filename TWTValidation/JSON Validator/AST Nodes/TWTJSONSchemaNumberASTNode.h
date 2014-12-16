@@ -34,5 +34,6 @@
 @property (nonatomic, strong) NSNumber *minimum;
 @property (nonatomic, assign) BOOL exclusiveMaximum;
 @property (nonatomic, assign) BOOL exclusiveMinimum;
+@property (nonatomic, assign) BOOL onlyAllowIntegers;
 
 @end

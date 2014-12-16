@@ -29,6 +29,16 @@
 
 @implementation TWTJSONSchemaStringASTNode
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+         _validTypes = [NSSet setWithObject:@"string"];
+    }
+    return self;
+}
+
+
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processStringNode:self];

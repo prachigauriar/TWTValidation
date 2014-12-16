@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaBooleanASTNode.h
+//  TWTJSONSchemaGenericASTNode.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/15/14.
@@ -27,6 +27,8 @@
 #import "TWTJSONSchemaASTNode.h"
 
 
-@interface TWTJSONSchemaBooleanASTNode : TWTJSONSchemaASTNode
+@interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
+
+@property (nonatomic, copy, readwrite) NSSet *validTypes;
 
 @end

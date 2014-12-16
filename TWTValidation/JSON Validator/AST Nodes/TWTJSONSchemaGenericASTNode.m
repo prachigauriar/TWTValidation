@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaBooleanASTNode.m
+//  TWTJSONSchemaGenericASTNode.m
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/15/14.
@@ -24,14 +24,17 @@
 //  THE SOFTWARE.
 
 
-#import "TWTJSONSchemaBooleanASTNode.h"
+#import "TWTJSONSchemaGenericASTNode.h"
 
 
-@implementation TWTJSONSchemaBooleanASTNode
+@implementation TWTJSONSchemaGenericASTNode
+
+@synthesize validTypes;
+
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
-    [processor processBooleanNode:self];
+    [processor processGenericNode:self];
 }
 
 @end

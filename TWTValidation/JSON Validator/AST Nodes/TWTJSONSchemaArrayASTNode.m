@@ -43,6 +43,7 @@
 
     if (self) {
         _additionalItemsValueType = TWTJSONValueTypeTrue;
+        _validTypes = [NSSet setWithObject:@"array"];
     }
 
     return self;

@@ -40,12 +40,15 @@ typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
 @protocol TWTJSONSchemaASTProcessor;
 
 
-@interface TWTJSONSchemaASTNode : NSObject
+@interface TWTJSONSchemaASTNode : NSObject {
+@protected
+    NSSet *_validTypes;
+}
 
 @property (nonatomic, copy) NSString *schemaTitle;
 @property (nonatomic, copy) NSString *schemaDescription;
 @property (nonatomic, copy) NSSet *validValues;
-@property (nonatomic, copy) NSSet *validTypes;
+@property (nonatomic, copy, readonly) NSSet *validTypes;
 @property (nonatomic, copy) NSArray *andSchemas;
 @property (nonatomic, copy) NSArray *orSchemas;
 @property (nonatomic, copy) NSArray *exactlyOneOfSchemas;
@@ -60,7 +63,7 @@ typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
 #pragma mark - TWTJSONSchemaASTProcessor Protocol
 
 @class TWTJSONSchemaArrayASTNode;
-@class TWTJSONSchemaBooleanASTNode;
+@class TWTJSONSchemaGenericASTNode;
 @class TWTJSONSchemaNumberASTNode;
 @class TWTJSONSchemaObjectASTNode;
 @class TWTJSONSchemaStringASTNode;
@@ -69,7 +72,7 @@ typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
 @protocol TWTJSONSchemaASTProcessor <NSObject>
 
 - (void)processArrayNode:(TWTJSONSchemaArrayASTNode *)arrayNode;
-- (void)processBooleanNode:(TWTJSONSchemaBooleanASTNode *)booleanNode;
+- (void)processGenericNode:(TWTJSONSchemaGenericASTNode *)genericNode;
 - (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode;
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
