@@ -60,13 +60,3 @@ extern NSString *const kTWTJSONSchemaKeywordDependencies;
 extern NSString *const kTWTJSONSchemaKeywordMaxLength;
 extern NSString *const kTWTJSONSchemaKeywordMinLength;
 extern NSString *const kTWTJSONSchemaKeywordPattern;
-
-// Valid types
-extern NSString *const kTWTJSONSchemaKeywordAny;
-extern NSString *const kTWTJSONSchemaKeywordArray;
-extern NSString *const kTWTJSONSchemaKeywordBoolean;
-extern NSString *const kTWTJSONSchemaKeywordInteger;
-extern NSString *const kTWTJSONSchemaKeywordNull;
-extern NSString *const kTWTJSONSchemaKeywordNumber;
-extern NSString *const kTWTJSONSchemaKeywordObject;
-extern NSString *const kTWTJSONSchemaKeywordString;

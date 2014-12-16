@@ -23,58 +23,24 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import <Foundation/Foundation.h>
 
-
-#pragma mark Constants
-typedef NS_ENUM(NSUInteger, TWTJSONValueType) {
-    TWTJSONValueTypeFalse,
-    TWTJSONValueTypeTrue,
-    TWTJSONValueTypeSchema
-};
+#import "TWTJSONSchemaASTProcessor.h"
+#import "TWTJSONSchemaValidTypesConstants.h"
 
 
-#pragma mark -
-
-@protocol TWTJSONSchemaASTProcessor;
-
-
-@interface TWTJSONSchemaASTNode : NSObject {
-@protected
-    NSSet *_validTypes;
-}
+@interface TWTJSONSchemaASTNode : NSObject
 
 @property (nonatomic, copy) NSString *schemaTitle;
 @property (nonatomic, copy) NSString *schemaDescription;
-@property (nonatomic, copy) NSSet *validValues;
+@property (nonatomic, copy) NSSet *validValues; //enum keyword
 @property (nonatomic, copy, readonly) NSSet *validTypes;
-@property (nonatomic, copy) NSArray *andSchemas;
-@property (nonatomic, copy) NSArray *orSchemas;
-@property (nonatomic, copy) NSArray *exactlyOneOfSchemas;
-@property (nonatomic, copy) NSDictionary *notSchema;
+@property (nonatomic, copy) NSArray *andSchemas; // allOf
+@property (nonatomic, copy) NSArray *orSchemas; // anyOf
+@property (nonatomic, copy) NSArray *exactlyOneOfSchemas; // oneOf
+@property (nonatomic, strong) TWTJSONSchemaASTNode *notSchema;
 @property (nonatomic, copy) NSDictionary *definitions;
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
-
-@end
-
-
-#pragma mark - TWTJSONSchemaASTProcessor Protocol
-
-@class TWTJSONSchemaArrayASTNode;
-@class TWTJSONSchemaGenericASTNode;
-@class TWTJSONSchemaNumberASTNode;
-@class TWTJSONSchemaObjectASTNode;
-@class TWTJSONSchemaStringASTNode;
-
-
-@protocol TWTJSONSchemaASTProcessor <NSObject>
-
-- (void)processArrayNode:(TWTJSONSchemaArrayASTNode *)arrayNode;
-- (void)processGenericNode:(TWTJSONSchemaGenericASTNode *)genericNode;
-- (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode;
-- (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
-- (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
 
 @end

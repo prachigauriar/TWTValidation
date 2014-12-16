@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaArrayASTNode.m
+//  TWTJSONSchemaValidTypesConstants.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/15/14.
+//  Created by Jill Cohen on 12/16/14.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,35 +22,17 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
 
-#import "TWTJSONSchemaArrayASTNode.h"
-
-#import "TWTJSONSchemaBooleanValueASTNode.h"
-
-
-@implementation TWTJSONSchemaArrayASTNode
-
-- (instancetype)init
-{
-    self = [super init];
-
-    if (self) {
-        _additionalItemsNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
-    }
-
-    return self;
-}
+#import "TWTJSONSchemaValidTypesConstants.h"
 
 
-- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
-{
-    [processor processArrayNode:self];
-}
-
-
-- (NSSet *)validTypes
-{
-    return [NSSet setWithObject:kTWTJSONSchemaTypeKeywordArray];
-}
-
-@end
+// Valid types
+NSString *const kTWTJSONSchemaTypeKeywordAny = @"any";
+NSString *const kTWTJSONSchemaTypeKeywordArray = @"array";
+NSString *const kTWTJSONSchemaTypeKeywordBoolean = @"boolean";
+NSString *const kTWTJSONSchemaTypeKeywordInteger = @"integer";
+NSString *const kTWTJSONSchemaTypeKeywordNull = @"null";
+NSString *const kTWTJSONSchemaTypeKeywordNumber = @"number";
+NSString *const kTWTJSONSchemaTypeKeywordObject = @"object";
+NSString *const kTWTJSONSchemaTypeKeywordString = @"string";

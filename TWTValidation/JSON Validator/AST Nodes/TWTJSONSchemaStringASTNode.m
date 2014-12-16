@@ -23,25 +23,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaStringASTNode.h"
 
 
 @implementation TWTJSONSchemaStringASTNode
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-         _validTypes = [NSSet setWithObject:@"string"];
-    }
-    return self;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processStringNode:self];
+}
+
+
+- (NSSet *)validTypes
+{
+    return [NSSet setWithObject:kTWTJSONSchemaTypeKeywordString];
 }
 
 @end

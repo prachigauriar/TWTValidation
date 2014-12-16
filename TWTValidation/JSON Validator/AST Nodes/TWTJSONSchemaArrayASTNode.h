@@ -23,19 +23,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 
-#pragma mark -
-
 @interface TWTJSONSchemaArrayASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, copy) NSArray *itemSchemas;
-@property (nonatomic, assign, readonly) TWTJSONValueType additionalItemsValueType;
-@property (nonatomic, copy, readonly) NSDictionary *validSchemaForAdditionalItems;
-
-- (void)setAdditionalItemsToBoolean:(BOOL)additionalItems;
-- (void)setAdditionalItemsToSchema:(NSDictionary *)additionalItemsObject;
+@property (nonatomic, copy) NSArray *itemSchemas; // array of nodes
+@property (nonatomic, strong) TWTJSONSchemaASTNode *additionalItemsNode; // parser will set to booleanValueNode or type-specific
 
 @end

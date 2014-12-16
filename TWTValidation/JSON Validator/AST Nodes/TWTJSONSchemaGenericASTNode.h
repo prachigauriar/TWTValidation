@@ -23,12 +23,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 
+// Used for schemas with type "boolean," "null," or an array of valid types
 @property (nonatomic, copy, readwrite) NSSet *validTypes;
 
 @end

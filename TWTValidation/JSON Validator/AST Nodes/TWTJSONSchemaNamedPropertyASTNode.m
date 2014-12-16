@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaArrayASTNode.m
+//  TWTJSONSchemaNamedPropertyASTNode.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/15/14.
+//  Created by Jill Cohen on 12/16/14.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,34 +23,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "TWTJSONSchemaArrayASTNode.h"
-
-#import "TWTJSONSchemaBooleanValueASTNode.h"
+#import "TWTJSONSchemaNamedPropertyASTNode.h"
 
 
-@implementation TWTJSONSchemaArrayASTNode
-
-- (instancetype)init
-{
-    self = [super init];
-
-    if (self) {
-        _additionalItemsNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
-    }
-
-    return self;
-}
-
+@implementation TWTJSONSchemaNamedPropertyASTNode
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
-    [processor processArrayNode:self];
-}
-
-
-- (NSSet *)validTypes
-{
-    return [NSSet setWithObject:kTWTJSONSchemaTypeKeywordArray];
+    [processor processNamedPropertyNode:self];
 }
 
 @end

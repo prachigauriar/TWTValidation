@@ -23,24 +23,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 
-#pragma mark -
-
 @interface TWTJSONSchemaObjectASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, assign) NSUInteger maxProperties;
-@property (nonatomic, assign) NSUInteger minProperties;
+@property (nonatomic, assign) NSUInteger maximumPropertyCount;
+@property (nonatomic, assign) NSUInteger minimumPropertyCount;
 @property (nonatomic, copy) NSSet *requiredPropertyNames;
-@property (nonatomic, copy) NSDictionary *properties;
-@property (nonatomic, copy) NSDictionary *patternProperties;
-@property (nonatomic, assign, readonly) TWTJSONValueType additionalPropertiesValueType;
-@property (nonatomic, copy, readonly) NSDictionary *validSchemaForAdditionalProperties;
-@property (nonatomic, copy) NSDictionary *propertyDependencies;
-
-- (void)setAdditionalPropertiesToBoolean:(BOOL)additionalProperties;
-- (void)setAdditionalPropertiesToSchema:(NSDictionary *)additionalPropertiesSchema;
+@property (nonatomic, copy) NSArray *propertySchemas; // array of key-value pair nodes
+@property (nonatomic, copy) NSArray *patternPropertySchemas; // array of key-value pair nodes
+@property (nonatomic, strong) TWTJSONSchemaASTNode *additionalPropertiesNode; // parser will set to boolean value or type-specific
+@property (nonatomic, copy) NSArray *propertyDependencies; // array of key-value pair nodes
 
 @end

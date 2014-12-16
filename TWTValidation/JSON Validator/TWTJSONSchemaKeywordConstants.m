@@ -62,13 +62,3 @@ NSString *const kTWTJSONSchemaKeywordDependencies = @"dependencies";
 NSString *const kTWTJSONSchemaKeywordMaxLength = @"maxLength";
 NSString *const kTWTJSONSchemaKeywordMinLength = @"minLength";
 NSString *const kTWTJSONSchemaKeywordPattern = @"pattern";
-
-// Valid types
-NSString *const kTWTJSONSchemaKeywordAny = @"any";
-NSString *const kTWTJSONSchemaKeywordArray = @"array";
-NSString *const kTWTJSONSchemaKeywordBoolean = @"boolean";
-NSString *const kTWTJSONSchemaKeywordInteger = @"integer";
-NSString *const kTWTJSONSchemaKeywordNull = @"null";
-NSString *const kTWTJSONSchemaKeywordNumber = @"number";
-NSString *const kTWTJSONSchemaKeywordObject = @"object";
-NSString *const kTWTJSONSchemaKeywordString = @"string";

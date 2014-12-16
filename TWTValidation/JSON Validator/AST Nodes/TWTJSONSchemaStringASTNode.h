@@ -23,14 +23,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 
 @interface TWTJSONSchemaStringASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, assign) NSUInteger maxLength;
-@property (nonatomic, assign) NSUInteger minLength;
-@property (nonatomic, strong) NSRegularExpression *regularExpression;
+@property (nonatomic, assign) NSUInteger maximumLength;
+@property (nonatomic, assign) NSUInteger minimumLength;
+@property (nonatomic, strong) NSString *pattern;
 
 @end

@@ -23,16 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaObjectASTNode.h"
 
-
-@interface TWTJSONSchemaObjectASTNode ()
-
-@property (nonatomic, assign, readwrite) TWTJSONValueType additionalPropertiesValueType;
-@property (nonatomic, copy, readwrite) NSDictionary *validSchemaForAdditionalProperties;
-
-@end
+#import "TWTJSONSchemaBooleanValueASTNode.h"
 
 
 @implementation TWTJSONSchemaObjectASTNode
@@ -42,31 +35,22 @@
     self = [super init];
 
     if (self) {
-        _additionalPropertiesValueType = TWTJSONValueTypeTrue;
-        _validTypes = [NSSet setWithObject:@"object"];
+        _additionalPropertiesNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
     }
 
     return self;
 }
 
 
-- (void)setAdditionalPropertiesToBoolean:(BOOL)additionalProperties
-{
-    self.validSchemaForAdditionalProperties = nil;
-    self.additionalPropertiesValueType = additionalProperties ? TWTJSONValueTypeTrue : TWTJSONValueTypeFalse;
-}
-
-
-- (void)setAdditionalPropertiesToSchema:(NSDictionary *)additionalPropertiesSchema
-{
-    self.validSchemaForAdditionalProperties = additionalPropertiesSchema;
-    self.additionalPropertiesValueType = TWTJSONValueTypeSchema;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processObjectNode:self];
+}
+
+
+- (NSSet *)validTypes
+{
+    return [NSSet setWithObject:kTWTJSONSchemaTypeKeywordObject];
 }
 
 @end

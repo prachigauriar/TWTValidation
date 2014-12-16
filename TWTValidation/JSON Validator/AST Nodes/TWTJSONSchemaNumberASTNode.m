@@ -23,33 +23,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaNumberASTNode.h"
 
 
 @implementation TWTJSONSchemaNumberASTNode
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        _validTypes = [NSSet setWithObject:@"number"];
-    }
-    return self;
-}
-
-
-- (void)setOnlyAllowIntegers:(BOOL)onlyAllowIntegers
-{
-    _onlyAllowIntegers = onlyAllowIntegers;
-    _validTypes = [NSSet setWithObject:(onlyAllowIntegers ? @"integer" : @"number")];
-    
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processNumberNode:self];
+}
+
+
+- (NSSet *)validTypes
+{
+    return [NSSet setWithObject:(self.requireIntegralValue ? kTWTJSONSchemaTypeKeywordInteger : kTWTJSONSchemaTypeKeywordNumber)];
 }
 
 @end

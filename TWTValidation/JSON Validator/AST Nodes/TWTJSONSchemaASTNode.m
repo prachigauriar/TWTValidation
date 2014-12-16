@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 #import <URLMock/NSException+UMKSubclassResponsibility.h>
@@ -34,6 +33,13 @@
 - (void)acceptProcessor:(id)processor
 {
     [NSException umk_subclassResponsibilityExceptionWithReceiver:self selector:_cmd];
+}
+
+
+- (NSSet *)validTypes
+{
+    [NSException umk_subclassResponsibilityExceptionWithReceiver:self selector:_cmd];
+    return nil;
 }
 
 @end

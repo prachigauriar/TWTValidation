@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-
 #import "TWTJSONSchemaASTNode.h"
 
 
@@ -34,6 +33,6 @@
 @property (nonatomic, strong) NSNumber *minimum;
 @property (nonatomic, assign) BOOL exclusiveMaximum;
 @property (nonatomic, assign) BOOL exclusiveMinimum;
-@property (nonatomic, assign) BOOL onlyAllowIntegers;
+@property (nonatomic, assign) BOOL requireIntegralValue;
 
 @end
