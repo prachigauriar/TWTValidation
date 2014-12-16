@@ -23,9 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#ifndef TWTValidation_TWTJSONSchemaASTProcessor_h
-#define TWTValidation_TWTJSONSchemaASTProcessor_h
-
 @class TWTJSONSchemaTopLevelASTNode;
 
 @class TWTJSONSchemaGenericASTNode;
@@ -59,5 +56,3 @@
 - (void)processDepedencyNode:(TWTJSONSchemaDepedencyASTNode *)depedencyNode;
 
 @end
-
-#endif
