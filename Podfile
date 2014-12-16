@@ -5,6 +5,7 @@ Target = Struct.new(:target, :platform, :platform_version)
     platform t.platform, t.platform_version
 
     # Pods for the framework/library targets
+    pod 'URLMock/SubclassResponsibility', '~> 1.2.1'
   end
 
   target "#{t.target} Tests".to_sym, exclusive: true do
