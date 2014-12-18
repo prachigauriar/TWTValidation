@@ -35,6 +35,7 @@ NSString *const kTWTJSONSchemaKeywordAnyOf = @"anyOf";
 NSString *const kTWTJSONSchemaKeywordAllOf = @"allOf";
 NSString *const kTWTJSONSchemaKeywordOneOf = @"oneOf";
 NSString *const kTWTJSONSchemaKeywordNot = @"not";
+NSString *const kTWTJSONSchemaKeywordDefinitions = @"definitions";
 
 // Arrays
 NSString *const kTWTJSONSchemaKeywordItems = @"items";
@@ -46,6 +47,7 @@ NSString *const kTWTJSONSchemaKeywordUniqueItems = @"uniqueItems";
 // Numbers
 NSString *const kTWTJSONSchemaKeywordMultipleOf = @"multipleOf";
 NSString *const kTWTJSONSchemaKeywordMaximum = @"maximum";
+NSString *const kTWTJSONSchemaKeywordMinimum = @"minimum";
 NSString *const kTWTJSONSchemaKeywordExclusiveMaximum = @"exclusiveMaximum";
 NSString *const kTWTJSONSchemaKeywordExclusiveMinimum = @"exclusiveMinimum";
 
@@ -62,3 +64,8 @@ NSString *const kTWTJSONSchemaKeywordDependencies = @"dependencies";
 NSString *const kTWTJSONSchemaKeywordMaxLength = @"maxLength";
 NSString *const kTWTJSONSchemaKeywordMinLength = @"minLength";
 NSString *const kTWTJSONSchemaKeywordPattern = @"pattern";
+
+
+// Top Level
+NSString *const kTWTJSONSchemaKeywordSchema = @"$schema";
+NSString *const kTWTJSONSchemaKeywordDraft4Path = @"http://json-schema.org/draft-04/schema#";

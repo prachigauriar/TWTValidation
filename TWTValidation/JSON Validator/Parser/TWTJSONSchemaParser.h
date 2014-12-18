@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaKeyValuePairASTNode.h
+//  TWTJSONSchemaParser.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
@@ -23,14 +23,21 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "TWTJSONSchemaASTNode.h"
+#import <Foundation/Foundation.h>
 
 
-@interface TWTJSONSchemaKeyValuePairASTNode : TWTJSONSchemaASTNode
+// Constants to find information in error's userInfo
+extern NSString *const kTWTJSONErrorInfoSelectorKey; // Which parser threw the exception
+extern NSString *const kTWTJSONErrorInfoPathKey; // Where the schema failed, given by the path of keywords
+extern NSString *const kTWTJSONErrorInfoInvalidObjectKey; // Which object caused the failure
 
-@property (nonatomic, copy) NSString *key;
-@property (nonatomic, strong) TWTJSONSchemaASTNode *value;
+@class TWTJSONSchemaTopLevelASTNode;
 
-- (instancetype)initWithKey:(NSString *)key value:(TWTJSONSchemaASTNode *)value;
+
+@interface TWTJSONSchemaParser : NSObject
+
+- (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
+
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)errorPointer;
 
 @end

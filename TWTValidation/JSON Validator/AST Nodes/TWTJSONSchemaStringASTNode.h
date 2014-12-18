@@ -28,8 +28,8 @@
 
 @interface TWTJSONSchemaStringASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, assign) NSUInteger maximumLength;
-@property (nonatomic, assign) NSUInteger minimumLength;
+@property (nonatomic, strong) NSNumber *maximumLength;
+@property (nonatomic, strong) NSNumber *minimumLength;
 @property (nonatomic, strong) NSString *pattern;
 
 @end

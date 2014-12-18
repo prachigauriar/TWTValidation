@@ -33,6 +33,7 @@ extern NSString *const kTWTJSONSchemaKeywordAnyOf;
 extern NSString *const kTWTJSONSchemaKeywordAllOf;
 extern NSString *const kTWTJSONSchemaKeywordOneOf;
 extern NSString *const kTWTJSONSchemaKeywordNot;
+extern NSString *const kTWTJSONSchemaKeywordDefinitions;
 
 // Arrays
 extern NSString *const kTWTJSONSchemaKeywordItems;
@@ -44,6 +45,7 @@ extern NSString *const kTWTJSONSchemaKeywordUniqueItems;
 // Numbers
 extern NSString *const kTWTJSONSchemaKeywordMultipleOf;
 extern NSString *const kTWTJSONSchemaKeywordMaximum;
+extern NSString *const kTWTJSONSchemaKeywordMinimum;
 extern NSString *const kTWTJSONSchemaKeywordExclusiveMaximum;
 extern NSString *const kTWTJSONSchemaKeywordExclusiveMinimum;
 
@@ -60,3 +62,7 @@ extern NSString *const kTWTJSONSchemaKeywordDependencies;
 extern NSString *const kTWTJSONSchemaKeywordMaxLength;
 extern NSString *const kTWTJSONSchemaKeywordMinLength;
 extern NSString *const kTWTJSONSchemaKeywordPattern;
+
+// Top level
+extern NSString *const kTWTJSONSchemaKeywordSchema;
+extern NSString *const kTWTJSONSchemaKeywordDraft4Path; 
