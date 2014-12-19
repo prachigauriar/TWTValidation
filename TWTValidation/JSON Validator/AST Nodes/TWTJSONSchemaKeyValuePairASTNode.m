@@ -28,19 +28,19 @@
 
 @implementation TWTJSONSchemaKeyValuePairASTNode
 
-- (instancetype)initWithKey:(NSString *)key value:(TWTJSONSchemaASTNode *)value
+- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
 {
     self = [super init];
     if (self) {
         _key = [key copy];
-        _value = value;
+        _valueSchema = value;
     }
     return self;
 }
 
 - (NSSet *)validTypes
 {
-    return self.value.validTypes;
+    return self.valueSchema.validTypes;
 }
 
 @end

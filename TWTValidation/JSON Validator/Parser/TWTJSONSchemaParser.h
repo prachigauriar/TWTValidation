@@ -26,10 +26,17 @@
 #import <Foundation/Foundation.h>
 
 
+extern NSString *const kTWTJSONSchemaParserErrorInfoDomainKey;
 // Constants to find information in error's userInfo
-extern NSString *const kTWTJSONErrorInfoSelectorKey; // Which parser threw the exception
-extern NSString *const kTWTJSONErrorInfoPathKey; // Where the schema failed, given by the path of keywords
-extern NSString *const kTWTJSONErrorInfoInvalidObjectKey; // Which object caused the failure
+extern NSString *const kTWTJSONSchemaParserErrorInfoPathKey; // Where the schema failed, given by the path of keywords
+extern NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey; // Which object caused the failure
+
+typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
+    TWTJSONSchemaParserErrorCodeInvalidClass,
+    TWTJSONSchemaParserErrorCodeInvalidValue,
+    TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem,
+    TWTJSONSchemaParserErrorCodeRequiresUniqueness
+};
 
 @class TWTJSONSchemaTopLevelASTNode;
 

@@ -28,4 +28,6 @@
 
 @interface TWTJSONSchemaDepedencyASTNode : TWTJSONSchemaKeyValuePairASTNode
 
+@property (nonatomic, copy) NSArray *propertySet;
+
 @end
