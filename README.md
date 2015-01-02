@@ -25,13 +25,14 @@ TWTValidation 1.1 adds several new validators and updates existing validators to
 * `TWTCollectionValidator` checks that values respond to `-count` and conform to the
   `NSFastEnumeration` protocol before attempting to validate the value. Previously, if value did not
   meet those criteria, a crash would occur inside `-validateValue:error:`.
-* Similarly, `TWTKeyedCollectionValidator` checks that values respond to `-count` and `-objectForKey:`
-  and conform to the `NSFastEnumeration` protocol before attempting to validate the value. 
+* Similarly, `TWTKeyedCollectionValidator` checks that values respond to `-count` and
+  `-objectForKey:` and conform to the `NSFastEnumeration` protocol before attempting to validate the
+  value. 
 * `TWTNumberValidator` now allows for exclusive minimum and maximum values, which validate that a
   value is strictly greater than a minimum or strictly less than a maximum, respectively.
 * `TWTKeyValueCodingValidator` now attempts to get a key’s validators using `-twt_validatorsForKey:`
-  before using `+twt_validatorsForKey`. This enables dynamic validators based on an instance’s state.
-  See the class documentation for more information.
+  before using `+twt_validatorsForKey`. This enables dynamic validators based on an instance’s
+  state. See the class documentation for more information.
 * All validation errors now include the failing validator in the error’s `userInfo` dictionary. This 
   can be retrieved using `-[NSError twt_failingValidator]`.
 
@@ -99,9 +100,9 @@ NSError *error = nil;
 ```
     
     
-More useful validations are performed by `TWTValueValidator`’s subclasses, `TWTStringValidator` and 
-`TWTNumberValidator`. String validators can validate that a value is a string and has a given prefix or
-suffix; contains a given substring; matches a specified wildcard pattern or regular expression;
+More useful validations are performed by `TWTValueValidator`’s subclasses, `TWTStringValidator` and
+`TWTNumberValidator`. String validators can validate that a value is a string and has a given prefix
+or suffix; contains a given substring; matches a specified wildcard pattern or regular expression;
 or has a length within a specified range:
 
 ```objc

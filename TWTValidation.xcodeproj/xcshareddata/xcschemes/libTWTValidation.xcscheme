@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4CA7C90B18E662CE00A434B6"
-               BuildableName = "libTWTValidation Tests.xctest"
-               BlueprintName = "libTWTValidation Tests"
+               BuildableName = "libTWTValidationTests.xctest"
+               BlueprintName = "libTWTValidationTests"
                ReferencedContainer = "container:TWTValidation.xcodeproj">
             </BuildableReference>
          </TestableReference>

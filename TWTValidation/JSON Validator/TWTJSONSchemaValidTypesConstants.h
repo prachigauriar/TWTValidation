@@ -24,6 +24,9 @@
 //  THE SOFTWARE.
 //
 
+@import Foundation;
+
+
 // Valid types
 extern NSString *const kTWTJSONSchemaTypeKeywordAny;
 extern NSString *const kTWTJSONSchemaTypeKeywordArray;

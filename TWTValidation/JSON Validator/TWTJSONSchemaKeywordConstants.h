@@ -24,6 +24,9 @@
 //  THE SOFTWARE.
 //
 
+@import Foundation;
+
+
 // Any instance type
 extern NSString *const kTWTJSONSchemaKeywordTitle;
 extern NSString *const kTWTJSONSchemaKeywordDescription;

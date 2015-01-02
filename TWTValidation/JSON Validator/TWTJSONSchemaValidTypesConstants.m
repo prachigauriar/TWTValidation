@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "TWTJSONSchemaValidTypesConstants.h"
+#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 
 
 // Valid types

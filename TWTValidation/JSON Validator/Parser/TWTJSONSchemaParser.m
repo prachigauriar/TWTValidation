@@ -23,21 +23,21 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "TWTJSONSchemaParser.h"
+#import <TWTValidation/TWTJSONSchemaParser.h>
 
-#import "TWTJSONSchemaArrayASTNode.h"
-#import "TWTJSONSchemaASTNode.h"
-#import "TWTJSONSchemaBooleanValueASTNode.h"
-#import "TWTJSONSchemaDepedencyASTNode.h"
-#import "TWTJSONSchemaGenericASTNode.h"
-#import "TWTJSONSchemaKeywordConstants.h"
-#import "TWTJSONSchemaNamedPropertyASTNode.h"
-#import "TWTJSONSchemaNumberASTNode.h"
-#import "TWTJSONSchemaObjectASTNode.h"
-#import "TWTJSONSchemaPatternPropertyASTNode.h"
-#import "TWTJSONSchemaStringASTNode.h"
-#import "TWTJSONSchemaTopLevelASTNode.h"
-#import "TWTJSONSchemaValidTypesConstants.h"
+#import <TWTValidation/TWTJSONSchemaArrayASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+#import <TWTValidation/TWTJSONSchemaDepedencyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaGenericASTNode.h>
+#import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
+#import <TWTValidation/TWTJSONSchemaNamedPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaNumberASTNode.h>
+#import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
+#import <TWTValidation/TWTJSONSchemaPatternPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaStringASTNode.h>
+#import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>
+#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 
 
 static NSString *const kTWTJSONExceptionErrorKey = @"error";
