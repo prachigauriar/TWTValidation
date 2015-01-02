@@ -24,7 +24,8 @@
 //  THE SOFTWARE.
 //
 
-#import "TWTJSONSchemaKeywordConstants.h"
+#import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
+
 
 // Any instance type
 NSString *const kTWTJSONSchemaKeywordTitle = @"title";

@@ -14,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4CA7C93C18E664CC00A434B6"
-               BuildableName = "TWTValidation.framework"
-               BlueprintName = "TWTValidation"
+               BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
+               BuildableName = "TWTValidation-iOS.framework"
+               BlueprintName = "TWTValidation-iOS"
+               ReferencedContainer = "container:TWTValidation.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4C96CAB71A563D91003763D3"
+               BuildableName = "TWTValidation-iOSTests.xctest"
+               BlueprintName = "TWTValidation-iOSTests"
                ReferencedContainer = "container:TWTValidation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,13 +46,22 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4CA7C95118E664CC00A434B6"
-               BuildableName = "TWTValidationTests.xctest"
-               BlueprintName = "TWTValidationTests"
+               BlueprintIdentifier = "4C96CAB71A563D91003763D3"
+               BuildableName = "TWTValidation-iOSTests.xctest"
+               BlueprintName = "TWTValidation-iOSTests"
                ReferencedContainer = "container:TWTValidation.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
+            BuildableName = "TWTValidation-iOS.framework"
+            BlueprintName = "TWTValidation-iOS"
+            ReferencedContainer = "container:TWTValidation.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -52,18 +75,12 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4CA7C93C18E664CC00A434B6"
-            BuildableName = "TWTValidation.framework"
-            BlueprintName = "TWTValidation"
+            BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
+            BuildableName = "TWTValidation-iOS.framework"
+            BlueprintName = "TWTValidation-iOS"
             ReferencedContainer = "container:TWTValidation.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-NSShowNonLocalizedStrings YES"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -73,6 +90,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
+            BuildableName = "TWTValidation-iOS.framework"
+            BlueprintName = "TWTValidation-iOS"
+            ReferencedContainer = "container:TWTValidation.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
