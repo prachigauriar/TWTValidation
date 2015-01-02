@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
-               BuildableName = "TWTValidation-iOS.framework"
+               BuildableName = "TWTValidation.framework"
                BlueprintName = "TWTValidation-iOS"
                ReferencedContainer = "container:TWTValidation.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
-            BuildableName = "TWTValidation-iOS.framework"
+            BuildableName = "TWTValidation.framework"
             BlueprintName = "TWTValidation-iOS"
             ReferencedContainer = "container:TWTValidation.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
-            BuildableName = "TWTValidation-iOS.framework"
+            BuildableName = "TWTValidation.framework"
             BlueprintName = "TWTValidation-iOS"
             ReferencedContainer = "container:TWTValidation.xcodeproj">
          </BuildableReference>
@@ -94,7 +94,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4C96CAAD1A563D90003763D3"
-            BuildableName = "TWTValidation-iOS.framework"
+            BuildableName = "TWTValidation.framework"
             BlueprintName = "TWTValidation-iOS"
             ReferencedContainer = "container:TWTValidation.xcodeproj">
          </BuildableReference>
