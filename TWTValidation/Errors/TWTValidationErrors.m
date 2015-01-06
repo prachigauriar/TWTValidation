@@ -43,9 +43,9 @@ NSString *const TWTValidationKeyValidationErrorsKey = @"TWTValidationKeyValidati
 NSString *const TWTValidationValueValidationErrorsKey = @"TWTValidationValueValidationErrors";
 NSString *const TWTValidationKeyValuePairValidationErrorsKey = @"TWTValidationKeyValuePairValidationErrors";
 
-
 NSString *const TWTJSONSchemaParserErrorDomain = @"TWTJSONSchemaParserErrorDomain";
 NSString *const TWTJSONSchemaParserInvalidObjectKey = @"TWTJSONSchemaParserInvalidObject";
+
 
 #pragma mark
 

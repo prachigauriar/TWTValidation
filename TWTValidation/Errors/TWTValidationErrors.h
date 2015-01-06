@@ -82,12 +82,12 @@ extern NSString *const TWTValidationValueValidationErrorsKey;
 extern NSString *const TWTValidationKeyValuePairValidationErrorsKey;
 
 /*!
- @abstract The error domain for errors originating from parsing the JSON Schema against which JSON is to be validated.
+ @abstract The error domain for errors originating from TWTValidation’s JSON schema parser.
  */
 extern NSString *const TWTJSONSchemaParserErrorDomain;
 
 /*!
- @abstract userInfo key whose value is the object causing an error to occurr while parsing a JSON Schema.
+ @abstract userInfo key whose value is the object that caused the JSON schema parsing error.
 */
 extern NSString *const TWTJSONSchemaParserInvalidObjectKey;
 
@@ -153,7 +153,7 @@ typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
     /*! Indicates a JSON structure is not of the expected class. */
     TWTJSONSchemaParserErrorCodeInvalidClass,
 
-    /*! Indicates a value is not valid with respect to the schema definition (e.g., the value of "minLength" is not a positive integer). */
+    /*! Indicates a value is not valid with respect to the schema definition, (e.g., the value of "minLength" is not a positive integer). */
     TWTJSONSchemaParserErrorCodeInvalidValue,
 
     /*! Indicates a collection is empty where at least one item is required. */
