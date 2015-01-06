@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaValidTypesConstants.m
+//  TWTJSONSchemaASTNodeClasses.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
+//  Created by Jill Cohen on 1/5/15.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,15 +24,14 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
-
-
-// Valid types
-NSString *const TWTJSONSchemaTypeKeywordAny = @"any";
-NSString *const TWTJSONSchemaTypeKeywordArray = @"array";
-NSString *const TWTJSONSchemaTypeKeywordBoolean = @"boolean";
-NSString *const TWTJSONSchemaTypeKeywordInteger = @"integer";
-NSString *const TWTJSONSchemaTypeKeywordNull = @"null";
-NSString *const TWTJSONSchemaTypeKeywordNumber = @"number";
-NSString *const TWTJSONSchemaTypeKeywordObject = @"object";
-NSString *const TWTJSONSchemaTypeKeywordString = @"string";
+#import <TWTValidation/TWTJSONSchemaArrayASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+#import <TWTValidation/TWTJSONSchemaDependencyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaGenericASTNode.h>
+#import <TWTValidation/TWTJSONSchemaNamedPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaNumberASTNode.h>
+#import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
+#import <TWTValidation/TWTJSONSchemaPatternPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaStringASTNode.h>
+#import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>

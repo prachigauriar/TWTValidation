@@ -31,6 +31,8 @@
 
 - (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
 {
+    NSParameterAssert(key);
+
     self = [super init];
     if (self) {
         _key = [key copy];
@@ -38,6 +40,13 @@
     }
     return self;
 }
+
+
+- (instancetype)init
+{
+    return [self initWithKey:nil valueSchema:nil];
+}
+
 
 - (NSSet *)validTypes
 {

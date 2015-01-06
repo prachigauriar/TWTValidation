@@ -22,35 +22,26 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
 
 #import <TWTValidation/TWTJSONSchemaParser.h>
 
-#import <TWTValidation/TWTJSONSchemaArrayASTNode.h>
-#import <TWTValidation/TWTJSONSchemaASTNode.h>
-#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
-#import <TWTValidation/TWTJSONSchemaDepedencyASTNode.h>
-#import <TWTValidation/TWTJSONSchemaGenericASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNodeClasses.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
-#import <TWTValidation/TWTJSONSchemaNamedPropertyASTNode.h>
-#import <TWTValidation/TWTJSONSchemaNumberASTNode.h>
-#import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
-#import <TWTValidation/TWTJSONSchemaPatternPropertyASTNode.h>
-#import <TWTValidation/TWTJSONSchemaStringASTNode.h>
-#import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>
 #import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+#import <TWTValidation/TWTValidationErrors.h>
 
 
-static NSString *const kTWTJSONExceptionErrorKey = @"error";
-NSString *const kTWTJSONSchemaParserErrorInfoDomainKey = @"TWTJSONSchemaParserErrorDomain";
-NSString *const kTWTJSONSchemaParserErrorInfoPathKey = @"path";
-NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
+static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 
 @interface TWTJSONSchemaParser ()
 
-@property (nonatomic, strong) NSMutableArray *pathStack;
+@property (nonatomic, copy, readonly) NSDictionary *JSONSchema;
+@property (nonatomic, strong, readonly) NSMutableArray *pathStack;
+@property (nonatomic, strong) NSMutableArray *warnings;
 
-@property (nonatomic, copy) NSDictionary *JSONSchema;
+- (void)failIfObject:(id)object isNotKindOfOneOfClasses:(Class)validClass1, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 
@@ -59,30 +50,44 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 - (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema
 {
+    NSParameterAssert(topLevelSchema);
+    NSParameterAssert([NSJSONSerialization isValidJSONObject:topLevelSchema]);
+
     self = [super init];
     if (self) {
         _JSONSchema = [topLevelSchema copy];
         _pathStack = [[NSMutableArray alloc] init];
+        _warnings = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)errorPointer
+- (instancetype)init
 {
-    [self checkObject:self.JSONSchema[kTWTJSONSchemaKeywordSchema] isOneOf:[NSSet setWithObject:kTWTJSONSchemaKeywordDraft4Path]];
+    return [self initWithJSONSchema:nil];
+}
+
+
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSString *__autoreleasing *)outWarnings
+{
+    [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
 
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [[TWTJSONSchemaTopLevelASTNode alloc] init];
-    topLevelNode.schemaPath = self.JSONSchema[kTWTJSONSchemaKeywordSchema];
+    topLevelNode.schemaPath = self.JSONSchema[TWTJSONSchemaKeywordSchema];
 
     @try {
         topLevelNode.schema = [self parseSchema:self.JSONSchema];
     } @catch (NSException *exception) {
-        NSError *outError = exception.userInfo[kTWTJSONExceptionErrorKey];
-        if (errorPointer) {
-            *errorPointer = outError;
+        NSError *error = exception.userInfo[TWTJSONExceptionErrorKey];
+        if (outError) {
+            *outError = error;
             return nil;
         }
+    }
+
+    if (self.warnings.count > 0 ) {
+        *outWarnings = [self.warnings componentsJoinedByString:@"\n"];
     }
 
     return topLevelNode;
@@ -90,225 +95,191 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 
 # pragma mark - Schema parser methods
-// starting point for all schema nodes (except top level)
-// directs the schema toward the appropriate parser method based on the value of "type"
-// type-specific parser methods are responsible for the entire process of creating a node from a schema, including:
-// 1) initializing the appropriate ASTNode 2) setting the type (if its not built into that ASTNode class) 3) parsing all general and type-specific properties 4) returning a completed node
+
+// Starting point for all schema nodes (except top level)
+// Directs the schema toward the appropriate parser method based on the value of "type", and guarantees that value is valid
+// Valid values for type are:
+//    A. Nil (type keyword not present)
+//    B. An array of strings that are all valid JSON types
+//    C. A string that is a valid JSON type
+// Type-specific parser methods are responsible for the entire process of creating a node from a schema, including:
+//     1. Initializing the appropriate ASTNode
+//     2. Setting the type (GenericASTNode only; all others are built into the node class)
+//     3. Parsing all common and type-specific properties
+//     4. Returning a completed node
 - (TWTJSONSchemaASTNode *)parseSchema:(NSDictionary *)schema
 {
     NSParameterAssert(schema);
 
-    [self checkObject:schema isOfClass:[NSDictionary class] allowNil:NO];
+    [self failIfObject:schema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
 
-    if ([schema[kTWTJSONSchemaKeywordType] isKindOfClass:[NSString class]]) {
-        NSString *instanceType = schema[kTWTJSONSchemaKeywordType];
-
-        static NSDictionary *typeSelectors = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            typeSelectors = @{ kTWTJSONSchemaTypeKeywordAny : @"parseGenericTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordArray : @"parseArrayTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordBoolean : @"parseGenericTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordInteger : @"parseNumberTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordNull : @"parseGenericTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordNumber : @"parseNumberTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordObject : @"parseObjectTypeSchema:",
-                               kTWTJSONSchemaTypeKeywordString : @"parseStringTypeSchema:" };
-        });
-
-        if (typeSelectors[instanceType]) {
-            SEL parseSelector = NSSelectorFromString(typeSelectors[instanceType]);
-            NSAssert([self respondsToSelector:parseSelector], @"selector is not defined");
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            return [self performSelector:parseSelector withObject:schema];
-#pragma clang diagnostic pop
-        }
+    // Type is unspecified
+    NSString *type = schema[TWTJSONSchemaKeywordType];
+    if (!type) {
+        return [self parseGenericSchema:schema];
     }
 
-    return [self parseGenericTypeSchema:schema];
+    [self pushPathComponent:TWTJSONSchemaKeywordType];
+
+    [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
+
+    // Type is an array
+    if ([type isKindOfClass:[NSArray class]]) {
+        [(NSArray *)type enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {
+            [self pushPathComponent:@(index)];
+            [self failIfObject:typeString isNotMemberOfSet:[self validJSONTypeKeywords]];
+            [self popPathComponent];
+        }];
+
+        return [self parseGenericSchema:schema];
+    }
+
+    // Type is a string
+    [self failIfObject:type isNotMemberOfSet:[self validJSONTypeKeywords]];
+    [self popPathComponent];
+
+    if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
+        return [self parseArraySchema:schema];
+    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordInteger] || [type isEqualToString:TWTJSONSchemaTypeKeywordNumber]) {
+        return [self parseNumberSchema:schema];
+    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
+        return [self parseObjectSchema:schema];
+    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
+        return [self parseStringSchema:schema];
+    } else { // "any", "boolean", or "null"
+        return [self parseGenericSchema:schema];
+    }
 }
 
 
-- (TWTJSONSchemaArrayASTNode *)parseArrayTypeSchema:(NSDictionary *)arraySchema
+- (TWTJSONSchemaArrayASTNode *)parseArraySchema:(NSDictionary *)arraySchema
 {
     TWTJSONSchemaArrayASTNode *node = [[TWTJSONSchemaArrayASTNode alloc] init];
-    node = (TWTJSONSchemaArrayASTNode *)[self parseCommonKeywordsFromSchema:arraySchema toNode:node];
+    [self parseCommonKeywordsFromSchema:arraySchema intoNode:node];
 
-    node.maximumItemCount = [self parseUnsignedIntegerFromSchema:arraySchema forKey:kTWTJSONSchemaKeywordMaxItems];
-    node.minimumItemCount = [self parseUnsignedIntegerFromSchema:arraySchema forKey:kTWTJSONSchemaKeywordMinItems];
-    node.requiresUniqueItems = [self parseBooleanValueFromSchema:arraySchema forKey:kTWTJSONSchemaKeywordUniqueItems valueIfNotPresent:NO];
+    node.maximumItemCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMaxItems schema:arraySchema];
+    node.minimumItemCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMinItems schema:arraySchema];
+    node.requiresUniqueItems = [self parseBooleanForKey:TWTJSONSchemaKeywordUniqueItems schema:arraySchema valueIfNotPresent:NO];
 
 
     // "Items" must be JSON schema object or array of JSON schema objects
-    if ([arraySchema[kTWTJSONSchemaKeywordItems] isKindOfClass:[NSDictionary class]]) {
-        node.itemSchemas = @[ [self parseSchemaFromSchema:arraySchema forKey:kTWTJSONSchemaKeywordItems] ];
+    if ([arraySchema[TWTJSONSchemaKeywordItems] isKindOfClass:[NSDictionary class]]) {
+        node.itemSchemas = @[ [self parseSchemaForKey:TWTJSONSchemaKeywordItems schema:arraySchema] ];
         // additional items is meaningless if items is a single schema
     } else {
-        node.itemSchemas = [self parseArrayOfSchemasFromSchema:arraySchema forKey:kTWTJSONSchemaKeywordItems];
-        node.additionalItemsNode = [self parseAdditionalItemsOrPropertiesWithSchema:arraySchema forKey:kTWTJSONSchemaKeywordAdditionalItems];
+        node.itemSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordItems schema:arraySchema];
+        node.additionalItemsNode = [self parseAdditionalItemsOrPropertiesForKey:TWTJSONSchemaKeywordAdditionalItems schema:arraySchema];
     }
 
     return node;
 }
 
-- (TWTJSONSchemaGenericASTNode *)parseGenericTypeSchema:(NSDictionary *)genericSchema
+
+- (TWTJSONSchemaGenericASTNode *)parseGenericSchema:(NSDictionary *)genericSchema
 {
     TWTJSONSchemaGenericASTNode *node = [[TWTJSONSchemaGenericASTNode alloc] init];
-    node = (TWTJSONSchemaGenericASTNode *)[self parseCommonKeywordsFromSchema:genericSchema toNode:node];
+    [self parseCommonKeywordsFromSchema:genericSchema intoNode:node];
 
-    node.validTypes = [self parseTypeKeywordFromSchema:genericSchema];
+    id type = genericSchema[TWTJSONSchemaKeywordType];
+    if ([type isKindOfClass:[NSArray class]]) {
+        node.validTypes = [NSSet setWithArray:type];
+    } else if (type) {
+        node.validTypes = [NSSet setWithObject:type];
+    }
 
     return node;
 }
 
 
-- (TWTJSONSchemaNumberASTNode *)parseNumberTypeSchema:(NSDictionary *)numberSchema
+- (TWTJSONSchemaNumberASTNode *)parseNumberSchema:(NSDictionary *)numberSchema
 {
     TWTJSONSchemaNumberASTNode *node = [[TWTJSONSchemaNumberASTNode alloc] init];
-    node = (TWTJSONSchemaNumberASTNode *)[self parseCommonKeywordsFromSchema:numberSchema toNode:node];
+    [self parseCommonKeywordsFromSchema:numberSchema intoNode:node];
 
-    node.requireIntegralValue = [numberSchema[kTWTJSONSchemaKeywordType] isEqualToString:kTWTJSONSchemaTypeKeywordInteger];
-    node.minimum = [self parseNumberFromSchema:numberSchema forKey:kTWTJSONSchemaKeywordMinimum];
-    node.maximum = [self parseNumberFromSchema:numberSchema forKey:kTWTJSONSchemaKeywordMaximum];
-    node.multipleOf = [self parsePositiveNumberFromSchema:numberSchema forKey:kTWTJSONSchemaKeywordMultipleOf];
+    node.requireIntegralValue = [numberSchema[TWTJSONSchemaKeywordType] isEqualToString:TWTJSONSchemaTypeKeywordInteger];
+    node.minimum = [self parseNumberForKey:TWTJSONSchemaKeywordMinimum schema:numberSchema];
+    node.maximum = [self parseNumberForKey:TWTJSONSchemaKeywordMaximum schema:numberSchema];
+    node.multipleOf = [self parsePositiveNumberForKey:TWTJSONSchemaKeywordMultipleOf schema:numberSchema];
     if (node.maximum) {
-        node.exclusiveMaximum = [self parseBooleanValueFromSchema:numberSchema forKey:kTWTJSONSchemaKeywordExclusiveMaximum valueIfNotPresent:NO];
+        node.exclusiveMaximum = [self parseBooleanForKey:TWTJSONSchemaKeywordExclusiveMaximum schema:numberSchema valueIfNotPresent:NO];
     }
     if (node.minimum) {
-        node.exclusiveMinimum = [self parseBooleanValueFromSchema:numberSchema forKey:kTWTJSONSchemaKeywordExclusiveMinimum valueIfNotPresent:NO];
+        node.exclusiveMinimum = [self parseBooleanForKey:TWTJSONSchemaKeywordExclusiveMinimum schema:numberSchema valueIfNotPresent:NO];
     }
 
     return node;
 }
 
 
-- (TWTJSONSchemaStringASTNode *)parseStringTypeSchema:(NSDictionary *)stringSchema
+- (TWTJSONSchemaStringASTNode *)parseStringSchema:(NSDictionary *)stringSchema
 {
     TWTJSONSchemaStringASTNode *node = [[TWTJSONSchemaStringASTNode alloc] init];
-    node = (TWTJSONSchemaStringASTNode *)[self parseCommonKeywordsFromSchema:stringSchema toNode:node];
+    [self parseCommonKeywordsFromSchema:stringSchema intoNode:node];
 
-    node.maximumLength = [self parseUnsignedIntegerFromSchema:stringSchema forKey:kTWTJSONSchemaKeywordMaxLength];
-    node.minimumLength = [self parseUnsignedIntegerFromSchema:stringSchema forKey:kTWTJSONSchemaKeywordMinLength];
-    node.pattern = [self parseStringFromSchema:stringSchema forKey:kTWTJSONSchemaKeywordPattern]; // Does not check validity of regular expression, because definition is: "MUST be a string. This string SHOULD be a valid Regular Expression."
+    node.maximumLength = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMaxLength schema:stringSchema];
+    node.minimumLength = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMinLength schema:stringSchema];
+    // Does not check validity of regular expression, because definition is: "MUST be a string. This string SHOULD be a valid Regular Expression."
+    node.pattern = [self parseStringForKey:TWTJSONSchemaKeywordPattern schema:stringSchema];
 
     return node;
 }
 
 
-- (TWTJSONSchemaObjectASTNode *)parseObjectTypeSchema:(NSDictionary *)objectSchema
+- (TWTJSONSchemaObjectASTNode *)parseObjectSchema:(NSDictionary *)objectSchema
 {
     TWTJSONSchemaObjectASTNode *node = [[TWTJSONSchemaObjectASTNode alloc] init];
-    node = (TWTJSONSchemaObjectASTNode *)[self parseCommonKeywordsFromSchema:objectSchema toNode:node];
+    [self parseCommonKeywordsFromSchema:objectSchema intoNode:node];
 
-    node.maximumPropertyCount = [self parseUnsignedIntegerFromSchema:objectSchema forKey:kTWTJSONSchemaKeywordMaxProperties];
-    node.minimumPropertyCount = [self parseUnsignedIntegerFromSchema:objectSchema forKey:kTWTJSONSchemaKeywordMinProperties];
-    NSArray *requiredNames = [self parseArrayOfUnqiueStringsFromSchema:objectSchema forKey:kTWTJSONSchemaKeywordRequired];
+    node.maximumPropertyCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMaxProperties schema:objectSchema];
+    node.minimumPropertyCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMinProperties schema:objectSchema];
+    NSArray *requiredNames = [self parseNonEmptyArrayOfUnqiueStringsForKey:TWTJSONSchemaKeywordRequired schema:objectSchema];
     node.requiredPropertyNames = requiredNames ? [NSSet setWithArray:requiredNames] : nil;
-    node.propertySchemas = [self parseDictionaryOfSchemasFromSchema:objectSchema forKey:kTWTJSONSchemaKeywordProperties nodeClass:[TWTJSONSchemaNamedPropertyASTNode class]];
-    node.patternPropertySchemas = [self parseDictionaryOfSchemasFromSchema:objectSchema forKey:kTWTJSONSchemaKeywordPatternProperties nodeClass:[TWTJSONSchemaPatternPropertyASTNode class]];
-    node.additionalPropertiesNode = [self parseAdditionalItemsOrPropertiesWithSchema:objectSchema forKey:kTWTJSONSchemaKeywordAdditionalProperties];
+    node.propertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaNamedPropertyASTNode class]];
+    node.patternPropertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordPatternProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaPatternPropertyASTNode class]];
+    node.additionalPropertiesNode = [self parseAdditionalItemsOrPropertiesForKey:TWTJSONSchemaKeywordAdditionalProperties schema:objectSchema];
     node.propertyDependencies = [self parseDependenciesWithSchema:objectSchema];
 
     return node;
 }
 
 
-#pragma mark - Keyword and value parser methods
-
-- (TWTJSONSchemaASTNode *)parseCommonKeywordsFromSchema:(NSDictionary *)schema toNode:(TWTJSONSchemaASTNode *)node
-{
-    node.schemaTitle = [self parseStringFromSchema:schema forKey:kTWTJSONSchemaKeywordTitle];
-    node.schemaDescription = [self parseStringFromSchema:schema forKey:kTWTJSONSchemaKeywordDescription];
-    NSArray *validValues = [self parseArrayFromSchema:schema forKey:kTWTJSONSchemaKeywordEnum];
-    node.validValues = validValues ? [NSSet setWithArray:validValues] : nil;
-    node.andSchemas = [self parseArrayOfSchemasFromSchema:schema forKey:kTWTJSONSchemaKeywordAllOf];
-    node.orSchemas = [self parseArrayOfSchemasFromSchema:schema forKey:kTWTJSONSchemaKeywordAnyOf];
-    node.exactlyOneOfSchemas = [self parseArrayOfSchemasFromSchema:schema forKey:kTWTJSONSchemaKeywordOneOf];
-    node.notSchema = [self parseSchemaFromSchema:schema forKey:kTWTJSONSchemaKeywordNot];
-    node.definitions = [self parseDictionaryFromSchema:schema forKey:kTWTJSONSchemaKeywordDefinitions];
-
-    return node;
-}
-
-// Keyword: type
-// Example: { "type" : "boolean" }
-//          { "type" : [ "string", "object", "null" ] }
-- (NSSet *)parseTypeKeywordFromSchema:(NSDictionary *)schema
-{
-    id typeValue = schema[kTWTJSONSchemaKeywordType];
-
-    if (!typeValue) {
-        return nil;
-    }
-
-    // Relies on parseSchema: having filtered out schemas with type array, object, string, number, or integer. Thus, type is either:
-    // A) One of these strings: "boolean", "null", "any"
-    // B) An array of valid type strings
-    // C) Invalid wrt the JSON Schema definition of the type keyword
-
-    [self pushPathComponent:kTWTJSONSchemaKeywordType];
-
-    static NSSet *allowedTypes = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        allowedTypes = [NSSet setWithObjects:kTWTJSONSchemaTypeKeywordAny, kTWTJSONSchemaTypeKeywordBoolean, kTWTJSONSchemaTypeKeywordNull, nil];
-    });
-
-    if ([allowedTypes containsObject:typeValue]) {
-        [self popPathComponent];
-        return [NSSet setWithObject:typeValue];
-    }
-
-    [self checkObjectIsArrayWithAtLeastOneItem:typeValue allowNil:NO];
-
-    [typeValue enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {
-        [self pushPathComponent:@(index)];
-        [self checkObject:typeString isOneOf:[self validJSONTypeKeywords]];
-        [self popPathComponent];
-    }];
-
-    [self popPathComponent];
-    return [NSSet setWithArray:typeValue];
-}
-
+#pragma mark - Nonspecific parser methods
 
 // Keywords: exclusiveMinimum & Maximum, uniqueItems
-- (BOOL)parseBooleanValueFromSchema:(NSDictionary *)schema forKey:(NSString *)key valueIfNotPresent:(BOOL)defaultValue
+- (BOOL)parseBooleanForKey:(NSString *)key schema:(NSDictionary *)schema valueIfNotPresent:(BOOL)defaultValue
 {
     [self pushPathComponent:key];
     NSNumber *booleanObject = schema[key];
-    [self checkObject:booleanObject isOfClass:[NSNumber class] allowNil:YES];
+    [self failIfObject:booleanObject isNotKindOfClass:[NSNumber class] allowsNil:YES];
     [self popPathComponent];
     return booleanObject ? [booleanObject boolValue] : defaultValue;
 }
 
 
 // Keywords: pattern
-- (NSString *)parseStringFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSString *)parseStringForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSString *string = schema[key];
-    [self checkObject:string isOfClass:[NSString class] allowNil:YES];
+    [self failIfObject:string isNotKindOfClass:[NSString class] allowsNil:YES];
     [self popPathComponent];
     return string;
 }
 
 
 // Keywords: minimum, maximum
-- (NSNumber *)parseNumberFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSNumber *)parseNumberForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSNumber *number = schema[key];
-    [self checkObject:number isOfClass:[NSNumber class] allowNil:YES];
+    [self failIfObject:number isNotKindOfClass:[NSNumber class] allowsNil:YES];
     [self popPathComponent];
     return number;
 }
 
 
 // Keywords: multipleOf
-- (NSNumber *)parsePositiveNumberFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSNumber *)parsePositiveNumberForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     NSNumber *number = schema[key];
     if (!number) {
@@ -316,10 +287,11 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
     }
 
     [self pushPathComponent:key];
-    [self checkObject:number isOfClass:[NSNumber class] allowNil:YES];
+    [self failIfObject:number isNotKindOfClass:[NSNumber class] allowsNil:YES];
     if ([number doubleValue] <= 0) {
-        NSString *reason = [NSString stringWithFormat:@"Invalid value for key %@. Expected number greater than zero.", key];
-        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue reason:reason object:number];
+        NSNumber *oldNumber = [number copy];
+        number = @0;
+        [self warnWithFormat:@"Expected number greater than zero but found %@. Converting to %@", oldNumber, number];
     }
 
     [self popPathComponent];
@@ -328,19 +300,26 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 
 // Keywords: min & maxLength, min & maxItems, min & maxProperties
-- (NSNumber *)parseUnsignedIntegerFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSNumber *)parseUnsignedIntegerForKey:(NSString *)key schema:(NSDictionary *)schema
 {
-    [self pushPathComponent:key];
     NSNumber *number = schema[key];
-    [self checkObject:number isOfClass:[NSNumber class] allowNil:YES];
+    if (!number) {
+        return nil;
+    }
 
-    if (number) {
-        double numberValue = [number doubleValue];
-        BOOL isUnsignedInteger = numberValue >= 0 && numberValue == trunc(numberValue);
-        if (!isUnsignedInteger) {
-            NSString *reason = [NSString stringWithFormat:@"Invalid value for key %@. Expected unsigned integer.", key];
-            [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue reason:reason object:number];
+    [self pushPathComponent:key];
+    [self failIfObject:number isNotKindOfClass:[NSNumber class] allowsNil:NO];
+
+    double numberValue = [number doubleValue];
+    if (numberValue < 0 || numberValue != trunc(numberValue)) {
+        NSNumber *oldNumber = [number copy];
+
+        if (numberValue < 0) {
+            number = @0;
+        } else {
+            number = [NSNumber numberWithInt:(int)trunc(numberValue)];
         }
+        [self warnWithFormat:@"Expected unsigned integer but found %@. Converting to %@.", oldNumber, number];
     }
 
     [self popPathComponent];
@@ -349,22 +328,39 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 
 // Keywords: definitions
-- (NSDictionary *)parseDictionaryFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSDictionary *)parseDictionaryForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSDictionary *dictionary = schema[key];
-    [self checkObject:dictionary isOfClass:[NSDictionary class] allowNil:YES];
+    [self failIfObject:dictionary isNotKindOfClass:[NSDictionary class] allowsNil:YES];
     [self popPathComponent];
     return dictionary;
 }
 
 
+
+// Keyword: items, not
+// Example: { "items" : {} }
+- (TWTJSONSchemaASTNode *)parseSchemaForKey:(NSString *)key schema:(NSDictionary *)schema
+{
+    NSDictionary *nestedSchema = schema[key];
+    if (!nestedSchema) {
+        return nil;
+    }
+
+    [self pushPathComponent:key];
+    TWTJSONSchemaASTNode *node = [self parseSchema:nestedSchema];
+    [self popPathComponent];
+    return node;
+}
+
+
 // Keywords: enum
-- (NSArray *)parseArrayFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSArray *)parseNonEmptyArrayForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSArray *array = schema[key];
-    [self checkObjectIsArrayWithAtLeastOneItem:array allowNil:YES];
+    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:YES];
     [self popPathComponent];
     return array;
 }
@@ -372,25 +368,26 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 // Keyword: required
 // Example: { "required" : [ "name" ] }
-- (NSArray *)parseArrayOfUnqiueStringsFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (NSArray *)parseNonEmptyArrayOfUnqiueStringsForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSArray *array = schema[key];
-    [self checkObjectIsArrayWithAtLeastOneItem:array allowNil:YES];
-
-    NSMutableSet *uniqueStrings = [[NSMutableSet alloc] init];
+    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:YES];
 
     [array enumerateObjectsUsingBlock:^(NSString *string, NSUInteger index, BOOL *stop) {
         [self pushPathComponent:@(index)];
-        [self checkObject:string isOfClass:[NSString class] allowNil:NO];
-        if ([uniqueStrings containsObject:string]) {
-            NSString *reason = [NSString stringWithFormat:@"Invalid value for key %@. Expected array of unique strings.", key];
-            [self failWithErrorCode:TWTJSONSchemaParserErrorCodeRequiresUniqueness reason:reason object:string];
-        }
-
-        [uniqueStrings addObject:string];
+        [self failIfObject:string isNotKindOfClass:[NSString class] allowsNil:NO];
         [self popPathComponent];
     }];
+
+    NSCountedSet *countedSet = [NSCountedSet setWithArray:array];
+    NSSet *repeatedItems = [countedSet objectsPassingTest:^BOOL(id object, BOOL *stop) {
+        return [countedSet countForObject:object] > 1;
+    }];
+
+    if (repeatedItems.count > 0) {
+        [self warnWithFormat:@"Expected an array of unique items, but the following elements occur more than once: %@", [[repeatedItems allObjects] componentsJoinedByString:@", "]];
+    }
 
     [self popPathComponent];
     return array;
@@ -399,17 +396,23 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 
 // Keyword: items, anyOf, allOf, oneOf
 // Example: { "items" : [ {}, {} ] }
-/*
- { "anyOf": [
- { "type": "string", "maxLength": 5 },
- { "type": "number", "minimum": 0 } ]
- }
- */
-- (NSArray *)parseArrayOfSchemasFromSchema:(NSDictionary *)schema forKey:(NSString *)key
+// 			{
+// 				"anyOf": [
+// 					{
+// 						"maxLength": 5,
+// 						"type": "string"
+// 					},
+// 					{
+// 						"minimum": 0,
+// 						"type": "number"
+// 					}
+// 				]
+// 			}
+- (NSArray *)parseNonEmptyArrayOfSchemasForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
     NSArray *array = schema[key];
-    [self checkObjectIsArrayWithAtLeastOneItem:array allowNil:YES];
+    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:YES];
 
     NSMutableArray *schemaNodes = [[NSMutableArray alloc] init];
     [array enumerateObjectsUsingBlock:^(NSDictionary *itemSchema , NSUInteger index, BOOL *stop) {
@@ -426,22 +429,19 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 // Keyword: properties, patternProperties
 // Example: { "properties" : { "hello" : {}, "world" : {} } }
 //          { "patternProperties" : { "^h" : {}, "r" : {} } }
-- (NSArray *)parseDictionaryOfSchemasFromSchema:(NSDictionary *)schema forKey:(NSString *)key nodeClass:(Class)className
+- (NSArray *)parseDictionaryOfSchemasForKey:(NSString *)key schema:(NSDictionary *)schema keyValuePairNodeClass:(Class)nodeClass
 {
-    NSParameterAssert([className isSubclassOfClass:[TWTJSONSchemaKeyValuePairASTNode class]]);
+    NSParameterAssert([nodeClass isSubclassOfClass:[TWTJSONSchemaKeyValuePairASTNode class]]);
 
     [self pushPathComponent:key];
     NSDictionary *nestedSchema = schema[key];
-    [self checkObject:nestedSchema isOfClass:[NSDictionary class] allowNil:YES];
+    [self failIfObject:nestedSchema isNotKindOfClass:[NSDictionary class] allowsNil:YES];
 
     NSMutableArray *propertyNodes = [[NSMutableArray alloc] init];
-    [nestedSchema enumerateKeysAndObjectsUsingBlock:^(id propertyKey, id object, BOOL *stop) {
+    [nestedSchema enumerateKeysAndObjectsUsingBlock:^(NSString *propertyKey, id object, BOOL *stop) {
         [self pushPathComponent:propertyKey];
-
-        [self checkObject:propertyKey isOfClass:[NSString class] allowNil:NO]; // Defined by JSON syntax, not schema definition
-
         TWTJSONSchemaASTNode *valueNode = [self parseSchema:object];
-        TWTJSONSchemaKeyValuePairASTNode *propertyNode = [[className alloc] initWithKey:propertyKey valueSchema:valueNode];
+        TWTJSONSchemaKeyValuePairASTNode *propertyNode = [[nodeClass alloc] initWithKey:propertyKey valueSchema:valueNode];
         [propertyNodes addObject:propertyNode];
         [self popPathComponent];
     }];
@@ -451,13 +451,31 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 }
 
 
+#pragma mark - Keyword-specific parser methods
+
+- (void)parseCommonKeywordsFromSchema:(NSDictionary *)schema intoNode:(TWTJSONSchemaASTNode *)node
+{
+    node.schemaTitle = [self parseStringForKey:TWTJSONSchemaKeywordTitle schema:schema];
+    node.schemaDescription = [self parseStringForKey:TWTJSONSchemaKeywordDescription schema:schema];
+    NSArray *validValues = [self parseNonEmptyArrayForKey:TWTJSONSchemaKeywordEnum schema:schema];
+    node.validValues = validValues ? [NSSet setWithArray:validValues] : nil;
+    node.andSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordAllOf schema:schema];
+    node.orSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordAnyOf schema:schema];
+    node.exactlyOneOfSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordOneOf schema:schema];
+    node.notSchema = [self parseSchemaForKey:TWTJSONSchemaKeywordNot schema:schema];
+    node.definitions = [self parseDictionaryForKey:TWTJSONSchemaKeywordDefinitions schema:schema];
+
+    return;
+}
+
+
 // Keywords: additionalItems, additionalProperties ONLY
 // Example boolean: { "additionalItems" : false }
 // Example dictionary: { "additionalProperties" : { "type" : "string" } }
 // Note if either keyword is absent, it may be considered present with an empty schema, which is equivalent to "true"
-- (TWTJSONSchemaASTNode *)parseAdditionalItemsOrPropertiesWithSchema:(NSDictionary *)schema forKey:(NSString *)key
+- (TWTJSONSchemaASTNode *)parseAdditionalItemsOrPropertiesForKey:(NSString *)key schema:(NSDictionary *)schema
 {
-    NSParameterAssert([key isEqualToString:kTWTJSONSchemaKeywordAdditionalItems] || [key isEqualToString:kTWTJSONSchemaKeywordAdditionalProperties]);
+    NSParameterAssert([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems] || [key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]);
 
     id value = schema[key];
     if (!value) {
@@ -465,6 +483,9 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
     }
 
     [self pushPathComponent:key];
+
+    [self failIfObject:value isNotKindOfOneOfClasses:[NSDictionary class], [NSNumber class], nil];
+
     if ([value isKindOfClass:[NSNumber class]]) {
         [self popPathComponent];
         return [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:[value boolValue]];
@@ -476,165 +497,185 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
         return node;
     }
 
-    NSString *reason = [NSString stringWithFormat:@"Invalid value for key %@. Expected boolean or schema.", key];
-    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidClass reason:reason object:value];
     return nil;
 }
 
 
-/* Keyword: dependencies
- Showing example of 1) property dependency 2) schema dependency; note these are equivalent for validation
- 1) Property dependency, i.e., "dependencies" object's value is an array
- { "type": "object",
- "properties": {
- "name": { "type": "string" },
- "credit_card": { "type": "number" },
- "billing_address": { "type": "string" } },
- "required": ["name"],
- "dependencies": {
- "credit_card": ["billing_address"] }
- }
+// Keyword: dependencies
+// Dependencies are either property or schema dependencies. Note these two examples are equivalent for validation.
+// 1. Property dependency, i.e., "dependencies" object's value is an array
+//	{
+//		"type": "object",
+//		"properties": {
+//			"billing_address": {
+//				"type": "string"
+//			},
+//			"credit_card": {
+//				"type": "number"
+//			}
+//		},
+//		"dependencies": {
+//			"credit_card": [
+//				"billing_address"
+//			]
+//		}
+//	}
+//
+// 2. Schema dependency, i.e., "dependencies" object's value is a schema
+//	 {
+//		"type": "object",
+//		"properties": {
+//			"credit_card": {
+//				"type": "number"
+//			}
+//		},
+//		"dependencies": {
+//			"credit_card": {
+//				"properties": {
+//					"billing_address": {
+//						"type": "string"
+//					}
+//				},
+//				"required": [
+//					"billing_address"
+//				]
+//			}
+//		}
+//	}
 
- 2) Schema dependency, i.e., "dependencies" object's value is a schema
- { "type": "object",
- "properties": {
- "name": { "type": "string" },
- "credit_card": { "type": "number" } },
- "required": ["name"],
- "dependencies": {
- "credit_card": {
- "properties": {
- "billing_address": { "type": "string" }
- },
- "required": ["billing_address"] }
- }
- }
- */
 - (NSArray *)parseDependenciesWithSchema:(NSDictionary *)schema
 {
-    NSDictionary *dependencies = schema[kTWTJSONSchemaKeywordDependencies];
+    NSDictionary *dependencies = schema[TWTJSONSchemaKeywordDependencies];
     if (!dependencies) {
         return nil;
     }
-    [self pushPathComponent:kTWTJSONSchemaKeywordDependencies];
-    [self checkObject:dependencies isOfClass:[NSDictionary class] allowNil:NO];
+    [self pushPathComponent:TWTJSONSchemaKeywordDependencies];
+    [self failIfObject:dependencies isNotKindOfClass:[NSDictionary class] allowsNil:NO];
 
     NSMutableArray *dependencyNodes = [[NSMutableArray alloc] init];
     [dependencies enumerateKeysAndObjectsUsingBlock:^(NSString *key, id object, BOOL *stop) {
         [self pushPathComponent:key];
 
-        [self checkObject:key isOfClass:[NSString class] allowNil:NO];
+        [self failIfObject:object isNotKindOfOneOfClasses:[NSDictionary class], [NSArray class], nil];
 
         if ([object isKindOfClass:[NSDictionary class]]) {
-            TWTJSONSchemaDepedencyASTNode *node = [[TWTJSONSchemaDepedencyASTNode alloc] initWithKey:key valueSchema:[self parseSchema:object]];
+            TWTJSONSchemaDependencyASTNode *node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key valueSchema:[self parseSchema:object]];
             [dependencyNodes addObject:node];
         } else {
-            NSArray *propertySet = [self parseArrayOfUnqiueStringsFromSchema:dependencies forKey:key];
-            TWTJSONSchemaDepedencyASTNode *node = [[TWTJSONSchemaDepedencyASTNode alloc] init];
-            node.key = key;
-            node.propertySet = propertySet;
+            NSArray *propertySet = [self parseNonEmptyArrayOfUnqiueStringsForKey:key schema:dependencies];
+            TWTJSONSchemaDependencyASTNode *node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key propertySet:propertySet];
             [dependencyNodes addObject:node];
         }
 
         [self popPathComponent];
 
     }];
-
+    
     [self popPathComponent];
     return dependencyNodes;
 }
 
 
-// Keyword: items, not
-// Example: { "items" : {} }
-- (TWTJSONSchemaASTNode *)parseSchemaFromSchema:(NSDictionary *)schema forKey:(NSString *)key
-{
-    NSDictionary *nestedSchema = schema[key];
-    if (!nestedSchema) {
-        return nil;
-    }
+#pragma mark - Warning method
 
-    [self pushPathComponent:key];
-    TWTJSONSchemaASTNode *node = [self parseSchema:nestedSchema];
-    [self popPathComponent];
-    return node;
+- (void)warnWithFormat:(NSString *)format, ...
+{
+    va_list arguments;
+    va_start(arguments, format);
+    NSString *description = [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
+
+    [self.warnings addObject:[@"Warning at " stringByAppendingFormat:@"%@. %@", [self currentPathString], description]];
 }
 
 
-#pragma mark - Helper methods
+#pragma mark - Failure methods
 
-- (void)checkObject:(id)object isOfClass:(Class)className allowNil:(BOOL)allowNil
+- (void)failIfObject:(id)object isNotKindOfClass:(Class)validClass allowsNil:(BOOL)allowsNil
 {
 
-    if (allowNil && !object) {
+    if (allowsNil && !object) {
         return;
     }
 
-    if ([object isKindOfClass:className]) {
+    if ([object isKindOfClass:validClass]) {
         return;
     }
 
-    NSString *reason = [NSString stringWithFormat:@"Invalid type encountered. Expected object of class %@.", NSStringFromClass(className)];
-    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidClass reason:reason object:object];
+    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidClass object:object format:@"Expected object of class %@ but found %@.", validClass, object];
 }
 
 
-- (void)checkObjectIsArrayWithAtLeastOneItem:(id)object allowNil:(BOOL)allowNil
+- (void)failIfObject:(id)object isNotKindOfOneOfClasses:(Class)validClass1, ...
 {
-    [self checkObject:object isOfClass:[NSArray class] allowNil:allowNil];
+    va_list argList;
+    va_start(argList, validClass1);
+
+    NSMutableSet *validClasses = [[NSMutableSet alloc] init];
+    Class validClass = validClass1;
+    while (validClass) {
+        [validClasses addObject:validClass];
+        validClass = va_arg(argList, id);
+    }
+
+    va_end(argList);
+
+    for (Class validClassItem in validClasses) {
+        if ([object isKindOfClass:validClassItem]) {
+            return;
+        }
+    }
+
+    NSString *classString = [[validClasses allObjects] componentsJoinedByString:@" or "];
+    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidClass object:object format:@"Expected object of class %@ but found %@.", classString, object];
+}
+
+
+- (void)failIfObjectIsNotArrayWithAtLeastOneItem:(NSArray *)object allowsNil:(BOOL)allowsNil
+{
+    [self failIfObject:object isNotKindOfClass:[NSArray class] allowsNil:allowsNil];
     if (!object || [object count] >= 1) {
         return;
     }
 
-    NSString *reason = @"Expected array with at least one item.";
-    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem reason:reason object:object];
+    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem object:object format:@"Expected array with at least one item but found %@.",  object];
 }
 
 
-- (void)checkObject:(id)object isOneOf:(NSSet *)validValues
+- (void)failIfObject:(id)object isNotMemberOfSet:(NSSet *)validValues
 {
     if ([validValues containsObject:object]) {
         return;
     }
 
-    NSString *reason = [NSString stringWithFormat:@"Invalid valid encountered. Expected one of %@", validValues];
-    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue reason:reason object:object];
+    NSString *valueString = [[validValues allObjects] componentsJoinedByString:@", "];
+    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:object format:@"Expected one of { %@ } but found %@", valueString, object];
 }
 
 
-- (void)failWithErrorCode:(NSUInteger)code reason:(NSString *)reason object:(id)object
+- (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ...
 {
-    NSString *pathString = [@"/" stringByAppendingString:[self.pathStack componentsJoinedByString:@"/"]];
-    object = object ?: [NSNull null];
-    reason = reason ?: @"";
+    NSParameterAssert(object);
+    NSParameterAssert(format);
 
-    NSError *error = [NSError errorWithDomain:kTWTJSONSchemaParserErrorInfoDomainKey code:code userInfo:@{ kTWTJSONSchemaParserErrorInfoPathKey : pathString,
-                                                                                                           kTWTJSONSchemaParserErrorInfoInvalidObjectKey : object,
-                                                                                                           NSLocalizedFailureReasonErrorKey : reason }];
+    va_list arguments;
+    va_start(arguments, format);
+    NSString *description = [[NSString alloc] initWithFormat:format arguments:arguments];
+    va_end(arguments);
 
-    [[NSException exceptionWithName:@"Invalid JSON Schema"
-                             reason:nil
-                           userInfo:@{ kTWTJSONExceptionErrorKey : error }] raise];
+    description = [@"Error at" stringByAppendingFormat:@"%@. %@", [self currentPathString], description];
+    NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
+                                                                                                   NSLocalizedDescriptionKey : description }];
+
+    @throw [NSException exceptionWithName:@"Invalid JSON Schema" reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
 }
 
 
-- (NSSet *)validJSONTypeKeywords
-{
-    static NSSet *types = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        types = [NSSet setWithObjects:kTWTJSONSchemaTypeKeywordAny,
-                 kTWTJSONSchemaTypeKeywordArray,
-                 kTWTJSONSchemaTypeKeywordBoolean,
-                 kTWTJSONSchemaTypeKeywordInteger,
-                 kTWTJSONSchemaTypeKeywordNull,
-                 kTWTJSONSchemaTypeKeywordNumber,
-                 kTWTJSONSchemaTypeKeywordObject,
-                 kTWTJSONSchemaTypeKeywordString,
-                 nil];
-    });
+#pragma mark - Path methods
 
-    return types;
+- (NSString *)currentPathString
+{
+    return [@"/" stringByAppendingString:[self.pathStack componentsJoinedByString:@"/"]];
 }
 
 
@@ -644,9 +685,33 @@ NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey = @"object";
 }
 
 
-- (void)popPathComponent
+- (id)popPathComponent
 {
+    id object = self.pathStack.lastObject;
     [self.pathStack removeLastObject];
+    return object;
+}
+
+
+#pragma mark - JSON valid types convenience method
+
+- (NSSet *)validJSONTypeKeywords
+{
+    static NSSet *types = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        types = [NSSet setWithObjects:TWTJSONSchemaTypeKeywordAny,
+                 TWTJSONSchemaTypeKeywordArray,
+                 TWTJSONSchemaTypeKeywordBoolean,
+                 TWTJSONSchemaTypeKeywordInteger,
+                 TWTJSONSchemaTypeKeywordNull,
+                 TWTJSONSchemaTypeKeywordNumber,
+                 TWTJSONSchemaTypeKeywordObject,
+                 TWTJSONSchemaTypeKeywordString,
+                 nil];
+    });
+
+    return types;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaDepedencyASTNode.h
+//  TWTJSONSchemaDependencyASTNode.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
@@ -27,8 +27,10 @@
 #import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
 
 
-@interface TWTJSONSchemaDepedencyASTNode : TWTJSONSchemaKeyValuePairASTNode
+@interface TWTJSONSchemaDependencyASTNode : TWTJSONSchemaKeyValuePairASTNode
 
-@property (nonatomic, copy) NSArray *propertySet;
+@property (nonatomic, copy, readonly) NSArray *propertySet;
+
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet;
 
 @end

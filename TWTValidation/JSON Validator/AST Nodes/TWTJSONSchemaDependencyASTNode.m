@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaDepedencyASTNode.m
+//  TWTJSONSchemaDependencyASTNode.m
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
@@ -24,14 +24,23 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaDepedencyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaDependencyASTNode.h>
 
 
-@implementation TWTJSONSchemaDepedencyASTNode
+@implementation TWTJSONSchemaDependencyASTNode
+
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet
+{
+    self = [self initWithKey:key valueSchema:nil];
+    if (self) {
+        _propertySet = [propertySet copy];
+    }
+    return self;
+}
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
-    [processor processDepedencyNode:self];
+    [processor processDependencyNode:self];
 }
 
 @end

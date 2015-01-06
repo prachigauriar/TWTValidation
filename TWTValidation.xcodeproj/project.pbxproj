@@ -55,7 +55,7 @@
 		4C96CADB1A5640E7003763D3 /* TWTJSONSchemaKeyValuePairASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DA961A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.m */; };
 		4C96CADC1A5640E7003763D3 /* TWTJSONSchemaNamedPropertyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAA51A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.m */; };
 		4C96CADD1A5640E7003763D3 /* TWTJSONSchemaPatternPropertyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAA1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m */; };
-		4C96CADE1A5640E7003763D3 /* TWTJSONSchemaDepedencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m */; };
+		4C96CADE1A5640E7003763D3 /* TWTJSONSchemaDependencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m */; };
 		4C96CADF1A5640E7003763D3 /* TWTValidationErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4D71A018E7922E00BB8CE0 /* TWTValidationErrors.m */; };
 		4C96CAE01A5640FE003763D3 /* TWTValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA7C90418E662CE00A434B6 /* TWTValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C96CAE11A5640FE003763D3 /* TWTValidationLocalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA55E2F18EDE77F009EED4B /* TWTValidationLocalization.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -83,7 +83,7 @@
 		4C96CAF71A5640FE003763D3 /* TWTJSONSchemaKeyValuePairASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DA951A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4C96CAF81A5640FE003763D3 /* TWTJSONSchemaNamedPropertyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAA41A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4C96CAF91A5640FE003763D3 /* TWTJSONSchemaPatternPropertyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAA91A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		4C96CAFA1A5640FE003763D3 /* TWTJSONSchemaDepedencyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		4C96CAFA1A5640FE003763D3 /* TWTJSONSchemaDependencyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4C96CAFB1A5640FE003763D3 /* TWTValidationErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C4D719F18E7922E00BB8CE0 /* TWTValidationErrors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C96CAFC1A564130003763D3 /* TWTRandomizedTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FB418E85C86007F7EF3 /* TWTRandomizedTestCase.m */; };
 		4C96CAFD1A564130003763D3 /* TWTValidatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */; };
@@ -160,6 +160,9 @@
 		713430E61A3F408700C63013 /* TWTJSONSchemaNumberASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430E41A3F408700C63013 /* TWTJSONSchemaNumberASTNode.m */; };
 		713430E91A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 713430E71A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		713430EA1A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */; };
+		7172FBD81A5AF50000BEB7B7 /* TWTJSONSchemaASTNodeClasses.h in Headers */ = {isa = PBXBuildFile; fileRef = 7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		7172FBD91A5AF5A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h in Headers */ = {isa = PBXBuildFile; fileRef = 7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		7172FBDD1A5B253000BEB7B7 /* TWTJSONSchemaValidatorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71524B3B1A3FDFCE00E3887C /* TWTJSONSchemaValidatorTestCase.m */; };
 		719E98031A3F7190001B365A /* TWTJSONSchemaKeywordConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */; };
 		719E98041A3F71A7001B365A /* TWTJSONSchemaASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430D21A3F402000C63013 /* TWTJSONSchemaASTNode.m */; };
 		719E98051A3F71DB001B365A /* TWTJSONSchemaArrayASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430D01A3F402000C63013 /* TWTJSONSchemaArrayASTNode.m */; };
@@ -182,9 +185,9 @@
 		71B8DAAB1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAA91A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		71B8DAAC1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAA1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m */; };
 		71B8DAAD1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAA1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m */; };
-		71B8DAB01A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		71B8DAB11A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m */; };
-		71B8DAB21A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m */; };
+		71B8DAB01A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		71B8DAB11A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m */; };
+		71B8DAB21A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m */; };
 		71B8DAB51A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 71B8DAB31A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		71B8DAB61A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAB41A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.m */; };
 		71B8DAB71A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B8DAB41A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.m */; };
@@ -297,9 +300,10 @@
 		713430E01A3F407700C63013 /* TWTJSONSchemaGenericASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaGenericASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaGenericASTNode.m"; sourceTree = "<group>"; };
 		713430E31A3F408700C63013 /* TWTJSONSchemaNumberASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaNumberASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaNumberASTNode.h"; sourceTree = "<group>"; };
 		713430E41A3F408700C63013 /* TWTJSONSchemaNumberASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaNumberASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaNumberASTNode.m"; sourceTree = "<group>"; };
-		713430E71A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaKeywordConstants.h; path = "JSON Validator/TWTJSONSchemaKeywordConstants.h"; sourceTree = "<group>"; };
-		713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaKeywordConstants.m; path = "JSON Validator/TWTJSONSchemaKeywordConstants.m"; sourceTree = "<group>"; };
+		713430E71A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = TWTJSONSchemaKeywordConstants.h; path = "JSON Validator/TWTJSONSchemaKeywordConstants.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TWTJSONSchemaKeywordConstants.m; path = "JSON Validator/TWTJSONSchemaKeywordConstants.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		71524B3B1A3FDFCE00E3887C /* TWTJSONSchemaValidatorTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaValidatorTestCase.m; path = "JSON Validator/TWTJSONSchemaValidatorTestCase.m"; sourceTree = "<group>"; };
+		7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaASTNodeClasses.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaASTNodeClasses.h"; sourceTree = "<group>"; };
 		71B8DA951A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaKeyValuePairASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaKeyValuePairASTNode.h"; sourceTree = "<group>"; };
 		71B8DA961A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaKeyValuePairASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaKeyValuePairASTNode.m"; sourceTree = "<group>"; };
 		71B8DA9A1A40C992006BE3C5 /* TWTJSONSchemaBooleanValueASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaBooleanValueASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaBooleanValueASTNode.h"; sourceTree = "<group>"; };
@@ -310,12 +314,12 @@
 		71B8DAA51A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaNamedPropertyASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaNamedPropertyASTNode.m"; sourceTree = "<group>"; };
 		71B8DAA91A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaPatternPropertyASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaPatternPropertyASTNode.h"; sourceTree = "<group>"; };
 		71B8DAAA1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaPatternPropertyASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaPatternPropertyASTNode.m"; sourceTree = "<group>"; };
-		71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaDepedencyASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaDepedencyASTNode.h"; sourceTree = "<group>"; };
-		71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaDepedencyASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaDepedencyASTNode.m"; sourceTree = "<group>"; };
+		71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaDependencyASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaDependencyASTNode.h"; sourceTree = "<group>"; };
+		71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaDependencyASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaDependencyASTNode.m"; sourceTree = "<group>"; };
 		71B8DAB31A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaTopLevelASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaTopLevelASTNode.h"; sourceTree = "<group>"; };
 		71B8DAB41A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaTopLevelASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaTopLevelASTNode.m"; sourceTree = "<group>"; };
 		71B8DAB91A40EED9006BE3C5 /* TWTJSONSchemaParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaParser.h; path = "JSON Validator/Parser/TWTJSONSchemaParser.h"; sourceTree = "<group>"; };
-		71B8DABA1A40EED9006BE3C5 /* TWTJSONSchemaParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaParser.m; path = "JSON Validator/Parser/TWTJSONSchemaParser.m"; sourceTree = "<group>"; };
+		71B8DABA1A40EED9006BE3C5 /* TWTJSONSchemaParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TWTJSONSchemaParser.m; path = "JSON Validator/Parser/TWTJSONSchemaParser.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		71F236131A4083B200A9BB46 /* TWTJSONSchemaASTProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaASTProcessor.h; path = "JSON Validator/Processors/TWTJSONSchemaASTProcessor.h"; sourceTree = "<group>"; };
 		90F6F370D9A59C68E3807446 /* Pods-libTWTValidation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libTWTValidation.release.xcconfig"; path = "Pods/Target Support Files/Pods-libTWTValidation/Pods-libTWTValidation.release.xcconfig"; sourceTree = "<group>"; };
 		AED4C6BB4311DAF87194557D /* Pods-TWTValidation-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWTValidation-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-TWTValidation-iOS/Pods-TWTValidation-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -599,6 +603,7 @@
 		713430CD1A3F3FAA00C63013 /* AST Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h */,
 				713430D11A3F402000C63013 /* TWTJSONSchemaASTNode.h */,
 				713430D21A3F402000C63013 /* TWTJSONSchemaASTNode.m */,
 				71B8DAB31A40E157006BE3C5 /* TWTJSONSchemaTopLevelASTNode.h */,
@@ -621,8 +626,8 @@
 				71B8DAA51A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.m */,
 				71B8DAA91A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h */,
 				71B8DAAA1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.m */,
-				71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h */,
-				71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m */,
+				71B8DAAE1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h */,
+				71B8DAAF1A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m */,
 			);
 			name = "AST Nodes";
 			sourceTree = "<group>";
@@ -678,6 +683,7 @@
 				4C96CAEE1A5640FE003763D3 /* TWTJSONSchemaASTProcessor.h in Headers */,
 				4C96CAEF1A5640FE003763D3 /* TWTJSONSchemaASTNode.h in Headers */,
 				4C96CAF01A5640FE003763D3 /* TWTJSONSchemaTopLevelASTNode.h in Headers */,
+				7172FBD81A5AF50000BEB7B7 /* TWTJSONSchemaASTNodeClasses.h in Headers */,
 				4C96CAF11A5640FE003763D3 /* TWTJSONSchemaGenericASTNode.h in Headers */,
 				4C96CAF21A5640FE003763D3 /* TWTJSONSchemaArrayASTNode.h in Headers */,
 				4C96CAF31A5640FE003763D3 /* TWTJSONSchemaNumberASTNode.h in Headers */,
@@ -687,7 +693,7 @@
 				4C96CAF71A5640FE003763D3 /* TWTJSONSchemaKeyValuePairASTNode.h in Headers */,
 				4C96CAF81A5640FE003763D3 /* TWTJSONSchemaNamedPropertyASTNode.h in Headers */,
 				4C96CAF91A5640FE003763D3 /* TWTJSONSchemaPatternPropertyASTNode.h in Headers */,
-				4C96CAFA1A5640FE003763D3 /* TWTJSONSchemaDepedencyASTNode.h in Headers */,
+				4C96CAFA1A5640FE003763D3 /* TWTJSONSchemaDependencyASTNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,8 +718,9 @@
 				71B8DA971A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.h in Headers */,
 				713430DD1A3F404600C63013 /* TWTJSONSchemaStringASTNode.h in Headers */,
 				713430D51A3F402000C63013 /* TWTJSONSchemaArrayASTNode.h in Headers */,
-				71B8DAB01A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.h in Headers */,
+				71B8DAB01A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.h in Headers */,
 				713430D71A3F402000C63013 /* TWTJSONSchemaASTNode.h in Headers */,
+				7172FBD91A5AF5A600BEB7B7 /* TWTJSONSchemaASTNodeClasses.h in Headers */,
 				713430E91A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h in Headers */,
 				71B8DAAB1A40CFB9006BE3C5 /* TWTJSONSchemaPatternPropertyASTNode.h in Headers */,
 				713430D91A3F402000C63013 /* TWTJSONSchemaObjectASTNode.h in Headers */,
@@ -1051,7 +1058,7 @@
 				4C96CADB1A5640E7003763D3 /* TWTJSONSchemaKeyValuePairASTNode.m in Sources */,
 				4C96CADC1A5640E7003763D3 /* TWTJSONSchemaNamedPropertyASTNode.m in Sources */,
 				4C96CADD1A5640E7003763D3 /* TWTJSONSchemaPatternPropertyASTNode.m in Sources */,
-				4C96CADE1A5640E7003763D3 /* TWTJSONSchemaDepedencyASTNode.m in Sources */,
+				4C96CADE1A5640E7003763D3 /* TWTJSONSchemaDependencyASTNode.m in Sources */,
 				4C96CADF1A5640E7003763D3 /* TWTValidationErrors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1084,7 +1091,7 @@
 				4C5603981905D35B004923D4 /* TWTValueValidator.m in Sources */,
 				719E98051A3F71DB001B365A /* TWTJSONSchemaArrayASTNode.m in Sources */,
 				71B8DAA81A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.m in Sources */,
-				71B8DAB21A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m in Sources */,
+				71B8DAB21A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m in Sources */,
 				71B8DAA31A40C9FB006BE3C5 /* TWTJSONSchemaValidTypesConstants.m in Sources */,
 				4C4D719718E7636800BB8CE0 /* TWTCollectionValidator.m in Sources */,
 				719E98031A3F7190001B365A /* TWTJSONSchemaKeywordConstants.m in Sources */,
@@ -1136,7 +1143,7 @@
 				713430E21A3F407700C63013 /* TWTJSONSchemaGenericASTNode.m in Sources */,
 				4C4D71A218E7922E00BB8CE0 /* TWTValidationErrors.m in Sources */,
 				71B8DAA71A40CEDB006BE3C5 /* TWTJSONSchemaNamedPropertyASTNode.m in Sources */,
-				71B8DAB11A40E098006BE3C5 /* TWTJSONSchemaDepedencyASTNode.m in Sources */,
+				71B8DAB11A40E098006BE3C5 /* TWTJSONSchemaDependencyASTNode.m in Sources */,
 				71B8DAA21A40C9FB006BE3C5 /* TWTJSONSchemaValidTypesConstants.m in Sources */,
 				713430EA1A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m in Sources */,
 				4CA7C96918E6657E00A434B6 /* TWTBlockValidator.m in Sources */,
@@ -1171,6 +1178,7 @@
 				4CD62FB518E85C86007F7EF3 /* TWTRandomizedTestCase.m in Sources */,
 				4CD622E118F073AF004BA088 /* TWTValueValidatorTests.m in Sources */,
 				4CD0ED56193CD799006A1EAD /* TWTValidationErrorsTests.m in Sources */,
+				7172FBDD1A5B253000BEB7B7 /* TWTJSONSchemaValidatorTestCase.m in Sources */,
 				4CD62FC418E88EC0007F7EF3 /* TWTValidatorTests.m in Sources */,
 				4CD5D916193B8AA7005E59E8 /* TWTKeyedCollectionValidatorTests.m in Sources */,
 				4C706D6619286403009F5F63 /* TWTCollectionValidatorTests.m in Sources */,

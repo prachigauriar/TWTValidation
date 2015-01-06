@@ -22,21 +22,10 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
 
 @import Foundation;
 
-
-extern NSString *const kTWTJSONSchemaParserErrorInfoDomainKey;
-// Constants to find information in error's userInfo
-extern NSString *const kTWTJSONSchemaParserErrorInfoPathKey; // Where the schema failed, given by the path of keywords
-extern NSString *const kTWTJSONSchemaParserErrorInfoInvalidObjectKey; // Which object caused the failure
-
-typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
-    TWTJSONSchemaParserErrorCodeInvalidClass,
-    TWTJSONSchemaParserErrorCodeInvalidValue,
-    TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem,
-    TWTJSONSchemaParserErrorCodeRequiresUniqueness
-};
 
 @class TWTJSONSchemaTopLevelASTNode;
 
@@ -45,6 +34,6 @@ typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
 
 - (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)errorPointer;
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSString **)outWarnings;
 
 @end

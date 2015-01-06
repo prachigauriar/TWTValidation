@@ -51,7 +51,7 @@
 
 - (NSSet *)validTypes
 {
-    return [NSSet setWithObject:kTWTJSONSchemaTypeKeywordObject];
+    return [NSSet setWithObject:TWTJSONSchemaTypeKeywordObject];
 }
 
 @end

@@ -28,45 +28,45 @@
 
 
 // Any instance type
-NSString *const kTWTJSONSchemaKeywordTitle = @"title";
-NSString *const kTWTJSONSchemaKeywordDescription = @"description";
-NSString *const kTWTJSONSchemaKeywordType = @"type";
-NSString *const kTWTJSONSchemaKeywordEnum = @"enum";
-NSString *const kTWTJSONSchemaKeywordAnyOf = @"anyOf";
-NSString *const kTWTJSONSchemaKeywordAllOf = @"allOf";
-NSString *const kTWTJSONSchemaKeywordOneOf = @"oneOf";
-NSString *const kTWTJSONSchemaKeywordNot = @"not";
-NSString *const kTWTJSONSchemaKeywordDefinitions = @"definitions";
+NSString *const TWTJSONSchemaKeywordTitle = @"title";
+NSString *const TWTJSONSchemaKeywordDescription = @"description";
+NSString *const TWTJSONSchemaKeywordType = @"type";
+NSString *const TWTJSONSchemaKeywordEnum = @"enum";
+NSString *const TWTJSONSchemaKeywordAnyOf = @"anyOf";
+NSString *const TWTJSONSchemaKeywordAllOf = @"allOf";
+NSString *const TWTJSONSchemaKeywordOneOf = @"oneOf";
+NSString *const TWTJSONSchemaKeywordNot = @"not";
+NSString *const TWTJSONSchemaKeywordDefinitions = @"definitions";
 
 // Arrays
-NSString *const kTWTJSONSchemaKeywordItems = @"items";
-NSString *const kTWTJSONSchemaKeywordAdditionalItems = @"additionalItems";
-NSString *const kTWTJSONSchemaKeywordMaxItems = @"maxItems";
-NSString *const kTWTJSONSchemaKeywordMinItems = @"minItems";
-NSString *const kTWTJSONSchemaKeywordUniqueItems = @"uniqueItems";
+NSString *const TWTJSONSchemaKeywordItems = @"items";
+NSString *const TWTJSONSchemaKeywordAdditionalItems = @"additionalItems";
+NSString *const TWTJSONSchemaKeywordMaxItems = @"maxItems";
+NSString *const TWTJSONSchemaKeywordMinItems = @"minItems";
+NSString *const TWTJSONSchemaKeywordUniqueItems = @"uniqueItems";
 
 // Numbers
-NSString *const kTWTJSONSchemaKeywordMultipleOf = @"multipleOf";
-NSString *const kTWTJSONSchemaKeywordMaximum = @"maximum";
-NSString *const kTWTJSONSchemaKeywordMinimum = @"minimum";
-NSString *const kTWTJSONSchemaKeywordExclusiveMaximum = @"exclusiveMaximum";
-NSString *const kTWTJSONSchemaKeywordExclusiveMinimum = @"exclusiveMinimum";
+NSString *const TWTJSONSchemaKeywordMultipleOf = @"multipleOf";
+NSString *const TWTJSONSchemaKeywordMaximum = @"maximum";
+NSString *const TWTJSONSchemaKeywordMinimum = @"minimum";
+NSString *const TWTJSONSchemaKeywordExclusiveMaximum = @"exclusiveMaximum";
+NSString *const TWTJSONSchemaKeywordExclusiveMinimum = @"exclusiveMinimum";
 
 // Objects
-NSString *const kTWTJSONSchemaKeywordMaxProperties = @"maxProperties";
-NSString *const kTWTJSONSchemaKeywordMinProperties = @"minProperties";
-NSString *const kTWTJSONSchemaKeywordRequired = @"required";
-NSString *const kTWTJSONSchemaKeywordProperties = @"properties";
-NSString *const kTWTJSONSchemaKeywordAdditionalProperties = @"additionalProperties";
-NSString *const kTWTJSONSchemaKeywordPatternProperties = @"patternProperties";
-NSString *const kTWTJSONSchemaKeywordDependencies = @"dependencies";
+NSString *const TWTJSONSchemaKeywordMaxProperties = @"maxProperties";
+NSString *const TWTJSONSchemaKeywordMinProperties = @"minProperties";
+NSString *const TWTJSONSchemaKeywordRequired = @"required";
+NSString *const TWTJSONSchemaKeywordProperties = @"properties";
+NSString *const TWTJSONSchemaKeywordAdditionalProperties = @"additionalProperties";
+NSString *const TWTJSONSchemaKeywordPatternProperties = @"patternProperties";
+NSString *const TWTJSONSchemaKeywordDependencies = @"dependencies";
 
 // Strings
-NSString *const kTWTJSONSchemaKeywordMaxLength = @"maxLength";
-NSString *const kTWTJSONSchemaKeywordMinLength = @"minLength";
-NSString *const kTWTJSONSchemaKeywordPattern = @"pattern";
+NSString *const TWTJSONSchemaKeywordMaxLength = @"maxLength";
+NSString *const TWTJSONSchemaKeywordMinLength = @"minLength";
+NSString *const TWTJSONSchemaKeywordPattern = @"pattern";
 
 
 // Top Level
-NSString *const kTWTJSONSchemaKeywordSchema = @"$schema";
-NSString *const kTWTJSONSchemaKeywordDraft4Path = @"http://json-schema.org/draft-04/schema#";
+NSString *const TWTJSONSchemaKeywordSchema = @"$schema";
+NSString *const TWTJSONSchemaKeywordDraft4Path = @"http://json-schema.org/draft-04/schema#";
