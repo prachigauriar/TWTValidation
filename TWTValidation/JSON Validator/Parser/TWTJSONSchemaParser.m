@@ -85,13 +85,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         if (outError) {
             *outError = exception.userInfo[TWTJSONExceptionErrorKey];
         }
-    } @finally {
-        if (outWarnings && self.warnings.count > 0 ) {
-            *outWarnings = self.warnings;
-        }
-
-        return topLevelNode;
     }
+
+    if (outWarnings && self.warnings.count > 0 ) {
+        *outWarnings = self.warnings;
+    }
+
+    return topLevelNode;
 }
 
 

@@ -76,6 +76,12 @@
     XCTAssertNotNil(topLevelNode);
     XCTAssertNil(error);
     XCTAssertNotNil(warnings);
+
+    // if error or warning parameters aren't given
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleWarningsSchema]];
+    XCTAssertNoThrow([parser parseWithError:nil warnings:nil]);
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleErrorSchema]];
+    XCTAssertNoThrow([parser parseWithError:nil warnings:nil]);
 }
 
 - (NSDictionary *)exampleSimpleObjectSchema
