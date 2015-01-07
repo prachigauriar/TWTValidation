@@ -34,6 +34,6 @@
 
 - (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSString **)outWarnings;
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSArray **)outWarnings;
 
 @end

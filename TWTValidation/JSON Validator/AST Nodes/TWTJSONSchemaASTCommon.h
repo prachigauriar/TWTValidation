@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaASTNodeClasses.h
+//  TWTJSONSchemaASTCommon.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 1/5/15.

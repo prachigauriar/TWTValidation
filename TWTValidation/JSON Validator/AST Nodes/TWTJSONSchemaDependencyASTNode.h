@@ -24,13 +24,16 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
 
 
-@interface TWTJSONSchemaDependencyASTNode : TWTJSONSchemaKeyValuePairASTNode
+@interface TWTJSONSchemaDependencyASTNode : TWTJSONSchemaASTNode
 
+@property (nonatomic, copy, readonly) NSString *key;
+@property (nonatomic, strong, readonly) TWTJSONSchemaASTNode *valueSchema;
 @property (nonatomic, copy, readonly) NSArray *propertySet;
 
+- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value;
 - (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet;
 
 @end

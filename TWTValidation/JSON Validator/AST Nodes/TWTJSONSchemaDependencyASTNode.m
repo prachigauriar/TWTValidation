@@ -31,12 +31,43 @@
 
 - (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet
 {
-    self = [self initWithKey:key valueSchema:nil];
+    NSParameterAssert(key);
+    NSParameterAssert(propertySet);
+
+    self = [super init];
     if (self) {
+        _key = [key copy];
         _propertySet = [propertySet copy];
     }
     return self;
 }
+
+
+- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
+{
+    NSParameterAssert(key);
+    NSParameterAssert(value);
+
+    self = [super init];
+    if (self) {
+        _key = [key copy];
+        _valueSchema = value;
+    }
+    return self;
+}
+
+
+- (instancetype)init
+{
+    return [self initWithKey:nil valueSchema:nil];
+}
+
+
+- (NSSet *)validTypes
+{
+    return nil;
+}
+
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {

@@ -40,7 +40,7 @@
 {
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleSimpleObjectSchema]];
     NSError *error = nil;
-    NSString *warnings = nil;
+    NSArray *warnings = nil;
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
     XCTAssertNotNil(topLevelNode);

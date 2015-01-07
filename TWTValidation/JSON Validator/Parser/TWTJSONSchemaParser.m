@@ -26,7 +26,7 @@
 
 #import <TWTValidation/TWTJSONSchemaParser.h>
 
-#import <TWTValidation/TWTJSONSchemaASTNodeClasses.h>
+#import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 #import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 #import <TWTValidation/TWTValidationErrors.h>
@@ -41,7 +41,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 @property (nonatomic, strong, readonly) NSMutableArray *pathStack;
 @property (nonatomic, strong) NSMutableArray *warnings;
 
+- (void)warnWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 - (void)failIfObject:(id)object isNotKindOfOneOfClasses:(Class)validClass1, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ... NS_FORMAT_FUNCTION(3, 4);
 
 @end
 
@@ -69,7 +71,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 }
 
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSString *__autoreleasing *)outWarnings
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
     [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
 
@@ -79,18 +81,17 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     @try {
         topLevelNode.schema = [self parseSchema:self.JSONSchema];
     } @catch (NSException *exception) {
-        NSError *error = exception.userInfo[TWTJSONExceptionErrorKey];
+        topLevelNode = nil;
         if (outError) {
-            *outError = error;
-            return nil;
+            *outError = exception.userInfo[TWTJSONExceptionErrorKey];
         }
-    }
+    } @finally {
+        if (outWarnings && self.warnings.count > 0 ) {
+            *outWarnings = self.warnings;
+        }
 
-    if (self.warnings.count > 0 ) {
-        *outWarnings = [self.warnings componentsJoinedByString:@"\n"];
+        return topLevelNode;
     }
-
-    return topLevelNode;
 }
 
 
@@ -146,7 +147,8 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         return [self parseObjectSchema:schema];
     } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
         return [self parseStringSchema:schema];
-    } else { // "any", "boolean", or "null"
+    } else {
+        // type = "any", "boolean", or "null"
         return [self parseGenericSchema:schema];
     }
 }
@@ -203,6 +205,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     if (node.maximum) {
         node.exclusiveMaximum = [self parseBooleanForKey:TWTJSONSchemaKeywordExclusiveMaximum schema:numberSchema valueIfNotPresent:NO];
     }
+
     if (node.minimum) {
         node.exclusiveMinimum = [self parseBooleanForKey:TWTJSONSchemaKeywordExclusiveMinimum schema:numberSchema valueIfNotPresent:NO];
     }
@@ -317,7 +320,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         if (numberValue < 0) {
             number = @0;
         } else {
-            number = [NSNumber numberWithInt:(int)trunc(numberValue)];
+            number = @((NSUInteger)(numberValue));
         }
         [self warnWithFormat:@"Expected unsigned integer but found %@. Converting to %@.", oldNumber, number];
     }
@@ -396,18 +399,19 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 // Keyword: items, anyOf, allOf, oneOf
 // Example: { "items" : [ {}, {} ] }
-// 			{
-// 				"anyOf": [
-// 					{
-// 						"maxLength": 5,
-// 						"type": "string"
-// 					},
-// 					{
-// 						"minimum": 0,
-// 						"type": "number"
-// 					}
-// 				]
-// 			}
+//          {
+//            "anyOf": [
+//                {
+//                    "maxLength": 5,
+//                    "type": "string"
+//                },
+//                {
+//                    "minimum": 0,
+//                    "type": "number"
+//                }
+//            ]
+//          }
+
 - (NSArray *)parseNonEmptyArrayOfSchemasForKey:(NSString *)key schema:(NSDictionary *)schema
 {
     [self pushPathComponent:key];
@@ -491,13 +495,10 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         return [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:[value boolValue]];
     }
 
-    if ([value isKindOfClass:[NSDictionary class]]) {
-        TWTJSONSchemaASTNode *node = [self parseSchema:value];
-        [self popPathComponent];
-        return node;
-    }
-
-    return nil;
+    // Else, value is NSDictionary, i.e., a schema
+    TWTJSONSchemaASTNode *node = [self parseSchema:value];
+    [self popPathComponent];
+    return node;
 }
 
 
@@ -558,15 +559,16 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
         [self failIfObject:object isNotKindOfOneOfClasses:[NSDictionary class], [NSArray class], nil];
 
+        TWTJSONSchemaDependencyASTNode *node = nil;
+
         if ([object isKindOfClass:[NSDictionary class]]) {
-            TWTJSONSchemaDependencyASTNode *node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key valueSchema:[self parseSchema:object]];
-            [dependencyNodes addObject:node];
+            node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key valueSchema:[self parseSchema:object]];
         } else {
             NSArray *propertySet = [self parseNonEmptyArrayOfUnqiueStringsForKey:key schema:dependencies];
-            TWTJSONSchemaDependencyASTNode *node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key propertySet:propertySet];
-            [dependencyNodes addObject:node];
+            node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key propertySet:propertySet];
         }
 
+        [dependencyNodes addObject:node];
         [self popPathComponent];
 
     }];
