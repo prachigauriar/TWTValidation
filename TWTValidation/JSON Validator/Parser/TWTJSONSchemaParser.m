@@ -73,6 +73,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
+    [self.warnings removeAllObjects];
+    [self.pathStack removeAllObjects];
+
     [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
 
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [[TWTJSONSchemaTopLevelASTNode alloc] init];
@@ -87,8 +90,8 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         }
     }
 
-    if (outWarnings && self.warnings.count > 0 ) {
-        *outWarnings = self.warnings;
+    if (outWarnings) {
+        *outWarnings = [self.warnings copy];
     }
 
     return topLevelNode;
