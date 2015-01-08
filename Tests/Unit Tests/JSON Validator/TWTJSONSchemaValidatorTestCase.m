@@ -85,15 +85,31 @@
 
 - (void)testJSONSchemaPrettyPrinter
 {
-    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self simpleStringSchema]];
-    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:nil warnings:nil];
-
-    TWTJSONSchemaPrettyPrinter *printer = [[TWTJSONSchemaPrettyPrinter alloc] init];
-
-    NSDictionary *schema = [printer objectFromSchema:topLevelNode];
-
+    NSDictionary *schema = [self schemaFromJSONSchema:[self simpleStringSchema]];
+    XCTAssertNotNil(schema);
     NSLog(@"%@", schema);
 
+    schema = [self schemaFromJSONSchema:[self simpleObjectSchema]];
+    XCTAssertNotNil(schema);
+    NSLog(@"%@", schema);
+
+    schema = [self schemaFromJSONSchema:[self complexObjectSchema]];
+    XCTAssertNotNil(schema);
+    NSLog(@"%@", schema);
+}
+
+
+- (NSDictionary *)schemaFromJSONSchema:(NSDictionary *)JSONSchema
+{
+    static TWTJSONSchemaPrettyPrinter *printer = nil;
+    if (!printer) {
+        printer =  [[TWTJSONSchemaPrettyPrinter alloc] init];
+    }
+
+    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:JSONSchema];
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:nil warnings:nil];
+
+    return [printer objectFromSchema:topLevelNode];
 }
 
 

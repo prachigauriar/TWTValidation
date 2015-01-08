@@ -33,37 +33,44 @@
 
 @property (nonatomic, copy) NSDictionary *topLevelSchema;
 
-@property (nonatomic, strong) id currentObject;
-@property (nonatomic, strong, readonly) NSMutableDictionary *currentSchema;
-@property (nonatomic, strong) NSMutableArray *objectStack;
-
+@property (nonatomic, strong, readonly) NSMutableArray *objectStack;
 
 @end
 
+
 @implementation TWTJSONSchemaPrettyPrinter
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _objectStack = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
 
 - (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
-    self.objectStack = [[NSMutableArray alloc] init];
-
+    [self.objectStack removeAllObjects];
     [topLevelNode acceptProcessor:self];
-
     return [self.topLevelSchema copy];
 }
+
 
 #pragma mark - TWTJSONSchemaASTProcessor Protocol methods
 
 // Top level of schema
+// Delegates schema creation to its schema property, adds the path, and sets the topLevelSchema
 - (void)processTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
-    [self newCurrentSchema];
-    [self setObject:topLevelNode.schemaPath forKey:TWTJSONSchemaKeywordSchema];
     [topLevelNode.schema acceptProcessor:self];
-    self.topLevelSchema = self.currentSchema;
-    [self finishedCurrentSchema];
+    [self setObject:topLevelNode.schemaPath forKey:TWTJSONSchemaKeywordSchema];
+    self.topLevelSchema = [self popCurrentObject];
 }
 
-// Specialized nodes based on value of "type" keyword
+
+// Generates a fully-formed schema and leaves it on the object stack
 - (void)processGenericNode:(TWTJSONSchemaGenericASTNode *)genericNode
 {
     [self generateCommonSchemaFromNode:genericNode];
@@ -101,7 +108,7 @@
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] forKey:TWTJSONSchemaKeywordProperties];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] forKey:TWTJSONSchemaKeywordPatternProperties];
     [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] forKey:TWTJSONSchemaKeywordAdditionalProperties];
-    [self setObject:[s] forKey:TWTJSONSchemaKeywordDependencies];
+    [self setObject:[self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies] forKey:TWTJSONSchemaKeywordDependencies];
 }
 
 
@@ -112,32 +119,43 @@
     [self setObject:stringNode.maximumLength forKey:TWTJSONSchemaKeywordMaxLength];
     [self setObject:stringNode.pattern forKey:TWTJSONSchemaKeywordPattern];
 }
-//
-//// Specialized nodes for array items and object properties
+
+
+// Responsible for adding a boolean object to the stack
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode
 {
-//    self.current1DObject = @(booleanValueNode.booleanValue);
+    [self pushNewObject:@(booleanValueNode.booleanValue)];
 }
+
+
+// Adds a key-value pair to the current object
+// Guaranteed that a mutable dictionary is top of the stack
 - (void)processNamedPropertyNode:(TWTJSONSchemaNamedPropertyASTNode *)propertyNode
 {
     [self setObject:[self schemaFromNode:propertyNode.valueSchema] forKey:propertyNode.key];
 }
 
+
+// Adds a key-value pair to the current object
+// Guaranteed that a mutable dictionary is top of the stack
 - (void)processPatternPropertyNode:(TWTJSONSchemaPatternPropertyASTNode *)patternPropertyNode
 {
     [self setObject:[self schemaFromNode:patternPropertyNode.valueSchema] forKey:patternPropertyNode.key];
 }
 
 
+// Adds a key-value pair to the current object; value is either a fully-formed schema or an array of strings
+// Guaranteed that a mutable dictionary is top of the stack
 - (void)processDependencyNode:(TWTJSONSchemaDependencyASTNode *)dependencyNode
 {
     if (dependencyNode.valueSchema) {
-        [self newCurrentSchema]
         [dependencyNode.valueSchema acceptProcessor:self];
-        NSDictionary *valueSchema = self.currentSchema;
-        [self finishedCurrentSchema];
-
+    } else {
+        // Node has a property set, which is an array of strings
+        [self pushNewObject:dependencyNode.propertySet];
     }
+
+    [self setObject:[self popCurrentObject] forKey:dependencyNode.key];
 }
 
 
@@ -145,6 +163,7 @@
 
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
+    [self pushNewObject:[[NSMutableDictionary alloc] init]];
     [self setObject:node.validTypes forKey:TWTJSONSchemaKeywordType];
     [self setObject:node.schemaTitle forKey:TWTJSONSchemaKeywordTitle];
     [self setObject:node.schemaDescription forKey:TWTJSONSchemaKeywordDescription];
@@ -165,11 +184,9 @@
         return nil;
     }
 
-    if ([additionalNode isKindOfClass:[TWTJSONSchemaBooleanValueASTNode class]]) {
-        return @([(TWTJSONSchemaBooleanValueASTNode *)additionalNode booleanValue]);
-    }
+    [additionalNode acceptProcessor:self];
 
-    return [self schemaFromNode:additionalNode];
+    return [self popCurrentObject];
 }
 
 
@@ -179,29 +196,23 @@
         return nil;
     }
 
-    [self newCurrentSchema];
+    [self pushNewObject:[[NSMutableDictionary alloc] init]];
     for (TWTJSONSchemaDependencyASTNode *node in array) {
         [node acceptProcessor:self];
     }
 
-    NSDictionary *dependencyValue = self.currentSchema;
-    [self finishedCurrentSchema];
-    return dependencyValue;
+    return [self popCurrentObject];
 }
 
 
 - (NSDictionary *)schemaFromNode:(TWTJSONSchemaASTNode *)node
 {
-    NSDictionary *schema = nil;
-
-    if (node) {
-        [self newCurrentSchema];
-        [node acceptProcessor:self];
-        schema = self.currentSchema;
-        [self finishedCurrentSchema];
+    if (!node) {
+        return nil;
     }
 
-    return schema;
+    [node acceptProcessor:self];
+    return [self popCurrentObject];
 }
 
 
@@ -213,10 +224,8 @@
 
     NSMutableArray *nodeArray = [[NSMutableArray alloc] init];
     for (TWTJSONSchemaASTNode *node in array) {
-        [self newCurrentSchema];
         [node acceptProcessor:self];
-        [nodeArray addObject:self.currentSchema];
-        [self finishedCurrentSchema];
+        [nodeArray addObject:[self popCurrentObject]];
     }
 
     return nodeArray;
@@ -229,14 +238,12 @@
         return  nil;
     }
 
-    [self newCurrentSchema];
+    [self pushNewObject:[[NSMutableDictionary alloc] init]];
     for (TWTJSONSchemaKeyValuePairASTNode *node in array) {
         [node acceptProcessor:self];
     }
 
-    NSDictionary *schema = self.currentSchema;
-    [self finishedCurrentSchema];
-    return schema;
+    return [self popCurrentObject];
 }
 
 
@@ -244,26 +251,29 @@
 
 - (void)setObject:(id)object forKey:(NSString *)key
 {
-    if (object) {
-        [self.currentSchema setObject:object forKey:key];
+    if (object && [self.currentObject isKindOfClass:[NSDictionary class]]) {
+        [self.currentObject setObject:object forKey:key];
     }
 }
 
-- (NSMutableDictionary *)currentSchema
+
+- (void)pushNewObject:(id)object
+{
+    [self.objectStack addObject:object];
+}
+
+
+- (id)currentObject
 {
     return self.objectStack.lastObject;
 }
 
 
-- (void)newCurrentSchema
+- (id)popCurrentObject
 {
-    [self.objectStack addObject:[[NSMutableDictionary alloc] init]];
-}
-
-
-- (void)finishedCurrentSchema
-{
+    id object = self.currentObject;
     [self.objectStack removeLastObject];
+    return object;
 }
 
 @end
