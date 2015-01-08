@@ -26,8 +26,9 @@
 
 #import "TWTJSONSchemaPrettyPrinter.h"
 
-#import "TWTJSONSchemaASTCommon.h"
-#import "TWTJSONSchemaKeywordConstants.h"
+#import <TWTValidation/TWTJSONSchemaASTCommon.h>
+#import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
+
 
 @interface TWTJSONSchemaPrettyPrinter ()
 
@@ -65,12 +66,12 @@
 - (void)processTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
     [topLevelNode.schema acceptProcessor:self];
-    [self setObject:topLevelNode.schemaPath forKey:TWTJSONSchemaKeywordSchema];
+    [self setObject:topLevelNode.schemaPath inCurrentSchemaForKey:TWTJSONSchemaKeywordSchema];
     self.topLevelSchema = [self popCurrentObject];
 }
 
 
-// Generates a fully-formed schema and leaves it on the object stack
+// Adds a fully-formed schema (i.e., NSDictionary) to the stack
 - (void)processGenericNode:(TWTJSONSchemaGenericASTNode *)genericNode
 {
     [self generateCommonSchemaFromNode:genericNode];
@@ -80,48 +81,48 @@
 - (void)processArrayNode:(TWTJSONSchemaArrayASTNode *)arrayNode
 {
     [self generateCommonSchemaFromNode:arrayNode];
-    [self setObject:arrayNode.minimumItemCount forKey:TWTJSONSchemaKeywordMinItems];
-    [self setObject:arrayNode.maximumItemCount forKey:TWTJSONSchemaKeywordMaxItems];
-    [self setObject:@(arrayNode.requiresUniqueItems) forKey:TWTJSONSchemaKeywordUniqueItems];
-    [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] forKey:TWTJSONSchemaKeywordItems];
-    [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] forKey:TWTJSONSchemaKeywordAdditionalItems];
+    [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
+    [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
+    [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
+    [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
 }
 
 
 - (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode
 {
     [self generateCommonSchemaFromNode:numberNode];
-    [self setObject:numberNode.minimum forKey:TWTJSONSchemaKeywordMinimum];
-    [self setObject:numberNode.maximum forKey:TWTJSONSchemaKeywordMaximum];
-    [self setObject:@(numberNode.exclusiveMinimum) forKey:TWTJSONSchemaKeywordExclusiveMinimum];
-    [self setObject:@(numberNode.exclusiveMaximum) forKey:TWTJSONSchemaKeywordExclusiveMaximum];
-    [self setObject:numberNode.multipleOf forKey:TWTJSONSchemaKeywordMultipleOf];
+    [self setObject:numberNode.minimum inCurrentSchemaForKey:TWTJSONSchemaKeywordMinimum];
+    [self setObject:numberNode.maximum inCurrentSchemaForKey:TWTJSONSchemaKeywordMaximum];
+    [self setObject:@(numberNode.exclusiveMinimum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMinimum];
+    [self setObject:@(numberNode.exclusiveMaximum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMaximum];
+    [self setObject:numberNode.multipleOf inCurrentSchemaForKey:TWTJSONSchemaKeywordMultipleOf];
 }
 
 
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode
 {
     [self generateCommonSchemaFromNode:objectNode];
-    [self setObject:objectNode.minimumPropertyCount forKey:TWTJSONSchemaKeywordMinProperties];
-    [self setObject:objectNode.maximumPropertyCount forKey:TWTJSONSchemaKeywordMaxProperties];
-    [self setObject:objectNode.requiredPropertyNames forKey:TWTJSONSchemaKeywordRequired];
-    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] forKey:TWTJSONSchemaKeywordProperties];
-    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] forKey:TWTJSONSchemaKeywordPatternProperties];
-    [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] forKey:TWTJSONSchemaKeywordAdditionalProperties];
-    [self setObject:[self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies] forKey:TWTJSONSchemaKeywordDependencies];
+    [self setObject:objectNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
+    [self setObject:objectNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
+    [self setObject:objectNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
+    [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
+    [self setObject:[self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies] inCurrentSchemaForKey:TWTJSONSchemaKeywordDependencies];
 }
 
 
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode
 {
     [self generateCommonSchemaFromNode:stringNode];
-    [self setObject:stringNode.minimumLength forKey:TWTJSONSchemaKeywordMinLength];
-    [self setObject:stringNode.maximumLength forKey:TWTJSONSchemaKeywordMaxLength];
-    [self setObject:stringNode.pattern forKey:TWTJSONSchemaKeywordPattern];
+    [self setObject:stringNode.minimumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMinLength];
+    [self setObject:stringNode.maximumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxLength];
+    [self setObject:stringNode.pattern inCurrentSchemaForKey:TWTJSONSchemaKeywordPattern];
 }
 
 
-// Responsible for adding a boolean object to the stack
+// Adds a boolean object to the stack
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode
 {
     [self pushNewObject:@(booleanValueNode.booleanValue)];
@@ -132,7 +133,7 @@
 // Guaranteed that a mutable dictionary is top of the stack
 - (void)processNamedPropertyNode:(TWTJSONSchemaNamedPropertyASTNode *)propertyNode
 {
-    [self setObject:[self schemaFromNode:propertyNode.valueSchema] forKey:propertyNode.key];
+    [self setObject:[self schemaFromNode:propertyNode.valueSchema] inCurrentSchemaForKey:propertyNode.key];
 }
 
 
@@ -140,7 +141,7 @@
 // Guaranteed that a mutable dictionary is top of the stack
 - (void)processPatternPropertyNode:(TWTJSONSchemaPatternPropertyASTNode *)patternPropertyNode
 {
-    [self setObject:[self schemaFromNode:patternPropertyNode.valueSchema] forKey:patternPropertyNode.key];
+    [self setObject:[self schemaFromNode:patternPropertyNode.valueSchema] inCurrentSchemaForKey:patternPropertyNode.key];
 }
 
 
@@ -151,11 +152,11 @@
     if (dependencyNode.valueSchema) {
         [dependencyNode.valueSchema acceptProcessor:self];
     } else {
-        // Node has a property set, which is an array of strings
+        // Else, node has a property set, which is an array of strings
         [self pushNewObject:dependencyNode.propertySet];
     }
 
-    [self setObject:[self popCurrentObject] forKey:dependencyNode.key];
+    [self setObject:[self popCurrentObject] inCurrentSchemaForKey:dependencyNode.key];
 }
 
 
@@ -164,17 +165,17 @@
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
-    [self setObject:node.validTypes forKey:TWTJSONSchemaKeywordType];
-    [self setObject:node.schemaTitle forKey:TWTJSONSchemaKeywordTitle];
-    [self setObject:node.schemaDescription forKey:TWTJSONSchemaKeywordDescription];
-    [self setObject:node.validValues forKey:TWTJSONSchemaKeywordEnum];
+    [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+    [self setObject:node.schemaTitle inCurrentSchemaForKey:TWTJSONSchemaKeywordTitle];
+    [self setObject:node.schemaDescription inCurrentSchemaForKey:TWTJSONSchemaKeywordDescription];
+    [self setObject:node.validValues inCurrentSchemaForKey:TWTJSONSchemaKeywordEnum];
 
-    [self setObject:[self schemaArrayFromNodeArray:node.andSchemas] forKey:TWTJSONSchemaKeywordAllOf];
-    [self setObject:[self schemaArrayFromNodeArray:node.orSchemas] forKey:TWTJSONSchemaKeywordAnyOf];
-    [self setObject:[self schemaArrayFromNodeArray:node.exactlyOneOfSchemas] forKey:TWTJSONSchemaKeywordOneOf];
-    [self setObject:[self schemaFromNode:node.notSchema] forKey:TWTJSONSchemaKeywordNot];
+    [self setObject:[self schemaArrayFromNodeArray:node.andSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordAllOf];
+    [self setObject:[self schemaArrayFromNodeArray:node.orSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordAnyOf];
+    [self setObject:[self schemaArrayFromNodeArray:node.exactlyOneOfSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordOneOf];
+    [self setObject:[self schemaFromNode:node.notSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordNot];
 
-    [self setObject:node.definitions forKey:TWTJSONSchemaKeywordDefinitions];
+    [self setObject:node.definitions inCurrentSchemaForKey:TWTJSONSchemaKeywordDefinitions];
 }
 
 
@@ -249,9 +250,9 @@
 
 # pragma mark - Convenience methods
 
-- (void)setObject:(id)object forKey:(NSString *)key
+- (void)setObject:(id)object inCurrentSchemaForKey:(NSString *)key
 {
-    if (object && [self.currentObject isKindOfClass:[NSDictionary class]]) {
+    if (object) {
         [self.currentObject setObject:object forKey:key];
     }
 }

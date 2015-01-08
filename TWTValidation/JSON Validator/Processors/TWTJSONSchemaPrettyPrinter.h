@@ -24,8 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import "TWTJSONSchemaASTProcessor.h"
+#import <TWTValidation/TWTJSONSchemaASTProcessor.h>
 
 
 @interface TWTJSONSchemaPrettyPrinter : NSObject <TWTJSONSchemaASTProcessor>

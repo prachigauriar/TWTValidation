@@ -160,8 +160,11 @@
 		713430E61A3F408700C63013 /* TWTJSONSchemaNumberASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430E41A3F408700C63013 /* TWTJSONSchemaNumberASTNode.m */; };
 		713430E91A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 713430E71A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		713430EA1A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */; };
-		714211AE1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 714211AC1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.h */; };
+		714211AE1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 714211AC1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		714211AF1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 714211AD1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.m */; };
+		714211B01A5F00180032AD85 /* TWTJSONSchemaPrettyPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 714211AC1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		714211B11A5F002B0032AD85 /* TWTJSONSchemaPrettyPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 714211AD1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.m */; };
+		714211B21A5F002C0032AD85 /* TWTJSONSchemaPrettyPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 714211AD1A5DB9370032AD85 /* TWTJSONSchemaPrettyPrinter.m */; };
 		7172FBD81A5AF50000BEB7B7 /* TWTJSONSchemaASTCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTCommon.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		7172FBD91A5AF5A600BEB7B7 /* TWTJSONSchemaASTCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTCommon.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		7172FBDD1A5B253000BEB7B7 /* TWTJSONSchemaValidatorTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71524B3B1A3FDFCE00E3887C /* TWTJSONSchemaValidatorTestCase.m */; };
@@ -699,6 +702,7 @@
 				4C96CAF71A5640FE003763D3 /* TWTJSONSchemaKeyValuePairASTNode.h in Headers */,
 				4C96CAF81A5640FE003763D3 /* TWTJSONSchemaNamedPropertyASTNode.h in Headers */,
 				4C96CAF91A5640FE003763D3 /* TWTJSONSchemaPatternPropertyASTNode.h in Headers */,
+				714211B01A5F00180032AD85 /* TWTJSONSchemaPrettyPrinter.h in Headers */,
 				4C96CAFA1A5640FE003763D3 /* TWTJSONSchemaDependencyASTNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1051,6 +1055,7 @@
 				4C96CACE1A5640E7003763D3 /* TWTStringValidator.m in Sources */,
 				4C96CACF1A5640E7003763D3 /* TWTCollectionValidator.m in Sources */,
 				4C96CAD01A5640E7003763D3 /* TWTKeyedCollectionValidator.m in Sources */,
+				714211B11A5F002B0032AD85 /* TWTJSONSchemaPrettyPrinter.m in Sources */,
 				4C96CAD11A5640E7003763D3 /* TWTJSONSchemaKeywordConstants.m in Sources */,
 				4C96CAD21A5640E7003763D3 /* TWTJSONSchemaValidTypesConstants.m in Sources */,
 				4C96CAD31A5640E7003763D3 /* TWTJSONSchemaASTNode.m in Sources */,
@@ -1104,6 +1109,7 @@
 				719E98031A3F7190001B365A /* TWTJSONSchemaKeywordConstants.m in Sources */,
 				4C3FF80518EE5F6700EF8776 /* TWTValidationErrors.m in Sources */,
 				4C5603991905D360004923D4 /* TWTNumberValidator.m in Sources */,
+				714211B21A5F002C0032AD85 /* TWTJSONSchemaPrettyPrinter.m in Sources */,
 				4CA7C93618E6634000A434B6 /* TWTValidator.m in Sources */,
 				719E98081A3F71F2001B365A /* TWTJSONSchemaObjectASTNode.m in Sources */,
 				4CD25CD718EE59E9005A2ABE /* TWTStringValidator.m in Sources */,
