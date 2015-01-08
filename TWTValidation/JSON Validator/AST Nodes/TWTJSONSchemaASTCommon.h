@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaDepedencyASTNode.m
+//  TWTJSONSchemaASTCommon.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
+//  Created by Jill Cohen on 1/5/15.
 //  Copyright (c) 2014 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,14 +24,14 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaDepedencyASTNode.h>
-
-
-@implementation TWTJSONSchemaDepedencyASTNode
-
-- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
-{
-    [processor processDepedencyNode:self];
-}
-
-@end
+#import <TWTValidation/TWTJSONSchemaArrayASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+#import <TWTValidation/TWTJSONSchemaDependencyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaGenericASTNode.h>
+#import <TWTValidation/TWTJSONSchemaNamedPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaNumberASTNode.h>
+#import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
+#import <TWTValidation/TWTJSONSchemaPatternPropertyASTNode.h>
+#import <TWTValidation/TWTJSONSchemaStringASTNode.h>
+#import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>

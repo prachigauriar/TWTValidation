@@ -37,7 +37,7 @@
 
 - (NSSet *)validTypes
 {
-    return [NSSet setWithObject:(self.requireIntegralValue ? kTWTJSONSchemaTypeKeywordInteger : kTWTJSONSchemaTypeKeywordNumber)];
+    return [NSSet setWithObject:(self.requireIntegralValue ? TWTJSONSchemaTypeKeywordInteger : TWTJSONSchemaTypeKeywordNumber)];
 }
 
 @end

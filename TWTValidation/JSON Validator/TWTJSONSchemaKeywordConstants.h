@@ -28,38 +28,44 @@
 
 
 // Any instance type
-extern NSString *const kTWTJSONSchemaKeywordTitle;
-extern NSString *const kTWTJSONSchemaKeywordDescription;
-extern NSString *const kTWTJSONSchemaKeywordType;
-extern NSString *const kTWTJSONSchemaKeywordEnum;
-extern NSString *const kTWTJSONSchemaKeywordAnyOf;
-extern NSString *const kTWTJSONSchemaKeywordAllOf;
-extern NSString *const kTWTJSONSchemaKeywordOneOf;
-extern NSString *const kTWTJSONSchemaKeywordNot;
+extern NSString *const TWTJSONSchemaKeywordTitle;
+extern NSString *const TWTJSONSchemaKeywordDescription;
+extern NSString *const TWTJSONSchemaKeywordType;
+extern NSString *const TWTJSONSchemaKeywordEnum;
+extern NSString *const TWTJSONSchemaKeywordAnyOf;
+extern NSString *const TWTJSONSchemaKeywordAllOf;
+extern NSString *const TWTJSONSchemaKeywordOneOf;
+extern NSString *const TWTJSONSchemaKeywordNot;
+extern NSString *const TWTJSONSchemaKeywordDefinitions;
 
 // Arrays
-extern NSString *const kTWTJSONSchemaKeywordItems;
-extern NSString *const kTWTJSONSchemaKeywordAdditionalItems;
-extern NSString *const kTWTJSONSchemaKeywordMaxItems;
-extern NSString *const kTWTJSONSchemaKeywordMinItems;
-extern NSString *const kTWTJSONSchemaKeywordUniqueItems;
+extern NSString *const TWTJSONSchemaKeywordItems;
+extern NSString *const TWTJSONSchemaKeywordAdditionalItems;
+extern NSString *const TWTJSONSchemaKeywordMaxItems;
+extern NSString *const TWTJSONSchemaKeywordMinItems;
+extern NSString *const TWTJSONSchemaKeywordUniqueItems;
 
 // Numbers
-extern NSString *const kTWTJSONSchemaKeywordMultipleOf;
-extern NSString *const kTWTJSONSchemaKeywordMaximum;
-extern NSString *const kTWTJSONSchemaKeywordExclusiveMaximum;
-extern NSString *const kTWTJSONSchemaKeywordExclusiveMinimum;
+extern NSString *const TWTJSONSchemaKeywordMultipleOf;
+extern NSString *const TWTJSONSchemaKeywordMaximum;
+extern NSString *const TWTJSONSchemaKeywordMinimum;
+extern NSString *const TWTJSONSchemaKeywordExclusiveMaximum;
+extern NSString *const TWTJSONSchemaKeywordExclusiveMinimum;
 
 // Objects
-extern NSString *const kTWTJSONSchemaKeywordMaxProperties;
-extern NSString *const kTWTJSONSchemaKeywordMinProperties;
-extern NSString *const kTWTJSONSchemaKeywordRequired;
-extern NSString *const kTWTJSONSchemaKeywordProperties;
-extern NSString *const kTWTJSONSchemaKeywordAdditionalProperties;
-extern NSString *const kTWTJSONSchemaKeywordPatternProperties;
-extern NSString *const kTWTJSONSchemaKeywordDependencies;
+extern NSString *const TWTJSONSchemaKeywordMaxProperties;
+extern NSString *const TWTJSONSchemaKeywordMinProperties;
+extern NSString *const TWTJSONSchemaKeywordRequired;
+extern NSString *const TWTJSONSchemaKeywordProperties;
+extern NSString *const TWTJSONSchemaKeywordAdditionalProperties;
+extern NSString *const TWTJSONSchemaKeywordPatternProperties;
+extern NSString *const TWTJSONSchemaKeywordDependencies;
 
 // Strings
-extern NSString *const kTWTJSONSchemaKeywordMaxLength;
-extern NSString *const kTWTJSONSchemaKeywordMinLength;
-extern NSString *const kTWTJSONSchemaKeywordPattern;
+extern NSString *const TWTJSONSchemaKeywordMaxLength;
+extern NSString *const TWTJSONSchemaKeywordMinLength;
+extern NSString *const TWTJSONSchemaKeywordPattern;
+
+// Top level
+extern NSString *const TWTJSONSchemaKeywordSchema;
+extern NSString *const TWTJSONSchemaKeywordDraft4Path; 

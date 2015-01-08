@@ -812,7 +812,7 @@
 
 - (void)testValidateValueErrorWildcardPattern
 {
-    NSString *seed = UMKRandomAlphanumericString();
+    NSString *seed = [UMKRandomAlphanumericString() lowercaseString];
     
     // validate with case sensitive with * character
     NSString *patternString = [NSString stringWithFormat:@"%@.*", seed];

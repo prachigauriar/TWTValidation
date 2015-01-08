@@ -35,7 +35,7 @@
 @class TWTJSONSchemaBooleanValueASTNode;
 @class TWTJSONSchemaNamedPropertyASTNode;
 @class TWTJSONSchemaPatternPropertyASTNode;
-@class TWTJSONSchemaDepedencyASTNode;
+@class TWTJSONSchemaDependencyASTNode;
 
 
 @protocol TWTJSONSchemaASTProcessor <NSObject>
@@ -54,6 +54,6 @@
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode;
 - (void)processNamedPropertyNode:(TWTJSONSchemaNamedPropertyASTNode *)propertyNode;
 - (void)processPatternPropertyNode:(TWTJSONSchemaPatternPropertyASTNode *)patternPropertyNode;
-- (void)processDepedencyNode:(TWTJSONSchemaDepedencyASTNode *)depedencyNode;
+- (void)processDependencyNode:(TWTJSONSchemaDependencyASTNode *)dependencyNode;
 
 @end

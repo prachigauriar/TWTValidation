@@ -28,11 +28,11 @@
 
 
 // Valid types
-extern NSString *const kTWTJSONSchemaTypeKeywordAny;
-extern NSString *const kTWTJSONSchemaTypeKeywordArray;
-extern NSString *const kTWTJSONSchemaTypeKeywordBoolean;
-extern NSString *const kTWTJSONSchemaTypeKeywordInteger;
-extern NSString *const kTWTJSONSchemaTypeKeywordNull;
-extern NSString *const kTWTJSONSchemaTypeKeywordNumber;
-extern NSString *const kTWTJSONSchemaTypeKeywordObject;
-extern NSString *const kTWTJSONSchemaTypeKeywordString;
+extern NSString *const TWTJSONSchemaTypeKeywordAny;
+extern NSString *const TWTJSONSchemaTypeKeywordArray;
+extern NSString *const TWTJSONSchemaTypeKeywordBoolean;
+extern NSString *const TWTJSONSchemaTypeKeywordInteger;
+extern NSString *const TWTJSONSchemaTypeKeywordNull;
+extern NSString *const TWTJSONSchemaTypeKeywordNumber;
+extern NSString *const TWTJSONSchemaTypeKeywordObject;
+extern NSString *const TWTJSONSchemaTypeKeywordString;

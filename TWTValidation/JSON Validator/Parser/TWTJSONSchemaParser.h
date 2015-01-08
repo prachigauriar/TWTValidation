@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaValidTypesConstants.m
+//  TWTJSONSchemaParser.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
@@ -24,15 +24,16 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+@import Foundation;
 
 
-// Valid types
-NSString *const TWTJSONSchemaTypeKeywordAny = @"any";
-NSString *const TWTJSONSchemaTypeKeywordArray = @"array";
-NSString *const TWTJSONSchemaTypeKeywordBoolean = @"boolean";
-NSString *const TWTJSONSchemaTypeKeywordInteger = @"integer";
-NSString *const TWTJSONSchemaTypeKeywordNull = @"null";
-NSString *const TWTJSONSchemaTypeKeywordNumber = @"number";
-NSString *const TWTJSONSchemaTypeKeywordObject = @"object";
-NSString *const TWTJSONSchemaTypeKeywordString = @"string";
+@class TWTJSONSchemaTopLevelASTNode;
+
+
+@interface TWTJSONSchemaParser : NSObject
+
+- (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
+
+- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSArray **)outWarnings;
+
+@end

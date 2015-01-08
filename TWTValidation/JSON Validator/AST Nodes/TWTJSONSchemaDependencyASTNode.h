@@ -1,5 +1,5 @@
 //
-//  TWTJSONSchemaValidTypesConstants.m
+//  TWTJSONSchemaDependencyASTNode.h
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
@@ -24,15 +24,16 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
 
 
-// Valid types
-NSString *const TWTJSONSchemaTypeKeywordAny = @"any";
-NSString *const TWTJSONSchemaTypeKeywordArray = @"array";
-NSString *const TWTJSONSchemaTypeKeywordBoolean = @"boolean";
-NSString *const TWTJSONSchemaTypeKeywordInteger = @"integer";
-NSString *const TWTJSONSchemaTypeKeywordNull = @"null";
-NSString *const TWTJSONSchemaTypeKeywordNumber = @"number";
-NSString *const TWTJSONSchemaTypeKeywordObject = @"object";
-NSString *const TWTJSONSchemaTypeKeywordString = @"string";
+@interface TWTJSONSchemaDependencyASTNode : TWTJSONSchemaASTNode
+
+@property (nonatomic, copy, readonly) NSString *key;
+@property (nonatomic, strong, readonly) TWTJSONSchemaASTNode *valueSchema;
+@property (nonatomic, copy, readonly) NSArray *propertySet;
+
+- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value;
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet;
+
+@end
