@@ -376,9 +376,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 // Example: { "required" : [ "name" ] }
 - (NSArray *)parseNonEmptyArrayOfUnqiueStringsForKey:(NSString *)key schema:(NSDictionary *)schema
 {
-    [self pushPathComponent:key];
     NSArray *array = schema[key];
-    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:YES];
+    if (!array) {
+        return nil;
+    }
+
+    [self pushPathComponent:key];
+    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:NO];
 
     [array enumerateObjectsUsingBlock:^(NSString *string, NSUInteger index, BOOL *stop) {
         [self pushPathComponent:@(index)];
@@ -417,9 +421,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 - (NSArray *)parseNonEmptyArrayOfSchemasForKey:(NSString *)key schema:(NSDictionary *)schema
 {
-    [self pushPathComponent:key];
     NSArray *array = schema[key];
-    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:YES];
+    if (!array) {
+        return nil;
+    }
+
+    [self pushPathComponent:key];
+    [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:NO];
 
     NSMutableArray *schemaNodes = [[NSMutableArray alloc] init];
     [array enumerateObjectsUsingBlock:^(NSDictionary *itemSchema , NSUInteger index, BOOL *stop) {
@@ -440,8 +448,12 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 {
     NSParameterAssert([nodeClass isSubclassOfClass:[TWTJSONSchemaKeyValuePairASTNode class]]);
 
-    [self pushPathComponent:key];
     NSDictionary *nestedSchema = schema[key];
+    if (!nestedSchema) {
+        return nil;
+    }
+
+    [self pushPathComponent:key];
     [self failIfObject:nestedSchema isNotKindOfClass:[NSDictionary class] allowsNil:YES];
 
     NSMutableArray *propertyNodes = [[NSMutableArray alloc] init];

@@ -28,7 +28,7 @@
 
 #import "TWTJSONSchemaParser.h"
 #import "TWTJSONSchemaASTNode.h"
-
+#import "TWTJSONSchemaPrettyPrinter.h"
 
 @interface TWTJSONSchemaValidatorTestCase : TWTRandomizedTestCase
 
@@ -36,27 +36,26 @@
 
 @implementation TWTJSONSchemaValidatorTestCase
 
-- (void)testScratchPad
+- (void)testJSONSchemaParser
 {
-    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleSimpleObjectSchema]];
+    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self simpleObjectSchema]];
     NSError *error = nil;
     NSArray *warnings = nil;
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
     XCTAssertNotNil(topLevelNode);
     XCTAssertNil(error);
-    XCTAssertNil(warnings);
+    XCTAssertFalse(warnings.count);
 
-    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleComplexObjectSchema]];
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self complexObjectSchema]];
     error = nil;
     topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
     XCTAssertNotNil(topLevelNode);
     XCTAssertNil(error);
-    XCTAssertNil(warnings);
+    XCTAssertFalse(warnings.count);
 
-
-    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleErrorSchema]];
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self errorSchema]];
     error = nil;
     topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
@@ -64,10 +63,9 @@
 
     XCTAssertNotNil(error);
     XCTAssertNil(topLevelNode);
-    XCTAssertNil(warnings);
+    XCTAssertFalse(warnings.count);
 
-
-    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleWarningsSchema]];
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self warningsSchema]];
     error = nil;
     topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
@@ -75,16 +73,31 @@
 
     XCTAssertNotNil(topLevelNode);
     XCTAssertNil(error);
-    XCTAssertNotNil(warnings);
+    XCTAssertTrue(warnings.count);
 
     // if error or warning parameters aren't given
-    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleWarningsSchema]];
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self warningsSchema]];
     XCTAssertNoThrow([parser parseWithError:nil warnings:nil]);
-    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self exampleErrorSchema]];
+    parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self errorSchema]];
     XCTAssertNoThrow([parser parseWithError:nil warnings:nil]);
 }
 
-- (NSDictionary *)exampleSimpleObjectSchema
+
+- (void)testJSONSchemaPrettyPrinter
+{
+    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:[self simpleStringSchema]];
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:nil warnings:nil];
+
+    TWTJSONSchemaPrettyPrinter *printer = [[TWTJSONSchemaPrettyPrinter alloc] init];
+
+    NSDictionary *schema = [printer objectFromSchema:topLevelNode];
+
+    NSLog(@"%@", schema);
+
+}
+
+
+- (NSDictionary *)simpleObjectSchema
 {
     return   @{ @"$schema": @"http://json-schema.org/draft-04/schema#",
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
@@ -101,7 +114,22 @@
 }
 
 
-- (NSDictionary *)exampleComplexObjectSchema
+- (NSDictionary *)simpleStringSchema
+{
+    return   @{ @"$schema": @"http://json-schema.org/draft-04/schema#",
+                @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
+                @"type": @"string",
+                @"minLength" : @1,
+                @"maxLength" : @100,
+                @"oneOf":
+                    // Non-sensical, since it can't be a string and an number
+                    @[ @{ @"type": @"number" },
+                       @{ @"type": @"integer",
+                          @"multipleOf": @(3.2) } ]
+                };
+}
+
+- (NSDictionary *)complexObjectSchema
 {
     return   @{ @"$schema": @"http://json-schema.org/draft-04/schema#",
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
@@ -133,7 +161,7 @@
 }
 
 
-- (NSDictionary *)exampleErrorSchema
+- (NSDictionary *)errorSchema
 {
     return   @{ @"$schema": @"http://json-schema.org/draft-04/schema#",
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
@@ -164,7 +192,7 @@
 }
 
 
-- (NSDictionary *)exampleWarningsSchema
+- (NSDictionary *)warningsSchema
 {
     return   @{ @"$schema": @"http://json-schema.org/draft-04/schema#",
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
