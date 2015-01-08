@@ -32,8 +32,6 @@
 
 @interface TWTJSONSchemaPrettyPrinter ()
 
-@property (nonatomic, copy) NSDictionary *topLevelSchema;
-
 @property (nonatomic, strong, readonly) NSMutableArray *objectStack;
 
 @end
@@ -55,7 +53,7 @@
 {
     [self.objectStack removeAllObjects];
     [topLevelNode acceptProcessor:self];
-    return [self.topLevelSchema copy];
+    return [self popCurrentObject];
 }
 
 
@@ -67,7 +65,6 @@
 {
     [topLevelNode.schema acceptProcessor:self];
     [self setObject:topLevelNode.schemaPath inCurrentSchemaForKey:TWTJSONSchemaKeywordSchema];
-    self.topLevelSchema = [self popCurrentObject];
 }
 
 
