@@ -29,6 +29,6 @@
 
 @interface TWTJSONSchemaPrettyPrinter : NSObject <TWTJSONSchemaASTProcessor>
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode;
+- (NSDictionary *)objectFromTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode;
 
 @end

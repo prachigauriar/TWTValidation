@@ -76,7 +76,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     [self.warnings removeAllObjects];
     [self.pathStack removeAllObjects];
 
-    [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
+    [self pushPathComponent:TWTJSONSchemaKeywordSchema];
+    if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
+        [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on version 4.", TWTJSONSchemaKeywordSchema];
+    } else {
+        [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
+    }
+    [self popPathComponent];
 
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [[TWTJSONSchemaTopLevelASTNode alloc] init];
     topLevelNode.schemaPath = self.JSONSchema[TWTJSONSchemaKeywordSchema];
@@ -117,17 +123,18 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
     [self failIfObject:schema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
 
-    // Type is unspecified
+    [self pushPathComponent:TWTJSONSchemaKeywordType];
+
+    // Case A: Type is unspecified
     NSString *type = schema[TWTJSONSchemaKeywordType];
     if (!type) {
-        return [self parseGenericSchema:schema];
+        // Check if type-specific keywords exist
+        type = [self impliedTypeForSchema:schema];
     }
-
-    [self pushPathComponent:TWTJSONSchemaKeywordType];
 
     [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
 
-    // Type is an array
+    // Case B: Type is an array
     if ([type isKindOfClass:[NSArray class]]) {
         [(NSArray *)type enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {
             [self pushPathComponent:@(index)];
@@ -138,7 +145,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         return [self parseGenericSchema:schema];
     }
 
-    // Type is a string
+    // Case C: Type is a string (also processes Case A)
     [self failIfObject:type isNotMemberOfSet:[self validJSONTypeKeywords]];
     [self popPathComponent];
 
@@ -472,6 +479,44 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 #pragma mark - Keyword-specific parser methods
 
+- (NSString *)impliedTypeForSchema:(NSDictionary *)schema
+{
+    static NSSet *objectKeywords = nil;
+    static NSSet *arrayKeywords = nil;
+    static NSSet *stringKeywords = nil;
+    static NSSet *numberKeywords = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        objectKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMaxProperties, TWTJSONSchemaKeywordMinProperties, TWTJSONSchemaKeywordRequired, TWTJSONSchemaKeywordProperties, TWTJSONSchemaKeywordAdditionalProperties, TWTJSONSchemaKeywordPatternProperties, TWTJSONSchemaKeywordDependencies, nil];
+        arrayKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordItems, TWTJSONSchemaKeywordAdditionalItems, TWTJSONSchemaKeywordMaxItems, TWTJSONSchemaKeywordMinItems, TWTJSONSchemaKeywordUniqueItems, nil];
+        stringKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMaxLength, TWTJSONSchemaKeywordMinLength, TWTJSONSchemaKeywordPattern, nil];
+        numberKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMultipleOf, TWTJSONSchemaKeywordMaximum, TWTJSONSchemaKeywordMinimum, TWTJSONSchemaKeywordExclusiveMaximum, TWTJSONSchemaKeywordExclusiveMinimum, nil];
+    });
+
+    NSSet *keys = [NSSet setWithArray:[schema allKeys]];
+
+    NSString *type = nil;
+
+    if ([keys intersectsSet:objectKeywords]) {
+        type = TWTJSONSchemaTypeKeywordObject;
+    } else if ([keys intersectsSet:arrayKeywords]) {
+        type = TWTJSONSchemaTypeKeywordArray;
+    } else if ([keys intersectsSet:stringKeywords]) {
+        type = TWTJSONSchemaTypeKeywordString;
+    } else if ([keys intersectsSet:numberKeywords]) {
+        type = TWTJSONSchemaTypeKeywordString;
+    }
+
+    if (type) {
+        [self warnWithFormat:@"Type keyword not present. Interpreting as %@ based on type-specific keywords.", type];
+    } else {
+        type = TWTJSONSchemaTypeKeywordAny;
+    }
+
+    return type;
+}
+
+
 - (void)parseCommonKeywordsFromSchema:(NSDictionary *)schema intoNode:(TWTJSONSchemaASTNode *)node
 {
     node.schemaTitle = [self parseStringForKey:TWTJSONSchemaKeywordTitle schema:schema];
@@ -672,7 +717,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ...
 {
-    NSParameterAssert(object);
+    object ? object : [NSNull null];
     NSParameterAssert(format);
 
     va_list arguments;

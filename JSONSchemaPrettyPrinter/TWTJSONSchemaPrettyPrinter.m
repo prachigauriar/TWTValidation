@@ -49,7 +49,7 @@
 }
 
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
+- (NSDictionary *)objectFromTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
     [self.objectStack removeAllObjects];
     [topLevelNode acceptProcessor:self];
@@ -250,6 +250,9 @@
 - (void)setObject:(id)object inCurrentSchemaForKey:(NSString *)key
 {
     if (object) {
+        if ([object isKindOfClass:[NSSet class]]) {
+            object = [object allObjects];
+        }
         [self.currentObject setObject:object forKey:key];
     }
 }
