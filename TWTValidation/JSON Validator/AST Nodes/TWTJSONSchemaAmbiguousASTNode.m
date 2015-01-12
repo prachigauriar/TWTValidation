@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaASTNode.h
+//  TWTJSONSchemaAmbiguousASTNode.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/12/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/12/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,37 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>
 
-#import <TWTValidation/TWTJSONSchemaASTProcessor.h>
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
 
 
-@interface TWTJSONSchemaASTNode : NSObject
+@implementation TWTJSONSchemaAmbiguousASTNode
 
-@property (nonatomic, copy) NSString *schemaTitle;
-@property (nonatomic, copy) NSString *schemaDescription;
-@property (nonatomic, copy) NSSet *validValues; //enum keyword
-@property (nonatomic, copy, readonly) NSSet *validTypes;
-@property (nonatomic, assign) BOOL typeIsExplicit;
-@property (nonatomic, copy) NSArray *andSchemas; // allOf
-@property (nonatomic, copy) NSArray *orSchemas; // anyOf
-@property (nonatomic, copy) NSArray *exactlyOneOfSchemas; // oneOf
-@property (nonatomic, strong) TWTJSONSchemaASTNode *notSchema;
-@property (nonatomic, copy) NSDictionary *definitions;
+- (instancetype)init
+{
+    self = [super init];
 
-- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
+    if (self) {
+        _additionalItemsNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
+        _additionalPropertiesNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
+    }
+
+    return self;
+}
+
+
+- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
+{
+    [processor processAmbiguousNode:self];
+}
+
+
+- (NSSet *)validTypes
+{
+    // by definition, this node is only used if the type keyword is not present and keywords are present for multiple JSON types
+    // No type validation is required, just validiation of keywords corresponding to the instance's types
+    return [NSSet setWithObject:TWTJSONSchemaTypeKeywordAny];
+}
 
 @end

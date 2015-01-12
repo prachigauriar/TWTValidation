@@ -166,7 +166,14 @@
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
-    [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+    if (node.typeIsExplicit) {
+        if (node.validTypes.count == 1) {
+            NSString *typeString = [[node.validTypes allObjects] firstObject];
+            [self setObject:typeString inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        } else {
+            [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        }
+    }
     [self setObject:node.schemaTitle inCurrentSchemaForKey:TWTJSONSchemaKeywordTitle];
     [self setObject:node.schemaDescription inCurrentSchemaForKey:TWTJSONSchemaKeywordDescription];
     [self setObject:node.validValues inCurrentSchemaForKey:TWTJSONSchemaKeywordEnum];
