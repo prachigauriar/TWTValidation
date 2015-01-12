@@ -177,9 +177,11 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     // "Items" must be JSON schema object or array of JSON schema objects
     if ([arraySchema[TWTJSONSchemaKeywordItems] isKindOfClass:[NSDictionary class]]) {
         node.itemSchemas = @[ [self parseSchemaForKey:TWTJSONSchemaKeywordItems schema:arraySchema] ];
+        node.itemsIsSingleSchema = YES;
         // additional items is meaningless if items is a single schema
     } else {
         node.itemSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordItems schema:arraySchema];
+        node.itemsIsSingleSchema = NO;
         node.additionalItemsNode = [self parseAdditionalItemsOrPropertiesForKey:TWTJSONSchemaKeywordAdditionalItems schema:arraySchema];
     }
 
@@ -504,7 +506,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     } else if ([keys intersectsSet:stringKeywords]) {
         type = TWTJSONSchemaTypeKeywordString;
     } else if ([keys intersectsSet:numberKeywords]) {
-        type = TWTJSONSchemaTypeKeywordString;
+        type = TWTJSONSchemaTypeKeywordNumber;
     }
 
     if (type) {
@@ -725,7 +727,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     NSString *description = [[NSString alloc] initWithFormat:format arguments:arguments];
     va_end(arguments);
 
-    description = [@"Error at" stringByAppendingFormat:@"%@. %@", [self currentPathString], description];
+    description = [@"Error at " stringByAppendingFormat:@"%@. %@", [self currentPathString], description];
     NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
                                                                                                    NSLocalizedDescriptionKey : description }];
 

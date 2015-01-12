@@ -15,6 +15,7 @@
 #import "TWTJSONSchemaPrettyPrinter.h"
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 
+static const BOOL debug = NO;
 
 static NSString *const TWTJSONSchemaKey = @"schema";
 
@@ -24,7 +25,7 @@ int main(int argc, const char *argv[])
     @autoreleasepool {
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
         if (arguments.count != 2) {
-            fprintf(stderr, "Usage: %s json_schema\n", argv[0]);
+            fprintf(stderr, "Usage: %s json_schema_file\n", argv[0]);
             return 1;
         }
 
@@ -65,7 +66,7 @@ int main(int argc, const char *argv[])
                 return -1;
             }
 
-            if (warnings.count > 0) {
+            if (debug && warnings.count > 0) {
                 fprintf(stderr, "Warnings parsing schema: %s\n", [warnings.description UTF8String]);
             }
 

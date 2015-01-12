@@ -81,7 +81,11 @@
     [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
     [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
     [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
-    [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    if (arrayNode.itemsIsSingleSchema) {
+        [self setObject:[self schemaFromNode:arrayNode.itemSchemas[0]] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    } else {
+        [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    }
     [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
 }
 

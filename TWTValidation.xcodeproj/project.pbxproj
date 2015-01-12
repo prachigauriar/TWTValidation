@@ -244,12 +244,12 @@
 		};
 		71BDDEDF1A60394A00357215 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			buildActionMask = 12;
+			dstPath = "";
 			dstSubfolderSpec = 0;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -324,7 +324,6 @@
 		71524B3B1A3FDFCE00E3887C /* TWTJSONSchemaValidatorTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaValidatorTestCase.m; path = "JSON Validator/TWTJSONSchemaValidatorTestCase.m"; sourceTree = "<group>"; };
 		7167EFCF1A6052B6007EBD6F /* TWTJSONSchemaPrettyPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWTJSONSchemaPrettyPrinter.h; sourceTree = "<group>"; };
 		7167EFD01A6052B6007EBD6F /* TWTJSONSchemaPrettyPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTJSONSchemaPrettyPrinter.m; sourceTree = "<group>"; };
-		7167EFD41A6058A2007EBD6F /* AllOf.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = AllOf.json; path = "Test Suite/AllOf.json"; sourceTree = "<group>"; };
 		7172FBD61A5AF3A600BEB7B7 /* TWTJSONSchemaASTCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaASTCommon.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaASTCommon.h"; sourceTree = "<group>"; };
 		71B8DA951A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaKeyValuePairASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaKeyValuePairASTNode.h"; sourceTree = "<group>"; };
 		71B8DA961A40C8EE006BE3C5 /* TWTJSONSchemaKeyValuePairASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TWTJSONSchemaKeyValuePairASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaKeyValuePairASTNode.m"; sourceTree = "<group>"; };
@@ -344,7 +343,6 @@
 		71B8DABA1A40EED9006BE3C5 /* TWTJSONSchemaParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TWTJSONSchemaParser.m; path = "JSON Validator/Parser/TWTJSONSchemaParser.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		71BDDEE11A60394A00357215 /* JSONSchemaPrettyPrinter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JSONSchemaPrettyPrinter; sourceTree = BUILT_PRODUCTS_DIR; };
 		71BDDEE31A60394A00357215 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		71BDDEEB1A6039B600357215 /* complexObjectSchema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = complexObjectSchema.json; path = "Additional Test Schemas/complexObjectSchema.json"; sourceTree = "<group>"; };
 		71F236131A4083B200A9BB46 /* TWTJSONSchemaASTProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TWTJSONSchemaASTProcessor.h; path = "JSON Validator/Processors/TWTJSONSchemaASTProcessor.h"; sourceTree = "<group>"; };
 		90F6F370D9A59C68E3807446 /* Pods-libTWTValidation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libTWTValidation.release.xcconfig"; path = "Pods/Target Support Files/Pods-libTWTValidation/Pods-libTWTValidation.release.xcconfig"; sourceTree = "<group>"; };
 		AED4C6BB4311DAF87194557D /* Pods-TWTValidation-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWTValidation-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-TWTValidation-iOS/Pods-TWTValidation-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -683,14 +681,6 @@
 			name = "JSON Validator";
 			sourceTree = "<group>";
 		};
-		7167EFD31A60588E007EBD6F /* Test Suite */ = {
-			isa = PBXGroup;
-			children = (
-				7167EFD41A6058A2007EBD6F /* AllOf.json */,
-			);
-			name = "Test Suite";
-			sourceTree = "<group>";
-		};
 		71B8DAB81A40EEB5006BE3C5 /* Schema Parser */ = {
 			isa = PBXGroup;
 			children = (
@@ -703,21 +693,11 @@
 		71BDDEE21A60394A00357215 /* JSONSchemaPrettyPrinter */ = {
 			isa = PBXGroup;
 			children = (
-				7167EFD31A60588E007EBD6F /* Test Suite */,
-				71BDDEEA1A60397500357215 /* Additional Test Schemas */,
 				71BDDEE31A60394A00357215 /* main.m */,
 				7167EFCF1A6052B6007EBD6F /* TWTJSONSchemaPrettyPrinter.h */,
 				7167EFD01A6052B6007EBD6F /* TWTJSONSchemaPrettyPrinter.m */,
 			);
 			path = JSONSchemaPrettyPrinter;
-			sourceTree = "<group>";
-		};
-		71BDDEEA1A60397500357215 /* Additional Test Schemas */ = {
-			isa = PBXGroup;
-			children = (
-				71BDDEEB1A6039B600357215 /* complexObjectSchema.json */,
-			);
-			name = "Additional Test Schemas";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1579,6 +1559,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "TWTValidation/Supporting Files/TWTValidation-Info.plist";
+				INSTALL_PATH = "$(TARGET_BUILD_DIR)";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
