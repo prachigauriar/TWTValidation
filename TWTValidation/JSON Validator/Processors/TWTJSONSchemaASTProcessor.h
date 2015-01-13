@@ -24,14 +24,15 @@
 //  THE SOFTWARE.
 //
 
-@class TWTJSONSchemaTopLevelASTNode;
+@import Foundation;
 
+
+@class TWTJSONSchemaTopLevelASTNode;
 @class TWTJSONSchemaGenericASTNode;
 @class TWTJSONSchemaArrayASTNode;
 @class TWTJSONSchemaNumberASTNode;
 @class TWTJSONSchemaObjectASTNode;
 @class TWTJSONSchemaStringASTNode;
-
 @class TWTJSONSchemaBooleanValueASTNode;
 @class TWTJSONSchemaNamedPropertyASTNode;
 @class TWTJSONSchemaPatternPropertyASTNode;

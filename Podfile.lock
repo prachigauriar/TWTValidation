@@ -4,13 +4,9 @@ PODS:
   - URLMock/TestHelpers (1.2.3)
 
 DEPENDENCIES:
-  - URLMock/SubclassResponsibility (from `~/Developer/URLMock`)
-
-EXTERNAL SOURCES:
-  URLMock:
-    :path: ~/Developer/URLMock
+  - URLMock/SubclassResponsibility (~> 1.2.3)
 
 SPEC CHECKSUMS:
-  URLMock: 800b8bd5dc958c0869a21e0f4bc6942882932b66
+  URLMock: c2150bc73ce7135b9afed901f8284717ba3870b7
 
 COCOAPODS: 0.35.0
