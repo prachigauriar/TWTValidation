@@ -31,6 +31,9 @@
 
 @implementation TWTJSONSchemaAmbiguousASTNode
 
+@synthesize validTypes;
+
+
 - (instancetype)init
 {
     self = [super init];
@@ -47,14 +50,6 @@
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processAmbiguousNode:self];
-}
-
-
-- (NSSet *)validTypes
-{
-    // by definition, this node is only used if the type keyword is not present and keywords are present for multiple JSON types
-    // No type validation is required, just validiation of keywords corresponding to the instance's types
-    return [NSSet setWithObject:TWTJSONSchemaTypeKeywordAny];
 }
 
 @end

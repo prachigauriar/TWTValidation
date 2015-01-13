@@ -29,6 +29,8 @@
 
 @interface TWTJSONSchemaAmbiguousASTNode : TWTJSONSchemaASTNode
 
+@property (nonatomic, copy, readwrite) NSSet *validTypes;
+
 // Array keywords
 @property (nonatomic, strong) NSNumber *maximumItemCount;
 @property (nonatomic, strong) NSNumber *minimumItemCount;

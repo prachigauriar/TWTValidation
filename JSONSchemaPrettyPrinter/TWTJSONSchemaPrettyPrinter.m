@@ -123,6 +123,40 @@
 }
 
 
+- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode
+{
+    [self generateCommonSchemaFromNode:ambiguousNode];
+
+    [self setObject:ambiguousNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
+    [self setObject:ambiguousNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
+    [self setObject:@(ambiguousNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
+    if (ambiguousNode.itemsIsSingleSchema) {
+        [self setObject:[self schemaFromNode:ambiguousNode.itemSchemas[0]] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    } else {
+        [self setObject:[self schemaArrayFromNodeArray:ambiguousNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    }
+    [self setObject:[self additionalItemsOrPropertiesFromNode:ambiguousNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
+
+    [self setObject:ambiguousNode.minimum inCurrentSchemaForKey:TWTJSONSchemaKeywordMinimum];
+    [self setObject:ambiguousNode.maximum inCurrentSchemaForKey:TWTJSONSchemaKeywordMaximum];
+    [self setObject:@(ambiguousNode.exclusiveMinimum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMinimum];
+    [self setObject:@(ambiguousNode.exclusiveMaximum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMaximum];
+    [self setObject:ambiguousNode.multipleOf inCurrentSchemaForKey:TWTJSONSchemaKeywordMultipleOf];
+
+    [self setObject:ambiguousNode.minimumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMinLength];
+    [self setObject:ambiguousNode.maximumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxLength];
+    [self setObject:ambiguousNode.pattern inCurrentSchemaForKey:TWTJSONSchemaKeywordPattern];
+
+    [self setObject:ambiguousNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
+    [self setObject:ambiguousNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
+    [self setObject:ambiguousNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
+    [self setObject:[self additionalItemsOrPropertiesFromNode:ambiguousNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
+    [self setObject:[self dependencyDictionaryFromNodeArray:ambiguousNode.propertyDependencies] inCurrentSchemaForKey:TWTJSONSchemaKeywordDependencies];
+}
+
+
 // Adds a boolean object to the stack
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode
 {
