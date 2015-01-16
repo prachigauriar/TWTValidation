@@ -1,9 +1,9 @@
 //
-//  TWTValidation.h
+//  TWTJSONObjectValidator.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/14/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,31 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import <TWTValidation/TWTValidation.h>
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+typedef NS_ENUM(NSUInteger, TWTJSONType) {
+    TWTJSONTypeObject,
+    TWTJSONTypeArray,
+    TWTJSONTypeString,
+    TWTJSONTypeNumber,
+    TWTJSONTypeNull,
+    TWTJSONTypeAmbiguous,
+    TWTJSONTypeAny
+};
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
 
-#import <TWTValidation/TWTCompoundValidator.h>
+@interface TWTJSONObjectValidator : TWTValidator
 
-#import <TWTValidation/TWTKeyValueCodingValidator.h>
+@property (nonatomic, copy, readonly) NSDictionary *schema;
 
-#import <TWTValidation/TWTValueSetValidator.h>
++ (TWTJSONObjectValidator *)validatorWithJSONSchema:(NSDictionary *)schema
+                                              error:(NSError *__autoreleasing *)outError
+                                           warnings:(NSArray *__autoreleasing *)outWarnings;
 
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
+- (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator
+                          typeValidator:(TWTValidator *)typeValidator
+                                   type:(TWTJSONType)type
+                           requiresType:(BOOL)requiresType;
 
-#import <TWTValidation/TWTJSONObjectValidator.h>
+@end

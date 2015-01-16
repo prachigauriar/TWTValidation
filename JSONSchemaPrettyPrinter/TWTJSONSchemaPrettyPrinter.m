@@ -90,7 +90,7 @@
 }
 
 
-- (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode
+- (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)
 {
     [self generateCommonSchemaFromNode:numberNode];
     [self setObject:numberNode.minimum inCurrentSchemaForKey:TWTJSONSchemaKeywordMinimum];
@@ -187,7 +187,7 @@
     if (dependencyNode.valueSchema) {
         [dependencyNode.valueSchema acceptProcessor:self];
     } else {
-        // Else, node has a property set, which is an array of strings
+        // Else, node has a property set, which is a set of strings
         [self pushNewObject:dependencyNode.propertySet];
     }
 

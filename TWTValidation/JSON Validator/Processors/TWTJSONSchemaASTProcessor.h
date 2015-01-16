@@ -51,7 +51,7 @@
 - (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode;
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
-- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)unknownNode;
+- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode;
 
 // Specialized nodes for array items and object properties
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode;

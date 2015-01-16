@@ -217,6 +217,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     node.validTypes = [NSSet setWithArray:types];
     [self parseArraySchema:ambiguousSchema intoNode:(TWTJSONSchemaArrayASTNode *)node];
     [self parseNumberSchema:ambiguousSchema intoNode:(TWTJSONSchemaNumberASTNode *)node];
+
+    node.requireIntegralValue = [node.validTypes containsObject:TWTJSONSchemaTypeKeywordInteger];
+
     [self parseObjectSchema:ambiguousSchema intoNode:(TWTJSONSchemaObjectASTNode *)node];
     [self parseStringSchema:ambiguousSchema intoNode:(TWTJSONSchemaStringASTNode *)node];
 }
@@ -633,7 +636,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
         if ([object isKindOfClass:[NSDictionary class]]) {
             node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key valueSchema:[self parseSchema:object]];
         } else {
-            NSArray *propertySet = [self parseNonEmptyArrayOfUnqiueStringsForKey:key schema:dependencies];
+            NSSet *propertySet = [NSSet setWithArray:[self parseNonEmptyArrayOfUnqiueStringsForKey:key schema:dependencies]];
             node = [[TWTJSONSchemaDependencyASTNode alloc] initWithKey:key propertySet:propertySet];
         }
 

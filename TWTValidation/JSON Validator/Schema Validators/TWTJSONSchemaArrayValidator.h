@@ -1,9 +1,9 @@
 //
-//  TWTValidation.h
+//  TWTJSONSchemaArrayValidator.h
 //  TWTValidation
 //
-//  Created by Prachi Gauriar on 3/28/2014.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/15/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,23 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import <TWTValidation/TWTValidation.h>
 
-#import <TWTValidation/TWTValidator.h>
-#import <TWTValidation/TWTValidationErrors.h>
 
-#import <TWTValidation/TWTBlockValidator.h>
+@interface TWTJSONSchemaArrayValidator : TWTValidator
 
-#import <TWTValidation/TWTCollectionValidator.h>
-#import <TWTValidation/TWTKeyedCollectionValidator.h>
+@property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
+@property (nonatomic, strong, readonly) NSNumber *minimumItemCount;
+@property (nonatomic, assign, readonly) BOOL requiresUniqueItems;
+@property (nonatomic, copy, readonly) NSArray *itemValidators;
+@property (nonatomic, assign, readonly) BOOL itemsIsSingleSchema;
+@property (nonatomic, strong, readonly) TWTValidator *additionalItemsValidator; // either JSON validator or always passing/failing
 
-#import <TWTValidation/TWTCompoundValidator.h>
+- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
+                        minimumItemCount:(NSNumber *)minimumItemCount
+                     requiresUniqueItems:(BOOL)requiresUniqueItems
+                          itemValidators:(NSArray *)itemValidators
+                     itemsIsSingleSchema:(BOOL)itemsIsSingleSchema
+                additionalItemsValidator:(TWTValidator *)additionalItemsValidator;
 
-#import <TWTValidation/TWTKeyValueCodingValidator.h>
-
-#import <TWTValidation/TWTValueSetValidator.h>
-
-#import <TWTValidation/TWTValueValidator.h>
-#import <TWTValidation/TWTNumberValidator.h>
-#import <TWTValidation/TWTStringValidator.h>
-
-#import <TWTValidation/TWTJSONObjectValidator.h>
+@end

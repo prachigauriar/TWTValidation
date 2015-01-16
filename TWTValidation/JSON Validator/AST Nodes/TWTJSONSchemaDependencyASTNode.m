@@ -29,7 +29,7 @@
 
 @implementation TWTJSONSchemaDependencyASTNode
 
-- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSSet *)propertySet
 {
     NSParameterAssert(key);
     NSParameterAssert(propertySet);
