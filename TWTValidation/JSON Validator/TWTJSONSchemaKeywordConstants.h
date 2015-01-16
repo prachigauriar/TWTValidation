@@ -69,3 +69,13 @@ extern NSString *const TWTJSONSchemaKeywordPattern;
 // Top level
 extern NSString *const TWTJSONSchemaKeywordSchema;
 extern NSString *const TWTJSONSchemaKeywordDraft4Path; 
+
+// Valid types
+extern NSString *const TWTJSONSchemaTypeKeywordAny;
+extern NSString *const TWTJSONSchemaTypeKeywordArray;
+extern NSString *const TWTJSONSchemaTypeKeywordBoolean;
+extern NSString *const TWTJSONSchemaTypeKeywordInteger;
+extern NSString *const TWTJSONSchemaTypeKeywordNull;
+extern NSString *const TWTJSONSchemaTypeKeywordNumber;
+extern NSString *const TWTJSONSchemaTypeKeywordObject;
+extern NSString *const TWTJSONSchemaTypeKeywordString;

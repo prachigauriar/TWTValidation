@@ -63,12 +63,6 @@
 }
 
 
-- (NSSet *)validTypes
-{
-    return nil;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processDependencyNode:self];

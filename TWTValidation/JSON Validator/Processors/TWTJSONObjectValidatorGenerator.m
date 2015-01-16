@@ -33,7 +33,6 @@
 #import <TWTValidation/TWTJSONSchemaAmbiguousTypeValidator.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
 #import <TWTValidation/TWTJSONSchemaObjectValidator.h>
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 
 
 @interface TWTConstantValidator : TWTValidator
@@ -84,6 +83,7 @@
 - (TWTJSONObjectValidator *)validatorFromJSONSchema:(NSDictionary *)schema error:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
     [self.objectStack removeAllObjects];
+
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
     NSError *parsingError = nil;
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&parsingError warnings:outWarnings];
@@ -99,6 +99,8 @@
 }
 
 
+#pragma mark - ASTNodeProcessor protocol methods
+
 - (void)processTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
     [topLevelNode.schema acceptProcessor:self];
@@ -108,14 +110,13 @@
 - (void)processGenericNode:(TWTJSONSchemaGenericASTNode *)genericNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:genericNode];
-    NSString *type = genericNode.validTypes.allObjects.firstObject;
     TWTValidator *typeValidator = nil;
     TWTJSONType typeEnum = TWTJSONTypeAny;
 
-    if ([type isEqualToString:TWTJSONSchemaTypeKeywordBoolean]) {
+    if ([genericNode.validType isEqualToString:TWTJSONSchemaTypeKeywordBoolean]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNumber class] allowsNil:NO allowsNull:NO];
         typeEnum = TWTJSONTypeNumber;
-    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordNull]) {
+    } else if ([genericNode.validType isEqualToString:TWTJSONSchemaTypeKeywordNull]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
         typeEnum = TWTJSONTypeNull;
     }
@@ -127,29 +128,18 @@
 - (void)processArrayNode:(TWTJSONSchemaArrayASTNode *)arrayNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:arrayNode];
-    TWTJSONSchemaArrayValidator *typeValidator = [self validatorForArrayNode:arrayNode];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeArray requiresType:arrayNode.typeIsExplicit];
-}
 
-
-- (TWTJSONSchemaArrayValidator *)validatorForArrayNode:(TWTJSONSchemaArrayASTNode *)arrayNode
-{
     NSArray *itemValidators = [self validatorsFromNodeArray:arrayNode.itemSchemas];
     TWTValidator *additionalItems = [self validatorFromNode:arrayNode.additionalItemsNode];
-    return [[TWTJSONSchemaArrayValidator alloc] initWithMaximumItemCount:arrayNode.maximumItemCount minimumItemCount:arrayNode.minimumItemCount requiresUniqueItems:arrayNode.requiresUniqueItems itemValidators:itemValidators itemsIsSingleSchema:arrayNode.itemsIsSingleSchema additionalItemsValidator:additionalItems];
+    TWTJSONSchemaArrayValidator *typeValidator = [[TWTJSONSchemaArrayValidator alloc] initWithMaximumItemCount:arrayNode.maximumItemCount minimumItemCount:arrayNode.minimumItemCount requiresUniqueItems:arrayNode.requiresUniqueItems itemValidators:itemValidators itemsIsSingleSchema:arrayNode.itemsIsSingleSchema additionalItemsValidator:additionalItems];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeArray requiresType:arrayNode.typeIsExplicit];
 }
 
 
 - (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:numberNode];
-    TWTValidator *typeValidator = [self validatorForNumberNode:numberNode];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeNumber requiresType:numberNode.typeIsExplicit];
-}
 
-
-- (TWTValidator *)validatorForNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode
-{
     [self pushNewObject:[[NSMutableArray alloc] init]];
     TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:numberNode.minimum maximum:numberNode.maximum];
     validator.maximumExclusive = numberNode.exclusiveMaximum;
@@ -168,38 +158,28 @@
         }]];
     }
 
-    return [self collectSubvalidators];
+    TWTValidator *typeValidator = [self collectSubvalidators];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeNumber requiresType:numberNode.typeIsExplicit];
 }
 
 
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:objectNode];
-    TWTJSONSchemaObjectValidator *typeValidator = [self validatorForObjectNode:objectNode];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeObject requiresType:objectNode.typeIsExplicit];
-}
 
-
-- (TWTJSONSchemaObjectValidator *)validatorForObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode
-{
     NSArray *properties = [self validatorsFromNodeArray:objectNode.propertySchemas];
     NSArray *patterns = [self validatorsFromNodeArray:objectNode.patternPropertySchemas];
     TWTValidator *additionalPropertiesValidator = [self validatorFromNode:objectNode.additionalPropertiesNode];
     NSDictionary *dependencies = [self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies];
-    return [[TWTJSONSchemaObjectValidator alloc] initWithMaximumPropertyCount:objectNode.maximumPropertyCount minimumPropertyCount:objectNode.minimumPropertyCount requiredProperties:objectNode.requiredPropertyNames propertyValidators:properties patternPropertyValidators:patterns additionalPropertiesValidator:additionalPropertiesValidator propertyDependencies:dependencies];
+    TWTJSONSchemaObjectValidator *typeValidator = [[TWTJSONSchemaObjectValidator alloc] initWithMaximumPropertyCount:objectNode.maximumPropertyCount minimumPropertyCount:objectNode.minimumPropertyCount requiredPropertyKeys:objectNode.requiredPropertyKeys propertyValidators:properties patternPropertyValidators:patterns additionalPropertiesValidator:additionalPropertiesValidator propertyDependencies:dependencies];
+
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeObject requiresType:objectNode.typeIsExplicit];
 }
 
 
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:stringNode];
-    TWTValidator *typeValidator = [self validatorForStringNode:stringNode];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeString requiresType:stringNode.typeIsExplicit];
-}
-
-
-- (TWTValidator *)validatorForStringNode:(TWTJSONSchemaStringASTNode *)stringNode
-{
     [self pushNewObject:[[NSMutableArray alloc] init]];
 
     [self addSubvalidator:[TWTStringValidator stringValidatorWithMinimumLength:stringNode.minimumLength.integerValue maximumLength: stringNode.maximumLength ? stringNode.maximumLength.integerValue : NSUIntegerMax]];
@@ -207,35 +187,21 @@
         [self addSubvalidator:[TWTStringValidator stringValidatorWithPattern:stringNode.pattern caseSensitive:NO]];
     }
 
-    return [self collectSubvalidators];
+    TWTValidator *typeValidator = [self collectSubvalidators];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeString requiresType:stringNode.typeIsExplicit];
 }
 
 
 - (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:ambiguousNode];
-    id node = ambiguousNode;
-
-    NSMutableDictionary *subvalidators = [[NSMutableDictionary alloc] init];
-    for (NSString *type in ambiguousNode.validTypes) {
-        if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
-            [subvalidators setObject:[self validatorForArrayNode:node] forKey:type];
-        } else if ([[NSSet setWithObjects:TWTJSONSchemaTypeKeywordInteger, TWTJSONSchemaTypeKeywordNumber, nil] containsObject:type]) {
-            [subvalidators setObject:[self validatorForNumberNode:node] forKey:type];
-        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
-            [subvalidators setObject:[self validatorForObjectNode:node] forKey:type];
-        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
-            [subvalidators setObject:[self validatorForStringNode:node] forKey:type];
-        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordNull]) {
-            TWTValueValidator *nullValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
-            [subvalidators setObject:nullValidator forKey:type];
-        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordBoolean]) {
-            TWTValueValidator *nullValidator = [TWTValueValidator valueValidatorWithClass:[NSNumber class] allowsNil:NO allowsNull:NO];
-            [subvalidators setObject:nullValidator forKey:type];
-        }
+    NSMutableArray *orValidators = [[NSMutableArray alloc] init];
+    for (TWTJSONSchemaASTNode *subNode in ambiguousNode.subNodes) {
+        [subNode acceptProcessor:self];
+        [orValidators addObject:[self popCurrentObject]];
     }
 
-    TWTValidator *typeValidator = [[TWTJSONSchemaAmbiguousTypeValidator alloc] initWithTypeValidators:subvalidators requiresType:ambiguousNode.typeIsExplicit];
+    TWTCompoundValidator *typeValidator = [TWTCompoundValidator orValidatorWithSubvalidators:orValidators];
     [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeAmbiguous requiresType:YES];
 }
 
@@ -272,6 +238,8 @@
 }
 
 
+#pragma mark - Node-to-validator conversion methods
+
 - (TWTValidator *)commonValidatorFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableArray alloc] init]];
@@ -287,6 +255,17 @@
     }
 
     return [self collectSubvalidators];
+}
+
+
+- (TWTValidator *)validatorFromNode:(TWTJSONSchemaASTNode *)node
+{
+    if (!node) {
+        return nil;
+    }
+
+    [node acceptProcessor:self];
+    return [self popCurrentObject];
 }
 
 
@@ -316,17 +295,6 @@
 }
 
 
-- (TWTValidator *)validatorFromNode:(TWTJSONSchemaASTNode *)node
-{
-    if (!node) {
-        return nil;
-    }
-
-    [node acceptProcessor:self];
-    return [self popCurrentObject];
-}
-
-
 - (NSDictionary *)dependencyDictionaryFromNodeArray:(NSArray *)array
 {
     if (!array) {
@@ -343,7 +311,7 @@
 }
 
 
-# pragma mark - Convenience methods
+# pragma mark - Convenience methods for managing stack
 
 - (void)addSubvalidator:(TWTValidator *)subvalidator
 {

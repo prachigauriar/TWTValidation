@@ -29,9 +29,6 @@
 
 @implementation TWTJSONSchemaGenericASTNode
 
-@synthesize validTypes;
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processGenericNode:self];

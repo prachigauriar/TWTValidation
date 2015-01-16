@@ -29,12 +29,6 @@
 
 @implementation TWTJSONSchemaTopLevelASTNode
 
-- (NSSet *)validTypes
-{
-    return self.schema.validTypes;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processTopLevelNode:self];

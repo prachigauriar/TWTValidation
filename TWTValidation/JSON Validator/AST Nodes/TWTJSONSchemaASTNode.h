@@ -27,7 +27,7 @@
 @import Foundation;
 
 #import <TWTValidation/TWTJSONSchemaASTProcessor.h>
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+#import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 
 
 @interface TWTJSONSchemaASTNode : NSObject
@@ -35,7 +35,6 @@
 @property (nonatomic, copy) NSString *schemaTitle;
 @property (nonatomic, copy) NSString *schemaDescription;
 @property (nonatomic, copy) NSSet *validValues; //enum keyword
-@property (nonatomic, copy, readonly) NSSet *validTypes;
 @property (nonatomic, assign) BOOL typeIsExplicit;
 @property (nonatomic, copy) NSArray *andSchemas; // allOf
 @property (nonatomic, copy) NSArray *orSchemas; // anyOf

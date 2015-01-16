@@ -30,6 +30,6 @@
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 
 // Used for schemas with type "boolean," "null", or "any"
-@property (nonatomic, copy, readwrite) NSSet *validTypes;
+@property (nonatomic, copy) NSString *validType;
 
 @end

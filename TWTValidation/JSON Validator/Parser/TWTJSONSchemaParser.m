@@ -28,7 +28,6 @@
 
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 #import <TWTValidation/TWTValidationErrors.h>
 
 
@@ -120,30 +119,31 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
     [self pushPathComponent:TWTJSONSchemaKeywordType];
     BOOL typeIsExplicit = NO;
     id type = [self parseTypeKeywordForSchema:schema explicit:&typeIsExplicit];
-    TWTJSONSchemaASTNode *node = nil;
+    id node = nil;
 
     if ([type isKindOfClass:[NSArray class]]) {
         node = [[TWTJSONSchemaAmbiguousASTNode alloc] init];
-        [self parseAmbiguousSchema:schema intoNode:(TWTJSONSchemaAmbiguousASTNode *)node withTypes:type];
+        [node setTypeIsExplicit:typeIsExplicit];
+        [self parseAmbiguousSchema:schema intoNode:node withTypes:type];
     } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
         node = [[TWTJSONSchemaArrayASTNode alloc] init];
-        [self parseArraySchema:schema intoNode:(TWTJSONSchemaArrayASTNode *)node];
+        [self parseArraySchema:schema intoNode:node];
     } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordInteger] || [type isEqualToString:TWTJSONSchemaTypeKeywordNumber]) {
         node = [[TWTJSONSchemaNumberASTNode alloc] init];
-        [self parseNumberSchema:schema intoNode:(TWTJSONSchemaNumberASTNode *)node];
+        [self parseNumberSchema:schema intoNode:node withType:type];
     } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
         node = [[TWTJSONSchemaObjectASTNode alloc] init];
-        [self parseObjectSchema:schema intoNode:(TWTJSONSchemaObjectASTNode *)node];
+        [self parseObjectSchema:schema intoNode:node];
     } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
         node = [[TWTJSONSchemaStringASTNode alloc] init];
-        [self parseStringSchema:schema intoNode:(TWTJSONSchemaStringASTNode *)node];
+        [self parseStringSchema:schema intoNode:node];
     } else {
         // type = "any", "boolean", or "null"
         node = [[TWTJSONSchemaGenericASTNode alloc] init];
-        [self parseGenericSchema:schema intoNode:(TWTJSONSchemaGenericASTNode *)node withType:type];
+        [self parseGenericSchema:schema intoNode:node withType:type];
     }
 
-    node.typeIsExplicit = typeIsExplicit;
+    [node setTypeIsExplicit:typeIsExplicit];
     [self parseCommonKeywordsFromSchema:schema intoNode:node];
     return node;
 }
@@ -170,13 +170,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 
 - (void)parseGenericSchema:(NSDictionary *)genericSchema intoNode:(TWTJSONSchemaGenericASTNode *)node withType:(NSString *)type
 {
-    node.validTypes = [NSSet setWithObject:type];
+    node.validType = type;
 }
 
 
-- (void)parseNumberSchema:(NSDictionary *)numberSchema intoNode:(TWTJSONSchemaNumberASTNode *)node
+- (void)parseNumberSchema:(NSDictionary *)numberSchema intoNode:(TWTJSONSchemaNumberASTNode *)node withType:(NSString *)type
 {
-    node.requireIntegralValue = [numberSchema[TWTJSONSchemaKeywordType] isEqual:TWTJSONSchemaTypeKeywordInteger];
+    node.requireIntegralValue = [type isEqualToString:TWTJSONSchemaTypeKeywordInteger];
     node.minimum = [self parseNumberForKey:TWTJSONSchemaKeywordMinimum schema:numberSchema];
     node.maximum = [self parseNumberForKey:TWTJSONSchemaKeywordMaximum schema:numberSchema];
     node.multipleOf = [self parsePositiveNumberForKey:TWTJSONSchemaKeywordMultipleOf schema:numberSchema];
@@ -203,8 +203,8 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 {
     node.maximumPropertyCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMaxProperties schema:objectSchema];
     node.minimumPropertyCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMinProperties schema:objectSchema];
-    NSArray *requiredNames = [self parseNonEmptyArrayOfUnqiueStringsForKey:TWTJSONSchemaKeywordRequired schema:objectSchema];
-    node.requiredPropertyNames = requiredNames ? [NSSet setWithArray:requiredNames] : nil;
+    NSArray *requiredKeys = [self parseNonEmptyArrayOfUnqiueStringsForKey:TWTJSONSchemaKeywordRequired schema:objectSchema];
+    node.requiredPropertyKeys = requiredKeys ? [NSSet setWithArray:requiredKeys] : nil;
     node.propertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaNamedPropertyASTNode class]];
     node.patternPropertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordPatternProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaPatternPropertyASTNode class]];
     node.additionalPropertiesNode = [self parseAdditionalItemsOrPropertiesForKey:TWTJSONSchemaKeywordAdditionalProperties schema:objectSchema];
@@ -212,16 +212,45 @@ static NSString *const TWTJSONExceptionErrorKey = @"error";
 }
 
 
-- (void)parseAmbiguousSchema:(NSDictionary *)ambiguousSchema intoNode:(TWTJSONSchemaAmbiguousASTNode *)node withTypes:(NSArray *)types
+- (void)parseAmbiguousSchema:(NSDictionary *)ambigousSchema intoNode:(TWTJSONSchemaAmbiguousASTNode *)node withTypes:(NSArray *)types
 {
     node.validTypes = [NSSet setWithArray:types];
-    [self parseArraySchema:ambiguousSchema intoNode:(TWTJSONSchemaArrayASTNode *)node];
-    [self parseNumberSchema:ambiguousSchema intoNode:(TWTJSONSchemaNumberASTNode *)node];
+    NSMutableArray *subNodes = [[NSMutableArray alloc] init];
+    NSSet *validTypes = nil;
+    if (node.typeIsExplicit) {
+        validTypes = node.validTypes;
+    } else {
+        NSMutableSet *allTypes = [[self validJSONTypeKeywords] mutableCopy];
+        [allTypes removeObject:TWTJSONSchemaTypeKeywordAny];
+        validTypes = [allTypes copy];
+    }
 
-    node.requireIntegralValue = [node.validTypes containsObject:TWTJSONSchemaTypeKeywordInteger];
+    for (NSString *type in validTypes) {
+        id subNode = nil;
 
-    [self parseObjectSchema:ambiguousSchema intoNode:(TWTJSONSchemaObjectASTNode *)node];
-    [self parseStringSchema:ambiguousSchema intoNode:(TWTJSONSchemaStringASTNode *)node];
+        if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
+            subNode = [[TWTJSONSchemaArrayASTNode alloc] init];
+            [self parseArraySchema:ambigousSchema intoNode:subNode];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordInteger] || [type isEqualToString:TWTJSONSchemaTypeKeywordNumber]) {
+            subNode = [[TWTJSONSchemaNumberASTNode alloc] init];
+            [self parseNumberSchema:ambigousSchema intoNode:subNode withType:type];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
+            subNode = [[TWTJSONSchemaObjectASTNode alloc] init];
+            [self parseObjectSchema:ambigousSchema intoNode:subNode];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
+            subNode = [[TWTJSONSchemaStringASTNode alloc] init];
+            [self parseStringSchema:ambigousSchema intoNode:subNode];
+        } else {
+            // type = "any", "boolean", or "null"
+            subNode = [[TWTJSONSchemaGenericASTNode alloc] init];
+            [self parseGenericSchema:ambigousSchema intoNode:subNode withType:type];
+        }
+
+        [subNode setTypeIsExplicit:YES];
+        [subNodes addObject:subNode];
+    }
+    
+    node.subNodes = subNodes;
 }
 
 

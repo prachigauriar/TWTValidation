@@ -31,7 +31,7 @@
 
 @property (nonatomic, strong, readonly) NSNumber *maximumPropertyCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumPropertyCount;
-@property (nonatomic, copy, readonly) NSSet *requiredPropertyNames;
+@property (nonatomic, copy, readonly) NSSet *requiredPropertyKeys;
 @property (nonatomic, copy, readonly) NSArray *propertyValidators;
 @property (nonatomic, copy, readonly) NSArray *patternPropertyValidators;
 // either always passing, always failing, or a JSONObjectValidator
@@ -41,7 +41,7 @@
 
 - (instancetype)initWithMaximumPropertyCount:(NSNumber *)maximumPropertyCount
                         minimumPropertyCount:(NSNumber *)minimumPropertyCount
-                          requiredProperties:(NSSet *)requiredPropertyNames
+                        requiredPropertyKeys:(NSSet *)requiredPropertyKeys
                           propertyValidators:(NSArray *)propertyValidators
                    patternPropertyValidators:(NSArray *)patternPropertyValidators
                additionalPropertiesValidator:(TWTValidator *)additionalPropertiesValidator

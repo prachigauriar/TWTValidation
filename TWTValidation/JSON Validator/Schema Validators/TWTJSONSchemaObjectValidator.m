@@ -31,7 +31,7 @@
 
 @interface TWTJSONSchemaObjectValidator ()
 
-@property (nonatomic, strong) NSMapTable *propertyAndValidators;
+@property (nonatomic, strong) NSDictionary *propertyAndValidators;
 
 @end
 
@@ -40,7 +40,7 @@
 
 - (instancetype)initWithMaximumPropertyCount:(NSNumber *)maximumPropertyCount
                         minimumPropertyCount:(NSNumber *)minimumPropertyCount
-                          requiredProperties:(NSSet *)requiredPropertyNames
+                        requiredPropertyKeys:(NSSet *)requiredPropertyKeys
                           propertyValidators:(NSArray *)propertyValidators
                    patternPropertyValidators:(NSArray *)patternPropertyValidators
                additionalPropertiesValidator:(TWTValidator *)additionalPropertiesValidator
@@ -50,29 +50,19 @@
     if (self) {
         _maximumPropertyCount = maximumPropertyCount;
         _minimumPropertyCount = minimumPropertyCount;
-        _requiredPropertyNames = [requiredPropertyNames copy];
+        _requiredPropertyKeys = [requiredPropertyKeys copy];
         _propertyValidators = [propertyValidators copy];
         _patternPropertyValidators = [patternPropertyValidators copy];
         _additionalPropertiesValidator = [additionalPropertiesValidator copy];
         _propertyDependencies = [propertyDependencies copy];
 
-        // Group all our property validators by their key
-        NSMapTable *pairValidatorsByKey = [NSMapTable strongToStrongObjectsMapTable];
+        //  Make property validators accessible by their key
+        NSMutableDictionary *propertyValidatorsByKey = [[NSMutableDictionary alloc] init];
         for (TWTKeyValuePairValidator *pairValidator in propertyValidators) {
-            NSMutableArray *validators = [pairValidatorsByKey objectForKey:pairValidator.key];
-            if (!validators) {
-                validators = [[NSMutableArray alloc] init];
-                [pairValidatorsByKey setObject:validators forKey:pairValidator.key];
-            }
-
-            [validators addObject:pairValidator];
+            [propertyValidatorsByKey setObject:pairValidator forKey:pairValidator.key];
         }
+        _propertyAndValidators = [propertyValidatorsByKey copy];
 
-        _propertyAndValidators = [NSMapTable strongToStrongObjectsMapTable];
-        for (id key in pairValidatorsByKey) {
-            [_propertyAndValidators setObject:[TWTCompoundValidator andValidatorWithSubvalidators:[pairValidatorsByKey objectForKey:key]]
-                                       forKey:key];
-        }
     }
     return self;
 }
@@ -80,7 +70,7 @@
 
 - (instancetype)init
 {
-    return [self initWithMaximumPropertyCount:nil minimumPropertyCount:nil requiredProperties:nil propertyValidators:nil patternPropertyValidators:nil additionalPropertiesValidator:nil propertyDependencies:nil];
+    return [self initWithMaximumPropertyCount:nil minimumPropertyCount:nil requiredPropertyKeys:nil propertyValidators:nil patternPropertyValidators:nil additionalPropertiesValidator:nil propertyDependencies:nil];
 }
 
 
@@ -98,9 +88,6 @@
         return NO;
     }
 
-    // Rename and typecast value to faciliate calling NSDictionary methods
-    NSDictionary *dictionary = value;
-
     BOOL countValidated = YES;
     BOOL requiredPropertiesValidated = YES;
     BOOL propertiesValidated = YES;
@@ -115,28 +102,28 @@
     NSMutableArray *additionalPropertiesErrors = outError ? [[NSMutableArray alloc] init] : nil;
     NSMutableArray *dependenciesErrors = outError ? [[NSMutableArray alloc] init] : nil;
 
-    NSSet *keysSet = [NSSet setWithArray:dictionary.allKeys];
+    NSSet *keysSet = [NSSet setWithArray:[value allKeys]];
 
     if (self.maximumPropertyCount || self.minimumPropertyCount) {
         TWTValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:self.minimumPropertyCount maximum:self.maximumPropertyCount];
-        countValidated = [countValidator validateValue:@(dictionary.count) error:&countError];
+        countValidated = [countValidator validateValue:@([value count]) error:&countError];
     }
 
-    if (self.requiredPropertyNames && ![self.requiredPropertyNames isSubsetOfSet:keysSet]) {
+    if (self.requiredPropertyKeys && ![self.requiredPropertyKeys isSubsetOfSet:keysSet]) {
         requiredPropertiesValidated = NO;
-//        requiredPropertiesError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")];
+        //        requiredPropertiesError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")];
     }
 
     NSError *error = nil;
-    for (NSString *key in dictionary) {
+    for (NSString *key in value) {
         error = nil;
         BOOL propertyIsDefined = NO;
-        id valueForKey = dictionary[key];
+        id objectForKey = [value objectForKey:key];
 
-        TWTCompoundValidator *propertyValidator = [self.propertyAndValidators objectForKey:key];
+        TWTKeyValuePairValidator *propertyValidator = [self.propertyAndValidators objectForKey:key];
         if (propertyValidator) {
             propertyIsDefined = YES;
-            if (![propertyValidator validateValue:valueForKey error:outError ? &error : NULL]) {
+            if (![propertyValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                 propertiesValidated = NO;
                 [propertiesErrors addObjectsFromArray:error.twt_underlyingErrors];
             }
@@ -151,7 +138,7 @@
                 if ([regularExpression numberOfMatchesInString:key options:0 range:NSMakeRange(0, [key length])] > 0) {
                     propertyIsDefined = YES;
 
-                    if (![patternValidator validateValue:valueForKey error:outError ? &error : NULL]) {
+                    if (![patternValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                         patternPropertiesValidated = NO;
                         [patternPropertiesErrors addObjectsFromArray:error.twt_underlyingErrors];
                     };
@@ -161,30 +148,26 @@
 
         error = nil;
         if (!propertyIsDefined) {
-            if (![self.additionalPropertiesValidator validateValue:valueForKey error:outError ? &error : NULL]) {
+            if (![self.additionalPropertiesValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                 additionalPropertiesValidated = NO;
                 [additionalPropertiesErrors addObjectsFromArray:error.twt_underlyingErrors];
             }
         }
-    }
 
-    if (self.propertyDependencies) {
-        for (NSString *propertyKey in self.propertyDependencies) {
-            if ([keysSet containsObject:propertyKey]) {
-                id dependencyValue = self.propertyDependencies[propertyKey];
-
-                if ([dependencyValue isKindOfClass:[NSSet class]]) {
-                    if (![dependencyValue isSubsetOfSet:keysSet]) {
-                        dependenciesValidated = NO;
-//                        [dependenciesErrors addObject:[NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")]];
-                    }
-                } else {
-                    // dependencyValue is a schema validator
-                    error = nil;
-                    if (![dependencyValue validateValue:dictionary error:outError ? &error : NULL]) {
-                        dependenciesValidated = NO;
-                        [dependenciesErrors addObjectsFromArray:error.twt_underlyingErrors];
-                    }
+        // better to check if self.propertyDependencies is nil first?
+        id dependency = self.propertyDependencies[key];
+        if (dependency) {
+            if ([dependency isKindOfClass:[NSSet class]]) {
+                if (![dependency isSubsetOfSet:keysSet]) {
+                    dependenciesValidated = NO;
+                    //                        [dependenciesErrors addObject:[NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")]];
+                }
+            } else {
+                // dependencyValue is a schema validator
+                error = nil;
+                if (![dependency validateValue:value error:outError ? &error : NULL]) {
+                    dependenciesValidated = NO;
+                    [dependenciesErrors addObjectsFromArray:error.twt_underlyingErrors];
                 }
             }
         }
@@ -194,7 +177,7 @@
     if (!validated && outError) {
         // create error
     }
-
+    
     return validated;
 }
 

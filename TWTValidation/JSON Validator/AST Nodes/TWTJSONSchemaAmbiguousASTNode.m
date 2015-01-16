@@ -31,22 +31,6 @@
 
 @implementation TWTJSONSchemaAmbiguousASTNode
 
-@synthesize validTypes;
-
-
-- (instancetype)init
-{
-    self = [super init];
-
-    if (self) {
-        _additionalItemsNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
-        _additionalPropertiesNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
-    }
-
-    return self;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processAmbiguousNode:self];

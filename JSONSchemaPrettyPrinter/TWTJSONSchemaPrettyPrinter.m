@@ -106,7 +106,7 @@
     [self generateCommonSchemaFromNode:objectNode];
     [self setObject:objectNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
     [self setObject:objectNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
-    [self setObject:objectNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:objectNode.requiredPropertyKeys inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
     [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
@@ -149,7 +149,7 @@
 
     [self setObject:ambiguousNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
     [self setObject:ambiguousNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
-    [self setObject:ambiguousNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:ambiguousNode.requiredPropertyKeys inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
     [self setObject:[self additionalItemsOrPropertiesFromNode:ambiguousNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];

@@ -57,9 +57,6 @@
         return NO;
     }
 
-    // Rename and typecast value to faciliate calling NSArray methods
-    NSArray *array = value;
-
     BOOL countValidated = YES;
     BOOL uniqueItemsValidated = YES;
     BOOL itemsValidated = YES;
@@ -72,11 +69,11 @@
 
     if (self.maximumItemCount || self.minimumItemCount) {
         TWTValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:self.minimumItemCount maximum:self.maximumItemCount];
-        countValidated = [countValidator validateValue:@(array.count) error:&countError];
+        countValidated = [countValidator validateValue:@([value count]) error:&countError];
     }
 
     if (self.requiresUniqueItems) {
-        NSCountedSet *itemSet = [[NSCountedSet alloc] initWithArray:array];
+        NSCountedSet *itemSet = [[NSCountedSet alloc] initWithArray:value];
         NSSet *repeats = [itemSet objectsPassingTest:^BOOL(id object, BOOL *stop) {
             return [itemSet countForObject:object] > 1;
         }];
@@ -92,7 +89,7 @@
         if (self.itemsIsSingleSchema) {
             TWTValidator *allItemsValidator = self.itemValidators.firstObject;
 
-            for (id item in array) {
+            for (id item in value) {
                 error = nil;
                 if (![allItemsValidator validateValue:item error:outError ? &error : NULL]) {
                     itemsValidated = NO;
@@ -101,7 +98,7 @@
             }
         } else {
             NSUInteger index = 0;
-            for (id item in array) {
+            for (id item in value) {
                 error = nil;
 
                 if (index < self.itemValidators.count) {

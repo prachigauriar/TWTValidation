@@ -47,10 +47,4 @@
     return [self initWithKey:nil valueSchema:nil];
 }
 
-
-- (NSSet *)validTypes
-{
-    return self.valueSchema.validTypes;
-}
-
 @end

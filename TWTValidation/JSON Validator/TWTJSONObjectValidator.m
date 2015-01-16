@@ -45,6 +45,7 @@
 
 + (TWTJSONObjectValidator *)validatorWithJSONSchema:(NSDictionary *)schema error:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
+    NSParameterAssert(schema);
     TWTJSONObjectValidatorGenerator *generator = [[TWTJSONObjectValidatorGenerator alloc] init];
     TWTJSONObjectValidator *validator = [generator validatorFromJSONSchema:schema error:outError warnings:outWarnings];
     validator.schema = [schema copy];
@@ -55,7 +56,7 @@
 
 - (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator typeValidator:(TWTValidator *)typeValidator type:(TWTJSONType)type requiresType:(BOOL)requiresType
 {
-    if (requiresType) {
+    if (requiresType && type != TWTJSONTypeAny) {
         NSParameterAssert(typeValidator);
     }
 
@@ -78,6 +79,7 @@
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
+    // Does not call super becaues NULL can be valid 
     if (!self.commonValidator && !self.typeValidator) {
         return YES;
     }
@@ -92,7 +94,7 @@
         commonKeywordsValidated = [self.commonValidator validateValue:value error:outError ? &commonError : NULL];
     }
 
-    if (!self.typeValidator || !(self.requiresType || [self valueisRequiredType:value])) {
+    if (!self.typeValidator || !(self.requiresType || [self valueMatchesType:value])) {
         if (!commonKeywordsValidated && outError) {
             *outError = commonError;
         }
@@ -110,7 +112,7 @@
 }
 
 
-- (BOOL)valueisRequiredType:(id)value
+- (BOOL)valueMatchesType:(id)value
 {
     switch (self.type) {
         case TWTJSONTypeObject:
