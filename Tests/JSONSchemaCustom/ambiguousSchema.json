@@ -1,0 +1,51 @@
+[
+    {
+        "description": "type keywords without type specified",
+        "schema": {
+            "minItems": 2,
+            "minLength": 5
+        },
+        "tests": [
+            {
+                "data": [
+                    1,
+                    2
+                ],
+                "description": "array with minItems is valid",
+                "valid": true
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "array with fewer than minItems is invalid",
+                "valid": false
+            },
+            {
+                "data": "hello",
+                "description": "string with minLength is valid",
+                "valid": true
+            },
+            {
+                "data": "hey",
+                "description": "string shorter than minLength is valid",
+                "valid": false
+            },
+            {
+                "data": 9,
+                "description": "things that are not strings or arrays are ignored",
+                "valid": true
+            },
+            {
+                "data": {
+                    "hello": [
+                        1,
+                        2
+                    ]
+                },
+                "description": "things that are not strings or arrays are ignored",
+                "valid": true
+            }
+        ]
+    }
+]

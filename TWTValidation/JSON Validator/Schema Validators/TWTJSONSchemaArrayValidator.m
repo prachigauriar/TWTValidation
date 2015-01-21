@@ -28,15 +28,15 @@
 
 @implementation TWTJSONSchemaArrayValidator
 
-- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount minimumItemCount:(NSNumber *)minimumItemCount requiresUniqueItems:(BOOL)requiresUniqueItems itemValidators:(NSArray *)itemValidators itemsIsSingleSchema:(BOOL)itemsIsSingleSchema additionalItemsValidator:(TWTValidator *)additionalItemsValidator
+- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount minimumItemCount:(NSNumber *)minimumItemCount requiresUniqueItems:(BOOL)requiresUniqueItems itemCommonValidator:(TWTValidator *)itemCommonValidator itemOrderedValidators:(NSArray *)itemOrderedValidators additionalItemsValidator:(TWTValidator *)additionalItemsValidator
 {
     self = [super init];
     if (self) {
         _maximumItemCount = maximumItemCount;
         _minimumItemCount = minimumItemCount;
         _requiresUniqueItems = requiresUniqueItems;
-        _itemValidators = [itemValidators copy];
-        _itemsIsSingleSchema = itemsIsSingleSchema;
+        _itemCommonValidator = itemCommonValidator;
+        _itemOrderedValidators = [itemOrderedValidators copy];
         _additionalItemsValidator = additionalItemsValidator;
     }
     return self;
@@ -49,10 +49,10 @@
         return NO;
     } else if (![value isKindOfClass:[NSArray class]]) {
         if (outError) {
-//            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass
-//                                            failingValidator:self
-//                                                       value:value
-//                                        localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.notArrayError")];
+            //            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass
+            //                                            failingValidator:self
+            //                                                       value:value
+            //                                        localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.notArrayError")];
         }
         return NO;
     }
@@ -79,49 +79,47 @@
         }];
         if (repeats.count > 0) {
             uniqueItemsValidated = NO;
-//            uniqueItemsError = 
+            //            uniqueItemsError =
         }
     }
 
     NSError *error = nil;
 
-    if (self.itemValidators) {
-        if (self.itemsIsSingleSchema) {
-            TWTValidator *allItemsValidator = self.itemValidators.firstObject;
 
-            for (id item in value) {
-                error = nil;
-                if (![allItemsValidator validateValue:item error:outError ? &error : NULL]) {
-                    itemsValidated = NO;
-                    //                    itemsErrors addObject:
-                }
-            }
-        } else {
-            NSUInteger index = 0;
-            for (id item in value) {
-                error = nil;
-
-                if (index < self.itemValidators.count) {
-                    if (![self.itemValidators[index] validateValue:item error:outError ? &error : NULL]) {
-                        itemsValidated = NO;
-                        //                        add error
-                    }
-                } else {
-                    if (![self.additionalItemsValidator validateValue:item error:outError ? &error : NULL]) {
-                        additionalItemsValidated = NO;
-                        //                        add error
-                    }
-                }
-                index++;
+    if (self.itemCommonValidator) {
+        for (id item in value) {
+            error = nil;
+            if (![self.itemCommonValidator validateValue:item error:outError ? &error : NULL]) {
+                itemsValidated = NO;
+                //                    itemsErrors addObject:
             }
         }
+    } else if (self.itemOrderedValidators) {
+        NSUInteger index = 0;
+        for (id item in value) {
+            error = nil;
+
+            if (index < self.itemOrderedValidators.count) {
+                if (![self.itemOrderedValidators[index] validateValue:item error:outError ? &error : NULL]) {
+                    itemsValidated = NO;
+                    //                        add error
+                }
+            } else {
+                if (![self.additionalItemsValidator validateValue:item error:outError ? &error : NULL]) {
+                    additionalItemsValidated = NO;
+                    //                        add error
+                }
+            }
+            index++;
+        }
     }
+
 
     BOOL validated = countValidated && uniqueItemsValidated && itemsValidated && additionalItemsValidated;
     if (!validated && outError) {
         //error
     }
-
+    
     return validated;
 }
 

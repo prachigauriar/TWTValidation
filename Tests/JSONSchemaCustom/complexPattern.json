@@ -1,0 +1,40 @@
+[
+    {
+        "description": "patterns are non-anchored by default",
+        "schema": {
+            "pattern": "es"
+        },
+        "tests": [
+            {
+                "data": "especially",
+                "description": "string with prefix",
+                "valid": true
+            },
+            {
+                "data": "classes",
+                "description": "string with suffix",
+                "valid": true
+            },
+            {
+                "data": "expression",
+                "description": "string with pattern in middle",
+                "valid": true
+            },
+            {
+                "data": "good expression",
+                "description": "string is two words",
+                "valid": true
+            },
+            {
+                "data": "good",
+                "description": "pattern is not present",
+                "valid": false
+            },
+            {
+                "data": 35,
+                "description": "non-strings or arrays are ignored",
+                "valid": true
+            }
+        ]
+    }
+]

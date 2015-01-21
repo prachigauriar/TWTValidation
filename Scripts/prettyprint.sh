@@ -12,9 +12,8 @@ TESTS_DIR="$SCRIPTS_DIR/../Tests"
 SUITE_TEST_DIR="$TESTS_DIR/JSONSchemaTestSuite/tests/draft4"
 CUSTOM_TEST_DIR="$TESTS_DIR/JSONSchemaCustom"
 
-if [ -z "$PRETTYPRINTER_PATH" ]; then
-    PRETTYPRINTER_PATH="/Users/jillcohen/Library/Developer/Xcode/DerivedData/TWTValidation-hhdpirveagehwtciiqnlfjuvcrrx/Build/Products/Debug/JSONSchemaPrettyPrinter"
-fi    
+# Users should update this line with the local location of the project
+PRETTYPRINTER_PATH="/Users/jillcohen/Library/Developer/Xcode/DerivedData/TWTValidation-hhdpirveagehwtciiqnlfjuvcrrx/Build/Products/Debug/JSONSchemaPrettyPrinter"
 
 # Get command-line parameters
 OUTPUT_DIR="$1"

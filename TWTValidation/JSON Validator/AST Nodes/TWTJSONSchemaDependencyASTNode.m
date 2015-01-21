@@ -43,7 +43,7 @@
 }
 
 
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
+- (instancetype)initWithKey:(NSString *)key valueNode:(TWTJSONSchemaASTNode *)value
 {
     NSParameterAssert(key);
     NSParameterAssert(value);
@@ -51,7 +51,7 @@
     self = [super init];
     if (self) {
         _key = [key copy];
-        _valueSchema = value;
+        _valueNode = value;
     }
     return self;
 }
@@ -59,7 +59,7 @@
 
 - (instancetype)init
 {
-    return [self initWithKey:nil valueSchema:nil];
+    return [self initWithKey:nil valueNode:nil];
 }
 
 

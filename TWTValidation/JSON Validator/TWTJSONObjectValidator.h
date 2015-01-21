@@ -29,10 +29,11 @@
 
 typedef NS_ENUM(NSUInteger, TWTJSONType) {
     TWTJSONTypeAny,
+    TWTJSONTypeBoolean,
     TWTJSONTypeObject,
     TWTJSONTypeArray,
     TWTJSONTypeString,
-    TWTJSONTypeNumber, // Includes integer and boolean
+    TWTJSONTypeNumber, // Includes integer
     TWTJSONTypeNull,
     TWTJSONTypeAmbiguous
 };

@@ -32,8 +32,8 @@
 @property (nonatomic, strong) NSNumber *maximumItemCount;
 @property (nonatomic, strong) NSNumber *minimumItemCount;
 @property (nonatomic, assign) BOOL requiresUniqueItems;
-@property (nonatomic, assign) BOOL itemsIsSingleSchema;
-@property (nonatomic, copy) NSArray *itemSchemas; // array of nodes
+@property (nonatomic, strong) TWTJSONSchemaASTNode *itemCommonNode;
+@property (nonatomic, copy) NSArray *itemOrderedNodes; // array of nodes
 @property (nonatomic, strong) TWTJSONSchemaASTNode *additionalItemsNode; // parser will set to booleanValueNode or type-specific
 
 @end

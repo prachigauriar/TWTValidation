@@ -121,11 +121,20 @@
         case TWTJSONTypeArray:
             return [value isKindOfClass:[NSArray class]];
 
+        case TWTJSONTypeBoolean:
+            if ([value isKindOfClass:[NSNumber class]]) {
+                return strcmp([(NSValue *)value objCType], @encode(BOOL)) == 0;
+            }
+            return NO;
+
         case TWTJSONTypeString:
             return [value isKindOfClass:[NSString class]];
 
         case TWTJSONTypeNumber:
-            return [value isKindOfClass:[NSNumber class]];
+            if ([value isKindOfClass:[NSNumber class]]) {
+                return strcmp([(NSValue *)value objCType], @encode(BOOL)) != 0;
+            };
+            return NO;
 
         case TWTJSONTypeNull:
             return [value isKindOfClass:[NSNull class]];

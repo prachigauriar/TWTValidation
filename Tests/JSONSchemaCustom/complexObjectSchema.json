@@ -1,5 +1,6 @@
 [
     {
+        "description": "complex object schema",
         "schema": {
             "$schema": "http://json-schema.org/draft-04/schema#",
             "additionalProperties": {
@@ -11,66 +12,181 @@
                     "hello"
                 ]
             },
-            "description": "Specification for JSON Stat (URL: http://json-stat.org/format/",
-            "minProperties": 1,
             "properties": {
                 "arrayProperty": {
                     "items": {
                         "maxLength": 5,
                         "type": "string"
                     },
-                    "minItems": 1,
+                    "minItems": 2,
                     "type": "array",
                     "uniqueItems": true
                 },
-                "note": {
+                "integerProperty": {
+                    "exclusiveMaximum": true,
+                    "maximum": 7,
+                    "type": "integer"
+                },
+                "variableProperty": {
                     "type": [
                         "array",
                         "string",
                         "object"
                     ]
-                },
-                "oneOfProperty": {
-                    "oneOf": [
-                        {
-                            "items": [
-                                {
-                                    "type": "boolean"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "type": "array"
-                        },
-                        {
-                            "additionalProperties": {
-                                "not": {
-                                    "properties": {
-                                        "NOT PROPERTY": {}
-                                    },
-                                    "type": "object"
-                                }
-                            },
-                            "type": "object"
-                        },
-                        {
-                            "multipleOf": 6.2,
-                            "type": "number"
-                        },
-                        {
-                            "exclusiveMaximum": true,
-                            "maximum": 7,
-                            "type": "integer"
-                        }
-                    ]
                 }
             },
             "required": [
-                "note",
+                "variableProperty",
                 "arrayProperty"
             ],
             "type": "object"
-        }
+        },
+        "tests": [
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 6,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "valid",
+                "valid": true
+            },
+            {
+                "data": 3,
+                "description": "not an object",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 7,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "maximum is invalid for integerProperty",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 6
+                },
+                "description": "missing required property",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "variableProperty": 6
+                },
+                "description": "integer is not one of allowed types for variableProperty",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "enumProperty": 4,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "valid additional property",
+                "valid": true
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "enumProperty": 4.1,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "invalid additional property",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "oneOf with object properties",
+        "schema": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "foo"
+                    ]
+                },
+                {
+                    "properties": {
+                        "bah": {
+                            "type": "null"
+                        }
+                    },
+                    "required": [
+                        "bah"
+                    ]
+                }
+            ]
+        },
+        "tests": [
+            {
+                "data": {
+                    "foo": 2
+                },
+                "description": "valid against first schema",
+                "valid": true
+            },
+            {
+                "data": {
+                    "bah": null
+                },
+                "description": "valid against second schema",
+                "valid": true
+            },
+            {
+                "data": {
+                    "bah": null,
+                    "foo": 3
+                },
+                "description": "matches both oneOf schemas",
+                "valid": false
+            },
+            {
+                "data": {
+                    "foo": 3.1
+                },
+                "description": "matches neither schemas",
+                "valid": false
+            }
+        ]
     }
 ]

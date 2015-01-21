@@ -1,0 +1,122 @@
+[
+    {
+        "description": "array with multiple constraints",
+        "schema": {
+            "additionalItems": false,
+            "items": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ],
+            "minItems": 2,
+            "uniqueItems": true
+        },
+        "tests": [
+            {
+                "data": [
+                    1,
+                    2,
+                    "hello"
+                ],
+                "description": "valid against all item schemas",
+                "valid": true
+            },
+            {
+                "data": [
+                    3,
+                    4
+                ],
+                "description": "valid against first two item schemas",
+                "valid": true
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "fewer than minItems is invalid",
+                "valid": false
+            },
+            {
+                "data": [
+                    11,
+                    11,
+                    "hello"
+                ],
+                "description": "non-unique items are invalid",
+                "valid": false
+            },
+            {
+                "data": [
+                    5,
+                    7,
+                    "nine",
+                    11
+                ],
+                "description": "additional items are invalid",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "oneOf with array",
+        "schema": {
+            "oneOf": [
+                {
+                    "items": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                {
+                    "minItems": 3
+                }
+            ]
+        },
+        "tests": [
+            {
+                "data": [
+                    true,
+                    null
+                ],
+                "description": "valid against first schema",
+                "valid": true
+            },
+            {
+                "data": [
+                    1,
+                    2,
+                    3
+                ],
+                "description": "valid against second schema",
+                "valid": true
+            },
+            {
+                "data": [
+                    false,
+                    null,
+                    3
+                ],
+                "description": "matches both oneOf schemas",
+                "valid": false
+            },
+            {
+                "data": [
+                    "hello",
+                    null
+                ],
+                "description": "matches neither schemas",
+                "valid": false
+            }
+        ]
+    }
+]

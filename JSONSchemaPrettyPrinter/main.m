@@ -26,7 +26,6 @@
 
 @import Foundation;
 
-
 #import <TWTValidation/TWTValidation.h>
 
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>

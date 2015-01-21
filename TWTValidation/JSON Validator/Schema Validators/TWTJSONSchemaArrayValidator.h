@@ -32,15 +32,15 @@
 @property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumItemCount;
 @property (nonatomic, assign, readonly) BOOL requiresUniqueItems;
-@property (nonatomic, copy, readonly) NSArray *itemValidators;
-@property (nonatomic, assign, readonly) BOOL itemsIsSingleSchema;
+@property (nonatomic, strong, readonly) TWTValidator *itemCommonValidator;
+@property (nonatomic, copy, readonly) NSArray *itemOrderedValidators;
 @property (nonatomic, strong, readonly) TWTValidator *additionalItemsValidator; // either JSON validator or always passing/failing
 
 - (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
                         minimumItemCount:(NSNumber *)minimumItemCount
                      requiresUniqueItems:(BOOL)requiresUniqueItems
-                          itemValidators:(NSArray *)itemValidators
-                     itemsIsSingleSchema:(BOOL)itemsIsSingleSchema
+                     itemCommonValidator:(TWTValidator *)itemCommonValidator
+                   itemOrderedValidators:(NSArray *)itemOrderedValidators
                 additionalItemsValidator:(TWTValidator *)additionalItemsValidator;
 
 @end

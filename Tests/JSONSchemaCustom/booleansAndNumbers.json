@@ -1,0 +1,101 @@
+[
+    {
+        "description": "distinguish numbers",
+        "schema": {
+            "items": [
+                {
+                    "multipleOf": 2.1
+                },
+                {
+                    "minimum": 1
+                }
+            ],
+            "type": "array"
+        },
+        "tests": [
+            {
+                "data": [
+                    4.2,
+                    2
+                ],
+                "description": "valid",
+                "valid": true
+            },
+            {
+                "data": [
+                    true,
+                    2
+                ],
+                "description": "non-number is ignored for multipleOf",
+                "valid": true
+            },
+            {
+                "data": [
+                    2.1,
+                    false
+                ],
+                "description": "non-number is ignored for minimum",
+                "valid": true
+            }
+        ]
+    },
+    {
+        "description": "distinguish booleans",
+        "schema": {
+            
+            "type": "boolean"
+        },
+        "tests": [
+            {
+                "data": true,
+                "description": "valid type",
+                "valid": true
+            },
+            {
+                "data": false,
+                "description": "valid type",
+                "valid": true
+            },
+            {
+                "data": 1,
+                "description": "numbers are not booleans",
+                "valid": false
+            },
+            {
+                "data": 0,
+                "description": "numbers are not booleans",
+                "valid": false
+            }
+        ]
+    },
+        {
+        "description": "distinguish integer",
+        "schema": {
+            
+            "type": "integer"
+        },
+        "tests": [
+            {
+                "data": true,
+                "description": "true is not an integer",
+                "valid": false
+            },
+            {
+                "data": false,
+                "description": "false is not an integer",
+                "valid": false
+            },
+            {
+                "data": 1,
+                "description": "1 is an integer",
+                "valid": true
+            },
+            {
+                "data": 0,
+                "description": "0 is an integer",
+                "valid": true
+            }
+        ]
+    }
+
+]

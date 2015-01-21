@@ -30,8 +30,8 @@
 @interface TWTJSONSchemaKeyValuePairASTNode : TWTJSONSchemaASTNode
 
 @property (nonatomic, copy, readonly) NSString *key;
-@property (nonatomic, strong, readonly) TWTJSONSchemaASTNode *valueSchema;
+@property (nonatomic, strong, readonly) TWTJSONSchemaASTNode *valueNode;
 
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value;
+- (instancetype)initWithKey:(NSString *)key valueNode:(TWTJSONSchemaASTNode *)value;
 
 @end
