@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaASTNode.h
+//  TWTJSONSchemaPrettyPrinter.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/12/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/7/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,11 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
-
 #import <TWTValidation/TWTJSONSchemaASTProcessor.h>
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
 
 
-@interface TWTJSONSchemaASTNode : NSObject
+@interface TWTJSONSchemaPrettyPrinter : NSObject <TWTJSONSchemaASTProcessor>
 
-@property (nonatomic, copy) NSString *schemaTitle;
-@property (nonatomic, copy) NSString *schemaDescription;
-@property (nonatomic, copy) NSSet *validValues; //enum keyword
-@property (nonatomic, copy, readonly) NSSet *validTypes;
-@property (nonatomic, assign) BOOL typeIsExplicit;
-@property (nonatomic, copy) NSArray *andSchemas; // allOf
-@property (nonatomic, copy) NSArray *orSchemas; // anyOf
-@property (nonatomic, copy) NSArray *exactlyOneOfSchemas; // oneOf
-@property (nonatomic, strong) TWTJSONSchemaASTNode *notSchema;
-@property (nonatomic, copy) NSDictionary *definitions;
-
-- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
+- (NSDictionary *)objectFromTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode;
 
 @end

@@ -1,0 +1,76 @@
+[
+    {
+        "schema": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "additionalProperties": {
+                "enum": [
+                    4,
+                    null,
+                    [],
+                    true,
+                    "hello"
+                ]
+            },
+            "description": "Specification for JSON Stat (URL: http://json-stat.org/format/",
+            "minProperties": 1,
+            "properties": {
+                "arrayProperty": {
+                    "items": {
+                        "maxLength": 5,
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array",
+                    "uniqueItems": true
+                },
+                "note": {
+                    "type": [
+                        "array",
+                        "string",
+                        "object"
+                    ]
+                },
+                "oneOfProperty": {
+                    "oneOf": [
+                        {
+                            "items": [
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "type": "array"
+                        },
+                        {
+                            "additionalProperties": {
+                                "not": {
+                                    "properties": {
+                                        "NOT PROPERTY": {}
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "multipleOf": 6.2,
+                            "type": "number"
+                        },
+                        {
+                            "exclusiveMaximum": true,
+                            "maximum": 7,
+                            "type": "integer"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "note",
+                "arrayProperty"
+            ],
+            "type": "object"
+        }
+    }
+]

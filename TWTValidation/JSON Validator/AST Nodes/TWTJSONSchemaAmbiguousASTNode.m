@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaPrettyPrinter.h
+//  TWTJSONSchemaAmbiguousASTNode.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 1/7/15.
+//  Created by Jill Cohen on 1/12/15.
 //  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,11 +24,32 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaASTProcessor.h>
+#import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>
+
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
 
 
-@interface TWTJSONSchemaPrettyPrinter : NSObject <TWTJSONSchemaASTProcessor>
+@implementation TWTJSONSchemaAmbiguousASTNode
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode;
+@synthesize validTypes;
+
+
+- (instancetype)init
+{
+    self = [super init];
+
+    if (self) {
+        _additionalItemsNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
+        _additionalPropertiesNode = [[TWTJSONSchemaBooleanValueASTNode alloc] initWithValue:YES];
+    }
+
+    return self;
+}
+
+
+- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
+{
+    [processor processAmbiguousNode:self];
+}
 
 @end

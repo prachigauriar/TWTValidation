@@ -49,7 +49,7 @@
 }
 
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
+- (NSDictionary *)objectFromTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
     [self.objectStack removeAllObjects];
     [topLevelNode acceptProcessor:self];
@@ -81,7 +81,11 @@
     [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
     [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
     [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
-    [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    if (arrayNode.itemsIsSingleSchema) {
+        [self setObject:[self schemaFromNode:arrayNode.itemSchemas[0]] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    } else {
+        [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    }
     [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
 }
 
@@ -116,6 +120,40 @@
     [self setObject:stringNode.minimumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMinLength];
     [self setObject:stringNode.maximumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxLength];
     [self setObject:stringNode.pattern inCurrentSchemaForKey:TWTJSONSchemaKeywordPattern];
+}
+
+
+- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode
+{
+    [self generateCommonSchemaFromNode:ambiguousNode];
+
+    [self setObject:ambiguousNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
+    [self setObject:ambiguousNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
+    [self setObject:@(ambiguousNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
+    if (ambiguousNode.itemsIsSingleSchema) {
+        [self setObject:[self schemaFromNode:ambiguousNode.itemSchemas[0]] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    } else {
+        [self setObject:[self schemaArrayFromNodeArray:ambiguousNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    }
+    [self setObject:[self additionalItemsOrPropertiesFromNode:ambiguousNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
+
+    [self setObject:ambiguousNode.minimum inCurrentSchemaForKey:TWTJSONSchemaKeywordMinimum];
+    [self setObject:ambiguousNode.maximum inCurrentSchemaForKey:TWTJSONSchemaKeywordMaximum];
+    [self setObject:@(ambiguousNode.exclusiveMinimum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMinimum];
+    [self setObject:@(ambiguousNode.exclusiveMaximum) inCurrentSchemaForKey:TWTJSONSchemaKeywordExclusiveMaximum];
+    [self setObject:ambiguousNode.multipleOf inCurrentSchemaForKey:TWTJSONSchemaKeywordMultipleOf];
+
+    [self setObject:ambiguousNode.minimumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMinLength];
+    [self setObject:ambiguousNode.maximumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxLength];
+    [self setObject:ambiguousNode.pattern inCurrentSchemaForKey:TWTJSONSchemaKeywordPattern];
+
+    [self setObject:ambiguousNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
+    [self setObject:ambiguousNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
+    [self setObject:ambiguousNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:ambiguousNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
+    [self setObject:[self additionalItemsOrPropertiesFromNode:ambiguousNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
+    [self setObject:[self dependencyDictionaryFromNodeArray:ambiguousNode.propertyDependencies] inCurrentSchemaForKey:TWTJSONSchemaKeywordDependencies];
 }
 
 
@@ -162,7 +200,14 @@
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
-    [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+    if (node.typeIsExplicit) {
+        if (node.validTypes.count == 1) {
+            NSString *typeString = [[node.validTypes allObjects] firstObject];
+            [self setObject:typeString inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        } else {
+            [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        }
+    }
     [self setObject:node.schemaTitle inCurrentSchemaForKey:TWTJSONSchemaKeywordTitle];
     [self setObject:node.schemaDescription inCurrentSchemaForKey:TWTJSONSchemaKeywordDescription];
     [self setObject:node.validValues inCurrentSchemaForKey:TWTJSONSchemaKeywordEnum];
@@ -250,6 +295,9 @@
 - (void)setObject:(id)object inCurrentSchemaForKey:(NSString *)key
 {
     if (object) {
+        if ([object isKindOfClass:[NSSet class]]) {
+            object = [object allObjects];
+        }
         [self.currentObject setObject:object forKey:key];
     }
 }

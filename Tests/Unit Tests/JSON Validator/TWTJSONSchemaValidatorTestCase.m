@@ -109,7 +109,7 @@
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:JSONSchema];
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:nil warnings:nil];
 
-    return [printer objectFromSchema:topLevelNode];
+    return [printer objectFromTopLevelNode:topLevelNode];
 }
 
 
@@ -152,11 +152,11 @@
                 @"type": @"object",
                 @"minProperties": @1,
                 @"required" : @[ @"note", @"arrayProperty" ],
-                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(true), @"hello" ] },
+                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(YES), @"hello" ] },
                 @"properties": @{ @"note": @{ @"type": @[ @"array", @"string", @"object" ] },
                                   @"arrayProperty" : @{@"type" : @"array",
                                                        @"minItems": @1,
-                                                       @"uniqueItems" : @(true),
+                                                       @"uniqueItems" : @(YES),
                                                        @"items": @{ @"type": @"string",
                                                                     @"maxLength" : @5 } },
                                   @"oneOfProperty" : @{ @"oneOf":
@@ -183,11 +183,11 @@
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
                 @"type": @"object",
                 @"minProperties": @1,
-                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(true), @"hello" ] },
+                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(YES), @"hello" ] },
                 @"properties": @{ @"note": @{ @"type": @[ @"arrayy", @"string", @"object" ] },
                                   @"arrayProperty" : @{@"type" : @"array",
                                                        @"minItems": @1,
-                                                       @"uniqueItems" : @(true),
+                                                       @"uniqueItems" : @(YES),
                                                        @"items": @{ @"type": @"string",
                                                                     @"maxLength" : @5 } },
                                   @"oneOfProperty" : @{ @"oneOf":
@@ -214,12 +214,12 @@
                 @"description": @"Specification for JSON Stat (URL: http://json-stat.org/format/",
                 @"type": @"object",
                 @"minProperties": @1,
-                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(true), @"hello" ] },
+                @"additionalProperties": @{ @"enum": @[ @4, [NSNull null], @[], @(YES), @"hello" ] },
                 @"required" : @[ @"note", @"note" ],
                 @"properties": @{ @"note": @{ @"type": @[ @"array", @"string", @"object" ] },
                                   @"arrayProperty" : @{@"type" : @"array",
                                                        @"minItems": @(-1),
-                                                       @"uniqueItems" : @(true),
+                                                       @"uniqueItems" : @(YES),
                                                        @"items": @{ @"type": @"string",
                                                                     @"maxLength" : @5.2 } },
                                   @"oneOfProperty" : @{ @"oneOf":

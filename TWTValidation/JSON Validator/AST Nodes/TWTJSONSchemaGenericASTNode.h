@@ -29,7 +29,7 @@
 
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 
-// Used for schemas with type "boolean," "null," or an array of valid types
+// Used for schemas with type "boolean," "null", or "any"
 @property (nonatomic, copy, readwrite) NSSet *validTypes;
 
 @end
