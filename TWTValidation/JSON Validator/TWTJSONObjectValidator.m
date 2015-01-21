@@ -77,6 +77,26 @@
 }
 
 
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.commonValidator.hash ^ self.typeValidator.hash ^ self.type ^ self.requiresType;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+
+    typeof(self) other = object;
+    return other.requiresType == self.requiresType && other.type == self.type && [other.commonValidator isEqual:self.commonValidator] &&
+         [other.typeValidator isEqual:self.typeValidator];
+}
+
+
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
     // Does not call super becaues NULL can be valid 

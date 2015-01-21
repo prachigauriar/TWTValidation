@@ -31,7 +31,7 @@
 
 @interface TWTJSONSchemaObjectValidator ()
 
-@property (nonatomic, strong) NSDictionary *propertyAndValidators;
+@property (nonatomic, strong, readonly) NSDictionary *propertyAndValidators;
 
 @end
 
@@ -70,7 +70,8 @@
 
 - (instancetype)init
 {
-    return [self initWithMaximumPropertyCount:nil minimumPropertyCount:nil requiredPropertyKeys:nil propertyValidators:nil patternPropertyValidators:nil additionalPropertiesValidator:nil propertyDependencies:nil];
+    return [self initWithMaximumPropertyCount:nil minimumPropertyCount:nil requiredPropertyKeys:nil propertyValidators:nil patternPropertyValidators:nil
+                additionalPropertiesValidator:nil propertyDependencies:nil];
 }
 
 

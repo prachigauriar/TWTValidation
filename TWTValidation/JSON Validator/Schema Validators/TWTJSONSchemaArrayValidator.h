@@ -27,7 +27,7 @@
 #import <TWTValidation/TWTValidation.h>
 
 
-@interface TWTJSONSchemaArrayValidator : TWTValidator
+@interface TWTJSONSchemaArrayValidator : TWTValidator <NSCopying>
 
 @property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumItemCount;

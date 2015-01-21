@@ -218,8 +218,8 @@
     [self pushNewObject:[[NSMutableArray alloc] init]];
 
     if (stringNode.maximumLength || stringNode.minimumLength) {
-        [self addSubvalidator:[TWTStringValidator stringValidatorWithMinimumLength:stringNode.minimumLength.integerValue
-                                                                     maximumLength: stringNode.maximumLength ? stringNode.maximumLength.integerValue : NSUIntegerMax]];
+        [self addSubvalidator:[TWTStringValidator stringValidatorWithComposedCharacterMinimumLength:stringNode.minimumLength.integerValue
+                                                                                      maximumLength:stringNode.maximumLength ? stringNode.maximumLength.integerValue : NSUIntegerMax]];
     }
 
     if (stringNode.pattern) {

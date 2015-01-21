@@ -28,7 +28,12 @@
 
 @implementation TWTJSONSchemaArrayValidator
 
-- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount minimumItemCount:(NSNumber *)minimumItemCount requiresUniqueItems:(BOOL)requiresUniqueItems itemCommonValidator:(TWTValidator *)itemCommonValidator itemOrderedValidators:(NSArray *)itemOrderedValidators additionalItemsValidator:(TWTValidator *)additionalItemsValidator
+- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
+                        minimumItemCount:(NSNumber *)minimumItemCount
+                     requiresUniqueItems:(BOOL)requiresUniqueItems
+                     itemCommonValidator:(TWTValidator *)itemCommonValidator
+                   itemOrderedValidators:(NSArray *)itemOrderedValidators
+                additionalItemsValidator:(TWTValidator *)additionalItemsValidator
 {
     self = [super init];
     if (self) {
@@ -40,6 +45,29 @@
         _additionalItemsValidator = additionalItemsValidator;
     }
     return self;
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.maximumItemCount.hash ^ self.minimumItemCount.hash ^ self.requiresUniqueItems ^ self.itemCommonValidator.hash ^
+         self.itemOrderedValidators.hash ^ self.additionalItemsValidator.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+
+    typeof(self) other = object;
+    return [other.maximumItemCount isEqual:self.maximumItemCount] && [other.minimumItemCount isEqual:self.minimumItemCount] &&
+         other.requiresUniqueItems == self.requiresUniqueItems && [other.itemCommonValidator isEqual:self.itemCommonValidator] &&
+         [other.itemOrderedValidators isEqual:self.itemOrderedValidators] && [other.additionalItemsValidator isEqual:self.additionalItemsValidator];
+    
 }
 
 

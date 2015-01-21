@@ -29,9 +29,9 @@
 
 typedef NS_ENUM(NSUInteger, TWTJSONType) {
     TWTJSONTypeAny,
+    TWTJSONTypeArray,
     TWTJSONTypeBoolean,
     TWTJSONTypeObject,
-    TWTJSONTypeArray,
     TWTJSONTypeString,
     TWTJSONTypeNumber, // Includes integer
     TWTJSONTypeNull,

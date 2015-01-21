@@ -27,7 +27,7 @@
 #import <TWTValidation/TWTValidation.h>
 
 
-@interface TWTJSONSchemaObjectValidator : TWTValidator
+@interface TWTJSONSchemaObjectValidator : TWTValidator <NSCopying>
 
 @property (nonatomic, strong, readonly) NSNumber *maximumPropertyCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumPropertyCount;
@@ -36,7 +36,7 @@
 @property (nonatomic, copy, readonly) NSArray *patternPropertyValidators;
 // either always passing, always failing, or a JSONObjectValidator
 @property (nonatomic, strong, readonly) TWTValidator *additionalPropertiesValidator;
-@property (nonatomic, copy) NSDictionary *propertyDependencies; 
+@property (nonatomic, copy, readonly) NSDictionary *propertyDependencies;
 
 
 - (instancetype)initWithMaximumPropertyCount:(NSNumber *)maximumPropertyCount

@@ -95,11 +95,17 @@ static NSString *const TWTTestKeywordValid = @"valid";
 - (void)testIndividual
 {
 
-//    schema = @{ @"maxLength" : @2 };
-//    NSString *passString = @"💩💩";
-//    XCTAssertTrue([validator validateValue:passString error:nil]);
+    NSDictionary *schema = @{ @"maxLength" : @2 };
+    TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:schema error:nil warnings:nil];
+    NSString *pass = @"💩💩";
+    XCTAssertTrue(pass.length == 4);
+    XCTAssertTrue([validator validateValue:pass error:nil]);
 
-
+    NSString *fail = @"😎";
+    schema  = @{ @"minLength" : @2 };
+    validator = [TWTJSONObjectValidator validatorWithJSONSchema:schema error:nil warnings:nil];
+    XCTAssertTrue(fail.length == 2);
+    XCTAssertFalse([validator validateValue:fail error:nil]);
 }
 
 
@@ -134,9 +140,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (NSSet *)failingTests
 {
-    return [NSSet setWithObjects:@"two supplementary Unicode code points is long enough",
-            @"one supplementary Unicode code point is not long enough",
-            @"1 and true are unique",
+    return [NSSet setWithObjects:@"1 and true are unique",
             @"0 and false are unique",
             @"unique heterogeneous types are valid", nil];
 }
