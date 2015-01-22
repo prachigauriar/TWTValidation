@@ -35,11 +35,13 @@
 @property (nonatomic, copy) NSString *schemaTitle;
 @property (nonatomic, copy) NSString *schemaDescription;
 @property (nonatomic, assign, getter = isTypeExplicit) BOOL typeExplicit;
+@property (nonatomic, copy, readonly) NSSet *validTypes;
+@property (nonatomic, copy, readonly) NSSet *validClasses;
 @property (nonatomic, copy) NSSet *validValues; //enum keyword
-@property (nonatomic, copy) NSArray *andNodes; // allOf
-@property (nonatomic, copy) NSArray *orNodes; // anyOf
-@property (nonatomic, copy) NSArray *exactlyOneOfNodes; // oneOf
-@property (nonatomic, strong) TWTJSONSchemaASTNode *notNode;
+@property (nonatomic, copy) NSArray *andSchemas; // allOf
+@property (nonatomic, copy) NSArray *orSchemas; // anyOf
+@property (nonatomic, copy) NSArray *exactlyOneOfSchemas; // oneOf
+@property (nonatomic, strong) TWTJSONSchemaASTNode *notSchema;
 @property (nonatomic, copy) NSDictionary *definitions;
 
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;

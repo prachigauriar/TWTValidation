@@ -29,7 +29,7 @@
 
 @interface TWTJSONSchemaAmbiguousASTNode : TWTJSONSchemaASTNode
 
-@property (nonatomic, copy) NSSet *validTypes;
+@property (nonatomic, copy, readwrite) NSSet *validTypes;
 
 @property (nonatomic, copy) NSArray *subNodes;
 

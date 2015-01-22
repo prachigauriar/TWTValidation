@@ -31,6 +31,9 @@
 
 @implementation TWTJSONSchemaAmbiguousASTNode
 
+@synthesize validTypes;
+
+
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processAmbiguousNode:self];

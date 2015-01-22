@@ -29,14 +29,14 @@
 
 @implementation TWTJSONSchemaKeyValuePairASTNode
 
-- (instancetype)initWithKey:(NSString *)key valueNode:(TWTJSONSchemaASTNode *)value
+- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
 {
     NSParameterAssert(key);
 
     self = [super init];
     if (self) {
         _key = [key copy];
-        _valueNode = value;
+        _valueSchema = value;
     }
     return self;
 }
@@ -44,7 +44,7 @@
 
 - (instancetype)init
 {
-    return [self initWithKey:nil valueNode:nil];
+    return [self initWithKey:nil valueSchema:nil];
 }
 
 @end

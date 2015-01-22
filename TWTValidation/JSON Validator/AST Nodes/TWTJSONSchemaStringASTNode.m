@@ -34,4 +34,10 @@
     [processor processStringNode:self];
 }
 
+
+- (NSSet *)validTypes
+{
+    return [NSSet setWithObject:TWTJSONSchemaTypeKeywordString];
+}
+
 @end

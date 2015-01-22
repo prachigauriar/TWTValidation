@@ -34,4 +34,10 @@
     [processor processNumberNode:self];
 }
 
+
+- (NSSet *)validTypes
+{
+    return [NSSet setWithObject:(self.requireIntegralValue ? TWTJSONSchemaTypeKeywordInteger : TWTJSONSchemaTypeKeywordNumber)];
+}
+
 @end

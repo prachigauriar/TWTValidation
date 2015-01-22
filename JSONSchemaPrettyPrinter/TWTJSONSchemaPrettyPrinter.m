@@ -82,10 +82,10 @@
     [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
     [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
     [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
-    if (arrayNode.itemCommonNode) {
-        [self setObject:[self schemaFromNode:arrayNode.itemCommonNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    if (arrayNode.universalItemSchema) {
+        [self setObject:[self schemaFromNode:arrayNode.universalItemSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
     } else {
-        [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemOrderedNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+        [self setObject:[self schemaArrayFromNodeArray:arrayNode.indexedItemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
     }
     [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
 }
@@ -108,8 +108,8 @@
     [self setObject:objectNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
     [self setObject:objectNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
     [self setObject:objectNode.requiredPropertyKeys inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
-    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertyNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
-    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertyNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
+    [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
     [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
     [self setObject:[self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies] inCurrentSchemaForKey:TWTJSONSchemaKeywordDependencies];
 }
@@ -131,7 +131,7 @@
     for (TWTJSONSchemaASTNode *node in ambiguousNode.subNodes) {
         // Since boolean value keywords are always printed (e.g., excludeMaximum), but the ambiguousNode may contain nodes for all types,
         // only print the nodes that had keywords in the original schema and were thus included in ambiguousNode.validTypes
-        if ([ambiguousNode.validTypes containsObject:[self typeKeywordForNode:node]]) {
+        if ([ambiguousNode.validTypes intersectsSet:node.validTypes]) {
             node.typeExplicit = NO; //Type, if explicit, is printed by generateCommonSchemaFromNode:
             [node acceptProcessor:self];
             NSDictionary *subtypeSchema = [self popCurrentObject];
@@ -152,7 +152,7 @@
 // Guaranteed that a mutable dictionary is top of the stack
 - (void)processNamedPropertyNode:(TWTJSONSchemaNamedPropertyASTNode *)propertyNode
 {
-    [self setObject:[self schemaFromNode:propertyNode.valueNode] inCurrentSchemaForKey:propertyNode.key];
+    [self setObject:[self schemaFromNode:propertyNode.valueSchema] inCurrentSchemaForKey:propertyNode.key];
 }
 
 
@@ -160,7 +160,7 @@
 // Guaranteed that a mutable dictionary is top of the stack
 - (void)processPatternPropertyNode:(TWTJSONSchemaPatternPropertyASTNode *)patternPropertyNode
 {
-    [self setObject:[self schemaFromNode:patternPropertyNode.valueNode] inCurrentSchemaForKey:patternPropertyNode.key];
+    [self setObject:[self schemaFromNode:patternPropertyNode.valueSchema] inCurrentSchemaForKey:patternPropertyNode.key];
 }
 
 
@@ -168,8 +168,8 @@
 // Guaranteed that a mutable dictionary is top of the stack
 - (void)processDependencyNode:(TWTJSONSchemaDependencyASTNode *)dependencyNode
 {
-    if (dependencyNode.valueNode) {
-        [dependencyNode.valueNode acceptProcessor:self];
+    if (dependencyNode.valueSchema) {
+        [dependencyNode.valueSchema acceptProcessor:self];
     } else {
         // Else, node has a property set, which is a set of strings
         [self pushNewObject:dependencyNode.propertySet];
@@ -185,40 +185,22 @@
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
     if (node.isTypeExplicit) {
-        id type = [self typeKeywordForNode:node];
-        [self setObject:type inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        if (node.validTypes.count > 1) {
+            [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        } else {
+            [self setObject:node.validTypes.anyObject inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        }
     }
     [self setObject:node.schemaTitle inCurrentSchemaForKey:TWTJSONSchemaKeywordTitle];
     [self setObject:node.schemaDescription inCurrentSchemaForKey:TWTJSONSchemaKeywordDescription];
     [self setObject:node.validValues inCurrentSchemaForKey:TWTJSONSchemaKeywordEnum];
 
-    [self setObject:[self schemaArrayFromNodeArray:node.andNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordAllOf];
-    [self setObject:[self schemaArrayFromNodeArray:node.orNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordAnyOf];
-    [self setObject:[self schemaArrayFromNodeArray:node.exactlyOneOfNodes] inCurrentSchemaForKey:TWTJSONSchemaKeywordOneOf];
-    [self setObject:[self schemaFromNode:node.notNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordNot];
+    [self setObject:[self schemaArrayFromNodeArray:node.andSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordAllOf];
+    [self setObject:[self schemaArrayFromNodeArray:node.orSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordAnyOf];
+    [self setObject:[self schemaArrayFromNodeArray:node.exactlyOneOfSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordOneOf];
+    [self setObject:[self schemaFromNode:node.notSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordNot];
 
     [self setObject:node.definitions inCurrentSchemaForKey:TWTJSONSchemaKeywordDefinitions];
-}
-
-
-- (id)typeKeywordForNode:(TWTJSONSchemaASTNode *)node
-{
-    if ([node isKindOfClass:[TWTJSONSchemaArrayASTNode class]]) {
-        return TWTJSONSchemaTypeKeywordArray;
-    } else if ([node isKindOfClass:[TWTJSONSchemaObjectASTNode class]]) {
-        return TWTJSONSchemaTypeKeywordObject;
-    } else if ([node isKindOfClass:[TWTJSONSchemaStringASTNode class]]) {
-        return TWTJSONSchemaTypeKeywordString;
-    } else if ([node isKindOfClass:[TWTJSONSchemaNumberASTNode class]]) {
-        return [(TWTJSONSchemaNumberASTNode *)node requireIntegralValue] ? TWTJSONSchemaTypeKeywordInteger : TWTJSONSchemaTypeKeywordNumber;
-    } else if ([node isKindOfClass:[TWTJSONSchemaGenericASTNode class]]) {
-        return [(TWTJSONSchemaGenericASTNode *)node validType];
-    } else if ([node isKindOfClass:[TWTJSONSchemaAmbiguousASTNode class]]) {
-        return [(TWTJSONSchemaAmbiguousASTNode *)node validTypes];
-    }
-    // Should not be called on other node classes
-    // Will crash when inserting in dictionary
-    return nil;
 }
 
 
