@@ -35,8 +35,6 @@
 
 @property (nonatomic, strong, readonly) TWTValidator *commonValidator;
 @property (nonatomic, strong, readonly) TWTValidator *typeValidator;
-@property (nonatomic, assign, readonly) BOOL requiresType;
-@property (nonatomic, assign, readonly) TWTJSONType type;
 
 @end
 
@@ -54,18 +52,12 @@
 }
 
 
-- (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator typeValidator:(TWTValidator *)typeValidator type:(TWTJSONType)type requiresType:(BOOL)requiresType
+- (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator typeValidator:(TWTValidator *)typeValidator
 {
-    if (requiresType && type != TWTJSONTypeAny) {
-        NSParameterAssert(typeValidator);
-    }
-
     self = [super init];
     if (self) {
         _commonValidator = [commonValidator copy];
         _typeValidator = [typeValidator copy];
-        _type = type;
-        _requiresType = requiresType;
     }
     return self;
 }
@@ -73,13 +65,13 @@
 
 - (instancetype)init
 {
-    return [self initWithCommonValidator:nil typeValidator:nil type:TWTJSONTypeAny requiresType:NO];
+    return [self initWithCommonValidator:nil typeValidator:nil];
 }
 
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.commonValidator.hash ^ self.typeValidator.hash ^ self.type ^ self.requiresType;
+    return [super hash] ^ self.commonValidator.hash ^ self.typeValidator.hash ;
 }
 
 
@@ -92,8 +84,7 @@
     }
 
     typeof(self) other = object;
-    return other.requiresType == self.requiresType && other.type == self.type && [other.commonValidator isEqual:self.commonValidator] &&
-         [other.typeValidator isEqual:self.typeValidator];
+    return [other.commonValidator isEqual:self.commonValidator] && [other.typeValidator isEqual:self.typeValidator];
 }
 
 
@@ -114,14 +105,10 @@
         commonKeywordsValidated = [self.commonValidator validateValue:value error:outError ? &commonError : NULL];
     }
 
-    if (!self.typeValidator || !(self.requiresType || [self valueMatchesType:value])) {
-        if (!commonKeywordsValidated && outError) {
-            *outError = commonError;
-        }
-        return commonKeywordsValidated;
+    if (self.typeValidator) {
+        typeKeywordsValidated = [self.typeValidator validateValue:value error:outError ? &typeError : NULL];
     }
 
-    typeKeywordsValidated = [self.typeValidator validateValue:value error:outError ? &typeError : NULL];
     BOOL validated = commonKeywordsValidated && typeKeywordsValidated;
 
     if (!validated && outError) {
@@ -129,40 +116,6 @@
     }
 
     return validated;
-}
-
-
-- (BOOL)valueMatchesType:(id)value
-{
-    switch (self.type) {
-        case TWTJSONTypeObject:
-            return [value isKindOfClass:[NSDictionary class]];
-
-        case TWTJSONTypeArray:
-            return [value isKindOfClass:[NSArray class]];
-
-        case TWTJSONTypeBoolean:
-            if ([value isKindOfClass:[NSNumber class]]) {
-                return strcmp([(NSValue *)value objCType], @encode(BOOL)) == 0;
-            }
-            return NO;
-
-        case TWTJSONTypeString:
-            return [value isKindOfClass:[NSString class]];
-
-        case TWTJSONTypeNumber:
-            if ([value isKindOfClass:[NSNumber class]]) {
-                return strcmp([(NSValue *)value objCType], @encode(BOOL)) != 0;
-            };
-            return NO;
-
-        case TWTJSONTypeNull:
-            return [value isKindOfClass:[NSNull class]];
-
-        case TWTJSONTypeAmbiguous:
-        case TWTJSONTypeAny:
-            return YES;
-    }
 }
 
 @end

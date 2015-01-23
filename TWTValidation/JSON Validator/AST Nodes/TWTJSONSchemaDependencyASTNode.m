@@ -68,4 +68,10 @@
     [processor processDependencyNode:self];
 }
 
+
+- (NSSet *)validTypes
+{
+    return nil;
+}
+
 @end

@@ -31,8 +31,8 @@
 - (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
                         minimumItemCount:(NSNumber *)minimumItemCount
                      requiresUniqueItems:(BOOL)requiresUniqueItems
-                     itemCommonValidator:(TWTValidator *)itemCommonValidator
-                   itemOrderedValidators:(NSArray *)itemOrderedValidators
+                           itemValidator:(TWTValidator *)itemValidator
+                   indexedItemValidators:(NSArray *)indexedItemValidators
                 additionalItemsValidator:(TWTValidator *)additionalItemsValidator
 {
     self = [super init];
@@ -40,8 +40,8 @@
         _maximumItemCount = maximumItemCount;
         _minimumItemCount = minimumItemCount;
         _requiresUniqueItems = requiresUniqueItems;
-        _itemCommonValidator = itemCommonValidator;
-        _itemOrderedValidators = [itemOrderedValidators copy];
+        _itemValidator = itemValidator;
+        _indexedItemValidators = [indexedItemValidators copy];
         _additionalItemsValidator = additionalItemsValidator;
     }
     return self;
@@ -50,8 +50,8 @@
 
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.maximumItemCount.hash ^ self.minimumItemCount.hash ^ self.requiresUniqueItems ^ self.itemCommonValidator.hash ^
-         self.itemOrderedValidators.hash ^ self.additionalItemsValidator.hash;
+    return [super hash] ^ self.maximumItemCount.hash ^ self.minimumItemCount.hash ^ self.requiresUniqueItems ^ self.itemValidator.hash ^
+    self.indexedItemValidators.hash ^ self.additionalItemsValidator.hash;
 }
 
 
@@ -65,9 +65,9 @@
 
     typeof(self) other = object;
     return [other.maximumItemCount isEqual:self.maximumItemCount] && [other.minimumItemCount isEqual:self.minimumItemCount] &&
-         other.requiresUniqueItems == self.requiresUniqueItems && [other.itemCommonValidator isEqual:self.itemCommonValidator] &&
-         [other.itemOrderedValidators isEqual:self.itemOrderedValidators] && [other.additionalItemsValidator isEqual:self.additionalItemsValidator];
-    
+    other.requiresUniqueItems == self.requiresUniqueItems && [other.itemValidator isEqual:self.itemValidator] &&
+    [other.indexedItemValidators isEqual:self.indexedItemValidators] && [other.additionalItemsValidator isEqual:self.additionalItemsValidator];
+
 }
 
 
@@ -114,21 +114,21 @@
     NSError *error = nil;
 
 
-    if (self.itemCommonValidator) {
+    if (self.itemValidator) {
         for (id item in value) {
             error = nil;
-            if (![self.itemCommonValidator validateValue:item error:outError ? &error : NULL]) {
+            if (![self.itemValidator validateValue:item error:outError ? &error : NULL]) {
                 itemsValidated = NO;
                 //                    itemsErrors addObject:
             }
         }
-    } else if (self.itemOrderedValidators) {
+    } else if (self.indexedItemValidators) {
         NSUInteger index = 0;
         for (id item in value) {
             error = nil;
 
-            if (index < self.itemOrderedValidators.count) {
-                if (![self.itemOrderedValidators[index] validateValue:item error:outError ? &error : NULL]) {
+            if (index < self.indexedItemValidators.count) {
+                if (![self.indexedItemValidators[index] validateValue:item error:outError ? &error : NULL]) {
                     itemsValidated = NO;
                     //                        add error
                 }

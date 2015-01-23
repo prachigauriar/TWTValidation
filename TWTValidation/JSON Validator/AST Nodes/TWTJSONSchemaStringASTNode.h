@@ -32,5 +32,6 @@
 @property (nonatomic, strong) NSNumber *maximumLength;
 @property (nonatomic, strong) NSNumber *minimumLength;
 @property (nonatomic, strong) NSString *pattern;
+@property (nonatomic, strong) NSRegularExpression *regularExpression;
 
 @end

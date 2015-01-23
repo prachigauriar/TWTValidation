@@ -82,8 +82,8 @@
     [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
     [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
     [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
-    if (arrayNode.universalItemSchema) {
-        [self setObject:[self schemaFromNode:arrayNode.universalItemSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    if (arrayNode.itemSchema) {
+        [self setObject:[self schemaFromNode:arrayNode.itemSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
     } else {
         [self setObject:[self schemaArrayFromNodeArray:arrayNode.indexedItemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
     }
@@ -129,14 +129,10 @@
     [self generateCommonSchemaFromNode:ambiguousNode];
 
     for (TWTJSONSchemaASTNode *node in ambiguousNode.subNodes) {
-        // Since boolean value keywords are always printed (e.g., excludeMaximum), but the ambiguousNode may contain nodes for all types,
-        // only print the nodes that had keywords in the original schema and were thus included in ambiguousNode.validTypes
-        if ([ambiguousNode.validTypes intersectsSet:node.validTypes]) {
-            node.typeExplicit = NO; //Type, if explicit, is printed by generateCommonSchemaFromNode:
-            [node acceptProcessor:self];
-            NSDictionary *subtypeSchema = [self popCurrentObject];
-            [[self currentObject] addEntriesFromDictionary:subtypeSchema];
-        }
+        node.typeSpecified = NO; //Type, if explicit, is printed by generateCommonSchemaFromNode:
+        [node acceptProcessor:self];
+        NSDictionary *subtypeSchema = [self popCurrentObject];
+        [[self currentObject] addEntriesFromDictionary:subtypeSchema];
     }
 }
 
@@ -184,7 +180,7 @@
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
-    if (node.isTypeExplicit) {
+    if (node.isTypeSpecified) {
         if (node.validTypes.count > 1) {
             [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
         } else {

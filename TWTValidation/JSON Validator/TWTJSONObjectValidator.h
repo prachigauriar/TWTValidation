@@ -27,18 +27,6 @@
 #import <TWTValidation/TWTValidation.h>
 
 
-typedef NS_ENUM(NSUInteger, TWTJSONType) {
-    TWTJSONTypeAny,
-    TWTJSONTypeArray,
-    TWTJSONTypeBoolean,
-    TWTJSONTypeObject,
-    TWTJSONTypeString,
-    TWTJSONTypeNumber, // Includes integer
-    TWTJSONTypeNull,
-    TWTJSONTypeAmbiguous
-};
-
-
 @interface TWTJSONObjectValidator : TWTValidator
 
 @property (nonatomic, copy, readonly) NSDictionary *schema;
@@ -48,8 +36,6 @@ typedef NS_ENUM(NSUInteger, TWTJSONType) {
                                            warnings:(NSArray *__autoreleasing *)outWarnings;
 
 - (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator
-                          typeValidator:(TWTValidator *)typeValidator
-                                   type:(TWTJSONType)type
-                           requiresType:(BOOL)requiresType;
+                          typeValidator:(TWTValidator *)typeValidator;
 
 @end

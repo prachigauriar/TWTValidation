@@ -47,4 +47,10 @@
     return [self initWithKey:nil valueSchema:nil];
 }
 
+
+- (NSSet *)validTypes
+{
+    return nil;
+}
+
 @end

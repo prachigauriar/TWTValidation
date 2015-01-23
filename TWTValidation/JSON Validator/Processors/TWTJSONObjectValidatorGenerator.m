@@ -84,22 +84,16 @@
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:genericNode];
     TWTValidator *typeValidator = nil;
-    TWTJSONType typeEnum = TWTJSONTypeAny;
 
     if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordBoolean]) {
-//        TWTNumberValidator *boolValidator = [[TWTNumberValidator alloc] initWithMinimum:@0 maximum:@1];
-//        boolValidator.requiresIntegralValue = YES;
-//        typeValidator = boolValidator;
         typeValidator = [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
             return [value isKindOfClass:[NSNumber class]] && strcmp([(NSValue *)value objCType], @encode(BOOL)) == 0;
         }];
-        typeEnum = TWTJSONTypeBoolean;
     } else if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordNull]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
-        typeEnum = TWTJSONTypeNull;
     }
 
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:typeEnum requiresType:genericNode.isTypeExplicit];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:genericNode];
 }
 
 
@@ -107,23 +101,23 @@
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:arrayNode];
 
-    TWTValidator *itemCommonValidator = nil;
-    NSArray *itemValidators = nil;
-    if (arrayNode.universalItemSchema) {
-        itemCommonValidator = [self validatorFromNode:arrayNode.universalItemSchema];
+    TWTValidator *itemValidator = nil;
+    NSArray *indexedItemValidators = nil;
+    if (arrayNode.itemSchema) {
+        itemValidator = [self validatorFromNode:arrayNode.itemSchema];
     } else {
-        itemValidators = [self validatorsFromNodeArray:arrayNode.indexedItemSchemas];
+        indexedItemValidators = [self validatorsFromNodeArray:arrayNode.indexedItemSchemas];
     }
 
     TWTValidator *additionalItemsValidator = [self validatorFromNode:arrayNode.additionalItemsNode];
     TWTJSONSchemaArrayValidator *typeValidator = [[TWTJSONSchemaArrayValidator alloc] initWithMaximumItemCount:arrayNode.maximumItemCount
                                                                                               minimumItemCount:arrayNode.minimumItemCount
                                                                                            requiresUniqueItems:arrayNode.requiresUniqueItems
-                                                                                           itemCommonValidator:itemCommonValidator
-                                                                                         itemOrderedValidators:itemValidators
+                                                                                                 itemValidator:itemValidator
+                                                                                         indexedItemValidators:indexedItemValidators
                                                                                       additionalItemsValidator:additionalItemsValidator];
 
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeArray requiresType:arrayNode.isTypeExplicit];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:arrayNode];
 }
 
 
@@ -154,7 +148,7 @@
     }
 
     TWTValidator *typeValidator = [self collectSubvalidators];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeNumber requiresType:numberNode.isTypeExplicit];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:numberNode];
 }
 
 
@@ -174,7 +168,7 @@
                                                                                        additionalPropertiesValidator:additionalPropertiesValidator
                                                                                                 propertyDependencies:dependencies];
 
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeObject requiresType:objectNode.isTypeExplicit];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:objectNode];
 }
 
 
@@ -188,12 +182,8 @@
                                                                                       maximumLength:stringNode.maximumLength ? stringNode.maximumLength.unsignedIntegerValue : NSUIntegerMax]];
     }
 
-    if (stringNode.pattern) {
-        NSError *error = nil;
-        NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:stringNode.pattern options:0 error:&error];
-        // what happens if it's an invalid regular expression? let everything pass or everything fail...?
-
-        [self addSubvalidator:[TWTStringValidator stringValidatorWithRegularExpression:regularExpression options:0]];
+    if (stringNode.regularExpression) {
+        [self addSubvalidator:[TWTStringValidator stringValidatorWithRegularExpression:stringNode.regularExpression options:0]];
     }
 
     TWTValidator *typeValidator = [self collectSubvalidators];
@@ -201,7 +191,7 @@
         typeValidator = [[TWTStringValidator alloc] init];
     }
 
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeString requiresType:stringNode.isTypeExplicit];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:stringNode];
 }
 
 
@@ -215,7 +205,7 @@
     }
 
     TWTCompoundValidator *typeValidator = [TWTCompoundValidator orValidatorWithSubvalidators:orValidators];
-    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator type:TWTJSONTypeAmbiguous requiresType:YES];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:ambiguousNode];
 }
 
 
@@ -325,6 +315,37 @@
 }
 
 
+- (TWTValidator *)notValidatorForTypes:(NSSet *)types
+{
+    NSParameterAssert(types.count);
+
+    NSMutableSet *subvalidators = [[NSMutableSet alloc] init];
+
+    if ([types containsObject:TWTJSONSchemaTypeKeywordArray]) {
+        [subvalidators addObject:[TWTValueValidator valueValidatorWithClass:[NSArray class] allowsNil:NO allowsNull:NO]];
+    }
+    if ([types containsObject:TWTJSONSchemaTypeKeywordNumber]) {
+        [subvalidators addObject:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
+            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSValue *)value objCType], @encode(BOOL)) != 0;
+        }]];
+    }
+    if ([types containsObject:TWTJSONSchemaTypeKeywordObject]) {
+        [subvalidators addObject:[TWTValueValidator valueValidatorWithClass:[NSDictionary class] allowsNil:NO allowsNull:NO]];
+    }
+    if ([types containsObject:TWTJSONSchemaTypeKeywordString]) {
+        [subvalidators addObject:[TWTValueValidator valueValidatorWithClass:[NSString class] allowsNil:NO allowsNull:NO]];
+    }
+
+    // Validators for "integer," "any," "boolean," and "null" should not be needed, because this is only called when the type is not explicit.
+    // "Integer" cannot be implied, any keywords can only be interpreted as "number"
+    // "Boolean" and "null" will never be implied types because they have no type-specific keywords.
+    // If "any" is the implied type, then no type validator exists as the counterpoint to this "not."
+
+    TWTValidator *subvalidator = subvalidators.count > 1 ? [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators.allObjects] : subvalidators.anyObject;
+    return [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+}
+
+
 # pragma mark - Convenience methods for managing stack
 
 - (void)addSubvalidator:(TWTValidator *)subvalidator
@@ -337,10 +358,17 @@
 
 - (void)pushJSONObjectValidatorWithCommonValidator:(TWTValidator *)commonValidator
                                      typeValidator:(TWTValidator *)typeValidator
-                                              type:(TWTJSONType)type
-                                      requiresType:(BOOL)requiresType
+                                              node:(TWTJSONSchemaASTNode *)node
 {
-    [self pushNewObject:[[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:typeValidator type:type requiresType:requiresType]];
+    TWTValidator *expandedTypeValidator = typeValidator;
+
+    if (!node.isTypeSpecified && typeValidator) {
+        // This is equivalent to (!node.isTypeSpecified && ![node.validTypes containsObject:TWTJSONSchemaTypeKeywordAny])
+        // because that should be the only scenario where a type validator does not exist
+        expandedTypeValidator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:@[ typeValidator, [self notValidatorForTypes:node.validTypes]]];
+    }
+
+    [self pushNewObject:[[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:expandedTypeValidator]];
 }
 
 

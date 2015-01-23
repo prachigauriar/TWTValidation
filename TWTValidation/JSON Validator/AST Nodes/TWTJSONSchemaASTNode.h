@@ -34,9 +34,8 @@
 
 @property (nonatomic, copy) NSString *schemaTitle;
 @property (nonatomic, copy) NSString *schemaDescription;
-@property (nonatomic, assign, getter = isTypeExplicit) BOOL typeExplicit;
+@property (nonatomic, assign, getter = isTypeSpecified) BOOL typeSpecified;
 @property (nonatomic, copy, readonly) NSSet *validTypes;
-@property (nonatomic, copy, readonly) NSSet *validClasses;
 @property (nonatomic, copy) NSSet *validValues; //enum keyword
 @property (nonatomic, copy) NSArray *andSchemas; // allOf
 @property (nonatomic, copy) NSArray *orSchemas; // anyOf

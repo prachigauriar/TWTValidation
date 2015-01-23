@@ -42,34 +42,6 @@
     [NSException umk_subclassResponsibilityExceptionWithReceiver:self selector:_cmd];
     return nil;
 }
-//
-//
-//- (NSSet *)validClasses
-//{
-//    NSMutableSet *classes = [[NSMutableSet alloc] init];
-//    NSSet *type = self.validTypes;
-//
-//    if ([type containsObject:TWTJSONSchemaTypeKeywordArray]) {
-//        [classes addObject:[NSArray class]];
-//    }
-//    if ([type containsObject:TWTJSONSchemaTypeKeywordNumber] || [type containsObject:TWTJSONSchemaTypeKeywordInteger]) {
-//        [classes addObject:[NSNumber class]];
-//    }
-//    if ([type containsObject:TWTJSONSchemaTypeKeywordObject]) {
-//        node = [[TWTJSONSchemaObjectASTNode alloc] init];
-//        [self parseObjectSchema:schema intoNode:node];
-//    }
-//    if ([type containsObject:TWTJSONSchemaTypeKeywordString]) {
-//        node = [[TWTJSONSchemaStringASTNode alloc] init];
-//        [self parseStringSchema:schema intoNode:node];
-//    }
-//    {
-//        // type = "any", "boolean", or "null"
-//        node = [[TWTJSONSchemaGenericASTNode alloc] init];
-//        [self parseGenericSchema:schema intoNode:node withType:type];
-//    }
-//
-//}
 
 @end
 
