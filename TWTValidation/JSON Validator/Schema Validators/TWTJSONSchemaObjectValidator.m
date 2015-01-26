@@ -137,13 +137,13 @@
     NSMutableArray *additionalPropertiesErrors = outError ? [[NSMutableArray alloc] init] : nil;
     NSMutableArray *dependenciesErrors = outError ? [[NSMutableArray alloc] init] : nil;
 
-    NSSet *keysSet = [NSSet setWithArray:[value allKeys]];
+    NSSet *keySet = [NSSet setWithArray:[value allKeys]];
 
     if (self.countValidator) {
         countValidated = [self.countValidator validateValue:@([value count]) error:&countError];
     }
 
-    if (self.requiredPropertyKeys && ![self.requiredPropertyKeys isSubsetOfSet:keysSet]) {
+    if (self.requiredPropertyKeys && ![self.requiredPropertyKeys isSubsetOfSet:keySet]) {
         requiredPropertiesValidated = NO;
         //        requiredPropertiesError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")];
     }
@@ -192,7 +192,7 @@
         id dependency = self.propertyDependencies[key];
         if (dependency) {
             if ([dependency isKindOfClass:[NSSet class]]) {
-                if (![dependency isSubsetOfSet:keysSet]) {
+                if (![dependency isSubsetOfSet:keySet]) {
                     dependenciesValidated = NO;
                     //                        [dependenciesErrors addObject:[NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet failingValidator:self value:value localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.requiredPropertyNotPresentError")]];
                 }

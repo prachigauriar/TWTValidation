@@ -229,59 +229,7 @@
 
     NSInteger errorCode = -1;
 
-    if ([value length] < self.minimumLength) {
-        errorCode = TWTValidationErrorCodeLengthLessThanMinimum;
-    } else if ([value length] > self.maximumLength) {
-        errorCode = TWTValidationErrorCodeLengthGreaterThanMaximum;
-    } else {
-        return YES;
-    }
-
-    if (outError) {
-        NSString *description = nil;
-        switch (errorCode) {
-            case TWTValidationErrorCodeLengthLessThanMinimum: {
-                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format");
-                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
-                break;
-            }
-            case TWTValidationErrorCodeLengthGreaterThanMaximum: {
-                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format");
-                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
-                break;
-            }
-        }
-
-        *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
-    }
-    
-    return NO;
-}
-
-@end
-
-
-#pragma mark
-
-@implementation TWTBoundedComposedCharacterLengthStringValidator
-
-- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
-{
-    TWTValueValidator *stringValidator = [TWTValueValidator valueValidatorWithClass:[NSString class] allowsNil:self.allowsNil allowsNull:self.allowsNull];
-    NSError *error = nil;
-    if (![stringValidator validateValue:value error:outError ? &error : NULL]) {
-        if (outError) {
-            *outError = error;
-        }
-        return NO;
-    } else if (TWTValidatorValueIsNilOrNull(value)) {
-        // This will only happen if nil or null is allowed
-        return YES;
-    }
-
-    NSInteger errorCode = -1;
-
-    NSUInteger length = [value lengthOfBytesUsingEncoding:NSUTF32StringEncoding] / 4;
+    NSUInteger length = [self lengthOfString:value];
     if (length < self.minimumLength) {
         errorCode = TWTValidationErrorCodeLengthLessThanMinimum;
     } else if (length > self.maximumLength) {
@@ -294,21 +242,39 @@
         NSString *description = nil;
         switch (errorCode) {
             case TWTValidationErrorCodeLengthLessThanMinimum: {
-//                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format");
-//                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format");
+                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
                 break;
             }
             case TWTValidationErrorCodeLengthGreaterThanMaximum: {
-//                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format");
-//                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
+                NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format");
+                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
                 break;
             }
         }
 
         *outError = [NSError twt_validationErrorWithCode:errorCode failingValidator:self value:value localizedDescription:description];
     }
-
+    
     return NO;
+}
+
+
+- (NSUInteger)lengthOfString:(NSString *)string
+{
+    return [string length];
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTBoundedComposedCharacterLengthStringValidator
+
+- (NSUInteger)lengthOfString:(NSString *)string
+{
+    return [string lengthOfBytesUsingEncoding:NSUTF32StringEncoding] / 4;
 }
 
 @end

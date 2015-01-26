@@ -43,6 +43,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testSuite
 {
+    // TODO: make these relative
     NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
     
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
@@ -63,6 +64,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testKnownFailingTests
 {
+    // TODO: make these relative
     NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
