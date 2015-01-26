@@ -26,10 +26,21 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
-
+/*!
+ TWTJSONSchemaTopLevelASTNodes model the top level of a JSON schema, which is a valid JSON schema plus the special keyword "$schema." It provides the starting point for TWTJSONSchemaProcessors to begin processing the AST node tree, and thus only one instance exists for a given schema."
+ */
 @interface TWTJSONSchemaTopLevelASTNode : TWTJSONSchemaASTNode
 
+/*!
+ @abstract The JSON Schema version identifier, given by "$schema."
+ @discussion This version of TWTValidation only supports draft 4 (http://json-schema.org/draft-04/schema#). If nil, the schema does not include "$schema" and is treated as draft 4.
+ */
 @property (nonatomic, copy) NSString *schemaPath;
+
+/*!
+ @abstract The node modeling top level of the schema.
+ @discussion This node includes all of information given by the schema, except for the "$schema" keyword. TWTJSONSchemaProcessors in their implementation of processTopLevelNode: should call [topLevelNode.schema acceptProcessor:self].
+ */
 @property (nonatomic, strong) TWTJSONSchemaASTNode *schema;
 
 @end

@@ -26,9 +26,15 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
-
+/*!
+ TWTJSONSchemaArrayASTNodes model a schema that expects instances of type array.
+ */
 @interface TWTJSONSchemaArrayASTNode : TWTJSONSchemaASTNode
 
+/*!
+ @abstract The maximum number of items allowed in the array, given by "maxItems."
+ @discussion Nil indicates that "maxItems" is not present in the schema.
+ */
 @property (nonatomic, strong) NSNumber *maximumItemCount;
 @property (nonatomic, strong) NSNumber *minimumItemCount;
 @property (nonatomic, assign) BOOL requiresUniqueItems;

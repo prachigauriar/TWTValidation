@@ -26,10 +26,15 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
-
+/*!
+ TWTJSONSchemaGenericASTNodes model a schema that expects instances of type boolean, null, or any. These types have no special keywords associated with them, so instances are only validated against common keywords.
+ */
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 
-// Used for schemas with type "boolean," "null," or "any"
+/*!
+ @abstract A set containing the type of the instance described by this schema.
+ @discussion This set has exactly one element, which must be one of these strings: "boolean," "null," or "any."
+ */
 @property (nonatomic, copy, readwrite) NSSet *validTypes;
 
 @end
