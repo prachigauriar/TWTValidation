@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaKeyValuePairASTNode.m
+//  TWTJSONObjectValidatorGenerator.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/14/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,18 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
+@import Foundation;
+
+#import <TWTValidation/TWTJSONSchemaASTProcessor.h>
 
 
-@implementation TWTJSONSchemaKeyValuePairASTNode
-
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
-{
-    NSParameterAssert(key);
-
-    self = [super init];
-    if (self) {
-        _key = [key copy];
-        _valueSchema = value;
-    }
-    return self;
-}
+@class TWTJSONObjectValidator;
 
 
-- (instancetype)init
-{
-    return [self initWithKey:nil valueSchema:nil];
-}
+@interface TWTJSONObjectValidatorGenerator : NSObject <TWTJSONSchemaASTProcessor>
 
-
-- (NSSet *)validTypes
-{
-    return nil;
-}
+- (TWTJSONObjectValidator *)validatorFromJSONSchema:(NSDictionary *)schema
+                                              error:(NSError *__autoreleasing *)outError
+                                           warnings:(NSArray *__autoreleasing *)outWarnings;
 
 @end

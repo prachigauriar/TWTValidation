@@ -31,7 +31,7 @@
 
 @property (nonatomic, strong) NSNumber *maximumPropertyCount;
 @property (nonatomic, strong) NSNumber *minimumPropertyCount;
-@property (nonatomic, copy) NSSet *requiredPropertyNames;
+@property (nonatomic, copy) NSSet *requiredPropertyKeys;
 @property (nonatomic, copy) NSArray *propertySchemas; // array of key-value pair nodes
 @property (nonatomic, copy) NSArray *patternPropertySchemas; // array of key-value pair nodes
 @property (nonatomic, strong) TWTJSONSchemaASTNode *additionalPropertiesNode; // parser will set to boolean value or type-specific

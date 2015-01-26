@@ -1,0 +1,192 @@
+[
+    {
+        "description": "complex object schema",
+        "schema": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "additionalProperties": {
+                "enum": [
+                    4,
+                    null,
+                    [],
+                    true,
+                    "hello"
+                ]
+            },
+            "properties": {
+                "arrayProperty": {
+                    "items": {
+                        "maxLength": 5,
+                        "type": "string"
+                    },
+                    "minItems": 2,
+                    "type": "array",
+                    "uniqueItems": true
+                },
+                "integerProperty": {
+                    "exclusiveMaximum": true,
+                    "maximum": 7,
+                    "type": "integer"
+                },
+                "variableProperty": {
+                    "type": [
+                        "array",
+                        "string",
+                        "object"
+                    ]
+                }
+            },
+            "required": [
+                "variableProperty",
+                "arrayProperty"
+            ],
+            "type": "object"
+        },
+        "tests": [
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 6,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "valid",
+                "valid": true
+            },
+            {
+                "data": 3,
+                "description": "not an object",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 7,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "maximum is invalid for integerProperty",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "integerProperty": 6
+                },
+                "description": "missing required property",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "variableProperty": 6
+                },
+                "description": "integer is not one of allowed types for variableProperty",
+                "valid": false
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "enumProperty": 4,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "valid additional property",
+                "valid": true
+            },
+            {
+                "data": {
+                    "arrayProperty": [
+                        "hello",
+                        "worl"
+                    ],
+                    "enumProperty": 4.1,
+                    "variableProperty": [
+                        null,
+                        2.3
+                    ]
+                },
+                "description": "invalid additional property",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "oneOf with object properties",
+        "schema": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "foo"
+                    ]
+                },
+                {
+                    "properties": {
+                        "bah": {
+                            "type": "null"
+                        }
+                    },
+                    "required": [
+                        "bah"
+                    ]
+                }
+            ]
+        },
+        "tests": [
+            {
+                "data": {
+                    "foo": 2
+                },
+                "description": "valid against first schema",
+                "valid": true
+            },
+            {
+                "data": {
+                    "bah": null
+                },
+                "description": "valid against second schema",
+                "valid": true
+            },
+            {
+                "data": {
+                    "bah": null,
+                    "foo": 3
+                },
+                "description": "matches both oneOf schemas",
+                "valid": false
+            },
+            {
+                "data": {
+                    "foo": 3.1
+                },
+                "description": "matches neither schemas",
+                "valid": false
+            }
+        ]
+    }
+]

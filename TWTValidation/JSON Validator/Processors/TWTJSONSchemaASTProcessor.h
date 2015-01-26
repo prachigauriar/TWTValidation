@@ -33,6 +33,7 @@
 @class TWTJSONSchemaNumberASTNode;
 @class TWTJSONSchemaObjectASTNode;
 @class TWTJSONSchemaStringASTNode;
+@class TWTJSONSchemaAmbiguousASTNode;
 @class TWTJSONSchemaBooleanValueASTNode;
 @class TWTJSONSchemaNamedPropertyASTNode;
 @class TWTJSONSchemaPatternPropertyASTNode;
@@ -50,6 +51,7 @@
 - (void)processNumberNode:(TWTJSONSchemaNumberASTNode *)numberNode;
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
+- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode;
 
 // Specialized nodes for array items and object properties
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode;

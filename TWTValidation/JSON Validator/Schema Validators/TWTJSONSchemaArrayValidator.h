@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaKeyValuePairASTNode.m
+//  TWTJSONSchemaArrayValidator.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/15/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,23 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
+#import <TWTValidation/TWTValidator.h>
 
 
-@implementation TWTJSONSchemaKeyValuePairASTNode
+@interface TWTJSONSchemaArrayValidator : TWTValidator <NSCopying>
 
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
-{
-    NSParameterAssert(key);
+@property (nonatomic, strong, readonly) NSNumber *minimumItemCount;
+@property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
+@property (nonatomic, assign, readonly) BOOL requiresUniqueItems;
+@property (nonatomic, strong, readonly) TWTValidator *itemValidator;
+@property (nonatomic, copy, readonly) NSArray *indexedItemValidators;
+@property (nonatomic, strong, readonly) TWTValidator *additionalItemsValidator; // either JSON validator or always passing/failing
 
-    self = [super init];
-    if (self) {
-        _key = [key copy];
-        _valueSchema = value;
-    }
-    return self;
-}
-
-
-- (instancetype)init
-{
-    return [self initWithKey:nil valueSchema:nil];
-}
-
-
-- (NSSet *)validTypes
-{
-    return nil;
-}
+- (instancetype)initWithMinimumItemCount:(NSNumber *)minimumItemCount
+                        maximumItemCount:(NSNumber *)maximumItemCount
+                     requiresUniqueItems:(BOOL)requiresUniqueItems
+                           itemValidator:(TWTValidator *)itemValidator
+                   indexedItemValidators:(NSArray *)indexedItemValidators
+                additionalItemsValidator:(TWTValidator *)additionalItemsValidator;
 
 @end

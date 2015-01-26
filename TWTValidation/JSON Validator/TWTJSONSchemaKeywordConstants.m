@@ -70,3 +70,13 @@ NSString *const TWTJSONSchemaKeywordPattern = @"pattern";
 // Top Level
 NSString *const TWTJSONSchemaKeywordSchema = @"$schema";
 NSString *const TWTJSONSchemaKeywordDraft4Path = @"http://json-schema.org/draft-04/schema#";
+
+// Valid types
+NSString *const TWTJSONSchemaTypeKeywordAny = @"any";
+NSString *const TWTJSONSchemaTypeKeywordArray = @"array";
+NSString *const TWTJSONSchemaTypeKeywordBoolean = @"boolean";
+NSString *const TWTJSONSchemaTypeKeywordInteger = @"integer";
+NSString *const TWTJSONSchemaTypeKeywordNull = @"null";
+NSString *const TWTJSONSchemaTypeKeywordNumber = @"number";
+NSString *const TWTJSONSchemaTypeKeywordObject = @"object";
+NSString *const TWTJSONSchemaTypeKeywordString = @"string";

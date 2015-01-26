@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaValidTypesConstants.m
+//  TWTJSONSchemaAmbiguousASTNode.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/12/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,19 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaValidTypesConstants.h>
+#import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>
+
+#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
 
 
-// Valid types
-NSString *const TWTJSONSchemaTypeKeywordAny = @"any";
-NSString *const TWTJSONSchemaTypeKeywordArray = @"array";
-NSString *const TWTJSONSchemaTypeKeywordBoolean = @"boolean";
-NSString *const TWTJSONSchemaTypeKeywordInteger = @"integer";
-NSString *const TWTJSONSchemaTypeKeywordNull = @"null";
-NSString *const TWTJSONSchemaTypeKeywordNumber = @"number";
-NSString *const TWTJSONSchemaTypeKeywordObject = @"object";
-NSString *const TWTJSONSchemaTypeKeywordString = @"string";
+@implementation TWTJSONSchemaAmbiguousASTNode
+
+@synthesize validTypes;
+
+
+- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
+{
+    [processor processAmbiguousNode:self];
+}
+
+@end

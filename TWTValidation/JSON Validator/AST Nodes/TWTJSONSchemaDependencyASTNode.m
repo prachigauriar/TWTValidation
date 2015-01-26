@@ -29,7 +29,7 @@
 
 @implementation TWTJSONSchemaDependencyASTNode
 
-- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSSet *)propertySet
 {
     NSParameterAssert(key);
     NSParameterAssert(propertySet);
@@ -63,15 +63,15 @@
 }
 
 
-- (NSSet *)validTypes
-{
-    return nil;
-}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processDependencyNode:self];
+}
+
+
+- (NSSet *)validTypes
+{
+    return nil;
 }
 
 @end

@@ -31,9 +31,9 @@
 
 @property (nonatomic, copy, readonly) NSString *key;
 @property (nonatomic, strong, readonly) TWTJSONSchemaASTNode *valueSchema;
-@property (nonatomic, copy, readonly) NSArray *propertySet;
+@property (nonatomic, copy, readonly) NSSet *propertySet;
 
 - (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value;
-- (instancetype)initWithKey:(NSString *)key propertySet:(NSArray *)propertySet;
+- (instancetype)initWithKey:(NSString *)key propertySet:(NSSet *)propertySet;
 
 @end

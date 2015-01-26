@@ -49,8 +49,9 @@
 }
 
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
+- (NSDictionary *)objectFromTopLevelNode:(TWTJSONSchemaTopLevelASTNode *)topLevelNode
 {
+    NSParameterAssert(topLevelNode);
     [self.objectStack removeAllObjects];
     [topLevelNode acceptProcessor:self];
     return [self popCurrentObject];
@@ -81,7 +82,11 @@
     [self setObject:arrayNode.minimumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinItems];
     [self setObject:arrayNode.maximumItemCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxItems];
     [self setObject:@(arrayNode.requiresUniqueItems) inCurrentSchemaForKey:TWTJSONSchemaKeywordUniqueItems];
-    [self setObject:[self schemaArrayFromNodeArray:arrayNode.itemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    if (arrayNode.itemSchema) {
+        [self setObject:[self schemaFromNode:arrayNode.itemSchema] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    } else {
+        [self setObject:[self schemaArrayFromNodeArray:arrayNode.indexedItemSchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordItems];
+    }
     [self setObject:[self additionalItemsOrPropertiesFromNode:arrayNode.additionalItemsNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalItems];
 }
 
@@ -102,7 +107,7 @@
     [self generateCommonSchemaFromNode:objectNode];
     [self setObject:objectNode.minimumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMinProperties];
     [self setObject:objectNode.maximumPropertyCount inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxProperties];
-    [self setObject:objectNode.requiredPropertyNames inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
+    [self setObject:objectNode.requiredPropertyKeys inCurrentSchemaForKey:TWTJSONSchemaKeywordRequired];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.propertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordProperties];
     [self setObject:[self schemaDictionaryFromKeyValuePairNodeArray:objectNode.patternPropertySchemas] inCurrentSchemaForKey:TWTJSONSchemaKeywordPatternProperties];
     [self setObject:[self additionalItemsOrPropertiesFromNode:objectNode.additionalPropertiesNode] inCurrentSchemaForKey:TWTJSONSchemaKeywordAdditionalProperties];
@@ -116,6 +121,19 @@
     [self setObject:stringNode.minimumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMinLength];
     [self setObject:stringNode.maximumLength inCurrentSchemaForKey:TWTJSONSchemaKeywordMaxLength];
     [self setObject:stringNode.pattern inCurrentSchemaForKey:TWTJSONSchemaKeywordPattern];
+}
+
+
+- (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode
+{
+    [self generateCommonSchemaFromNode:ambiguousNode];
+
+    for (TWTJSONSchemaASTNode *node in ambiguousNode.subNodes) {
+        node.typeSpecified = NO; //Type, if explicit, is printed by generateCommonSchemaFromNode:
+        [node acceptProcessor:self];
+        NSDictionary *subtypeSchema = [self popCurrentObject];
+        [[self currentObject] addEntriesFromDictionary:subtypeSchema];
+    }
 }
 
 
@@ -149,7 +167,7 @@
     if (dependencyNode.valueSchema) {
         [dependencyNode.valueSchema acceptProcessor:self];
     } else {
-        // Else, node has a property set, which is an array of strings
+        // Else, node has a property set, which is a set of strings
         [self pushNewObject:dependencyNode.propertySet];
     }
 
@@ -162,7 +180,13 @@
 - (void)generateCommonSchemaFromNode:(TWTJSONSchemaASTNode *)node
 {
     [self pushNewObject:[[NSMutableDictionary alloc] init]];
-    [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+    if (node.isTypeSpecified) {
+        if (node.validTypes.count > 1) {
+            [self setObject:node.validTypes inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        } else {
+            [self setObject:node.validTypes.anyObject inCurrentSchemaForKey:TWTJSONSchemaKeywordType];
+        }
+    }
     [self setObject:node.schemaTitle inCurrentSchemaForKey:TWTJSONSchemaKeywordTitle];
     [self setObject:node.schemaDescription inCurrentSchemaForKey:TWTJSONSchemaKeywordDescription];
     [self setObject:node.validValues inCurrentSchemaForKey:TWTJSONSchemaKeywordEnum];
@@ -220,7 +244,7 @@
         return nil;
     }
 
-    NSMutableArray *nodeArray = [[NSMutableArray alloc] init];
+    NSMutableArray *nodeArray = [[NSMutableArray alloc] initWithCapacity:array.count];
     for (TWTJSONSchemaASTNode *node in array) {
         [node acceptProcessor:self];
         [nodeArray addObject:[self popCurrentObject]];
@@ -250,6 +274,9 @@
 - (void)setObject:(id)object inCurrentSchemaForKey:(NSString *)key
 {
     if (object) {
+        if ([object isKindOfClass:[NSSet class]]) {
+            object = [object allObjects];
+        }
         [self.currentObject setObject:object forKey:key];
     }
 }

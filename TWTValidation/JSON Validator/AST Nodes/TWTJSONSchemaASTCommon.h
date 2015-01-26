@@ -35,3 +35,4 @@
 #import <TWTValidation/TWTJSONSchemaPatternPropertyASTNode.h>
 #import <TWTValidation/TWTJSONSchemaStringASTNode.h>
 #import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>
+#import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>

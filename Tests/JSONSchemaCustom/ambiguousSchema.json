@@ -1,0 +1,214 @@
+[
+    {
+        "description": "type keywords without type specified",
+        "schema": {
+            "minItems": 2,
+            "minLength": 5
+        },
+        "tests": [
+            {
+                "data": [
+                    1,
+                    2
+                ],
+                "description": "array with minItems is valid",
+                "valid": true
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "array with fewer than minItems is invalid",
+                "valid": false
+            },
+            {
+                "data": "hello",
+                "description": "string with minLength is valid",
+                "valid": true
+            },
+            {
+                "data": "hey",
+                "description": "string shorter than minLength is valid",
+                "valid": false
+            },
+            {
+                "data": 9,
+                "description": "things that are not strings or arrays are ignored",
+                "valid": true
+            },
+            {
+                "data": {
+                    "hello": [
+                        1,
+                        2
+                    ]
+                },
+                "description": "things that are not strings or arrays are ignored",
+                "valid": true
+            }
+        ]
+    },
+    {
+        "description": "array of types including null",
+        "schema": {
+            "type": [
+                "string",
+                "integer",
+                "null"
+            ]
+        },
+        "tests": [
+            {
+                "data": "hello",
+                "description": "string is one of specified types",
+                "valid": true
+            },
+            {
+                "data": 1,
+                "description": "integer is one of specified types",
+                "valid": true
+            },
+            {
+                "data": null,
+                "description": "null is one of specified types",
+                "valid": true
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "array is not one of specified types",
+                "valid": false
+            },
+            {
+                "data": {},
+                "description": "object is not one of specified types",
+                "valid": false
+            },
+            {
+                "data": 1.2,
+                "description": "number is not one of specified types",
+                "valid": false
+            },
+            {
+                "data": true,
+                "description": "boolean is not one of specified types",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "array of types including any",
+        "schema": {
+            "type": [
+                "string",
+                "integer",
+                "any"
+            ]
+        },
+        "tests": [
+            {
+                "data": "hello",
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": 1,
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": null,
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": {},
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": 1.2,
+                "description": "any type is valid",
+                "valid": true
+            },
+            {
+                "data": true,
+                "description": "any type is valid",
+                "valid": true
+            }
+        ]
+    },
+    {
+        "description": "array of types with both number and integer",
+        "schema": {
+            "type": [
+                "number",
+                "integer"
+            ]
+        },
+        "tests": [
+            {
+                "data": 3,
+                "description": "integers are valid",
+                "valid": true
+            },
+            {
+                "data": -4.25,
+                "description": "numbers are valid",
+                "valid": true
+            },
+            {
+                "data": null,
+                "description": "booleans are not one of specified types",
+                "valid": false
+            },
+            {
+                "data": [
+                    1
+                ],
+                "description": "arrays are not one of specified types",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "array of types with both number and integer plus minimum",
+        "schema": {
+            "minimum": -7.01,
+            "type": [
+                "number",
+                "integer"
+            ]
+        },
+        "tests": [
+            {
+                "data": 3,
+                "description": "integers are valid",
+                "valid": true
+            },
+            {
+                "data": -4.25,
+                "description": "numbers are valid",
+                "valid": true
+            },
+            {
+                "data": -8,
+                "description": "integer is below minimum",
+                "valid": false
+            },
+            {
+                "data": -801.234,
+                "description": "number is below minimum",
+                "valid": false
+            }
+        ]
+    }
+]

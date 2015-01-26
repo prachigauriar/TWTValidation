@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaValidTypesConstants.h
+//  TWTJSONSchemaAmbiguousASTNode.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/12/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,13 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
 
 
-// Valid types
-extern NSString *const TWTJSONSchemaTypeKeywordAny;
-extern NSString *const TWTJSONSchemaTypeKeywordArray;
-extern NSString *const TWTJSONSchemaTypeKeywordBoolean;
-extern NSString *const TWTJSONSchemaTypeKeywordInteger;
-extern NSString *const TWTJSONSchemaTypeKeywordNull;
-extern NSString *const TWTJSONSchemaTypeKeywordNumber;
-extern NSString *const TWTJSONSchemaTypeKeywordObject;
-extern NSString *const TWTJSONSchemaTypeKeywordString;
+@interface TWTJSONSchemaAmbiguousASTNode : TWTJSONSchemaASTNode
+
+@property (nonatomic, copy, readwrite) NSSet *validTypes;
+
+@property (nonatomic, copy) NSArray *subNodes;
+
+@end

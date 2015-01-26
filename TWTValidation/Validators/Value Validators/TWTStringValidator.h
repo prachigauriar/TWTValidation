@@ -26,9 +26,9 @@
 
 #import <TWTValidation/TWTValueValidator.h>
 
-@class TWTBoundedLengthStringValidator, TWTRegularExpressionStringValidator,
-       TWTPrefixStringValidator, TWTSuffixStringValidator, TWTSubstringStringValidator,
-       TWTWildcardPatternStringValidator, TWTCharacterSetStringValidator;
+@class TWTBoundedLengthStringValidator, TWTBoundedComposedCharacterLengthStringValidator,
+       TWTRegularExpressionStringValidator, TWTPrefixStringValidator, TWTSuffixStringValidator,
+       TWTSubstringStringValidator, TWTWildcardPatternStringValidator, TWTCharacterSetStringValidator;
 
 
 /*!
@@ -74,6 +74,18 @@
      lengths.
  */
 + (TWTBoundedLengthStringValidator *)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
+
+/*!
+ @abstract Creates and returns a new string validator that validates that strings have the specified minimum 
+     and maximum lengths, where length is defined as the number of composed characters.
+ @discussion This method creates a new TWTBoundedComposedCharacterLengthStringValidator with the appropriate 
+     minimum and maximum lengths.
+ @param minimumLength The minimum length for valid strings. Use 0 to indicate no minimum.
+ @param maximumLength The maximum length for valid strings. Use NSUIntegerMax to indicate no maximum.
+ @result A newly created string validator that validates that strings have the specified minimum and maximum
+     lengths.
+ */
++ (TWTBoundedComposedCharacterLengthStringValidator *)stringValidatorWithComposedCharacterMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
 
 /*!
  @abstract Creates and returns a new string validator that validates that strings match the specified regular
@@ -157,6 +169,18 @@
  @result An initialized bounded length string validator with the specified minimum and maximum lengths.
  */
 - (instancetype)initWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
+
+@end
+
+
+/*!
+ TWTBoundedComposedCharacterLengthStringValidators validate that unicode strings have lengths within mininimum and maximum values, 
+ treating "length" as the number of composed characters. This class should be used when validating length on characters that
+ are not contained on the Basic Multilingual Plane, for example, emojis and decomposed characters (é represented as \u0065\u0301).
+ There is no need to create instances of this class directly. Instead, use the appropriate factory methods
+ on TWTStringValidator. This class is exposed so that it may be easily subclassed if necessary.
+ */
+@interface TWTBoundedComposedCharacterLengthStringValidator : TWTBoundedLengthStringValidator
 
 @end
 

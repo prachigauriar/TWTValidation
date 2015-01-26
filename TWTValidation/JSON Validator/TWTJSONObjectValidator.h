@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaPrettyPrinter.h
+//  TWTJSONObjectValidator.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 1/7/15.
+//  Created by Jill Cohen on 1/14/15.
 //  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,11 +24,18 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaASTProcessor.h>
+#import <TWTValidation/TWTValidator.h>
 
 
-@interface TWTJSONSchemaPrettyPrinter : NSObject <TWTJSONSchemaASTProcessor>
+@interface TWTJSONObjectValidator : TWTValidator
 
-- (NSDictionary *)objectFromSchema:(TWTJSONSchemaTopLevelASTNode *)topLevelNode;
+@property (nonatomic, copy, readonly) NSDictionary *schema;
+
++ (TWTJSONObjectValidator *)validatorWithJSONSchema:(NSDictionary *)schema
+                                              error:(NSError *__autoreleasing *)outError
+                                           warnings:(NSArray *__autoreleasing *)outWarnings;
+
+- (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator
+                          typeValidator:(TWTValidator *)typeValidator;
 
 @end

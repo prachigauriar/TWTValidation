@@ -123,6 +123,12 @@
 }
 
 
++ (TWTBoundedComposedCharacterLengthStringValidator *)stringValidatorWithComposedCharacterMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength
+{
+    return [[TWTBoundedComposedCharacterLengthStringValidator alloc] initWithMinimumLength:minimumLength maximumLength:maximumLength];
+}
+
+
 + (TWTRegularExpressionStringValidator *)stringValidatorWithRegularExpression:(NSRegularExpression *)regularExpression options:(NSMatchingOptions)options
 {
     return [[TWTRegularExpressionStringValidator alloc] initWithRegularExpression:regularExpression options:options];
@@ -223,9 +229,10 @@
 
     NSInteger errorCode = -1;
 
-    if ([value length] < self.minimumLength) {
+    NSUInteger length = [self lengthOfString:value];
+    if (length < self.minimumLength) {
         errorCode = TWTValidationErrorCodeLengthLessThanMinimum;
-    } else if ([value length] > self.maximumLength) {
+    } else if (length > self.maximumLength) {
         errorCode = TWTValidationErrorCodeLengthGreaterThanMaximum;
     } else {
         return YES;
@@ -236,12 +243,12 @@
         switch (errorCode) {
             case TWTValidationErrorCodeLengthLessThanMinimum: {
                 NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthLessThanMinimum.validationError.format");
-                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
+                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
                 break;
             }
             case TWTValidationErrorCodeLengthGreaterThanMaximum: {
                 NSString *descriptionFormat = TWTLocalizedString(@"TWTBoundedLengthStringValidator.lengthGreaterThanMaximum.validationError.format");
-                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)[value length], (unsigned long)self.minimumLength];
+                description = [NSString stringWithFormat:descriptionFormat, (unsigned long)length, (unsigned long)self.minimumLength];
                 break;
             }
         }
@@ -250,6 +257,24 @@
     }
     
     return NO;
+}
+
+
+- (NSUInteger)lengthOfString:(NSString *)string
+{
+    return [string length];
+}
+
+@end
+
+
+#pragma mark
+
+@implementation TWTBoundedComposedCharacterLengthStringValidator
+
+- (NSUInteger)lengthOfString:(NSString *)string
+{
+    return [string lengthOfBytesUsingEncoding:NSUTF32StringEncoding] / 4;
 }
 
 @end
