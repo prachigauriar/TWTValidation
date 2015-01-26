@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTValidation.h>
+#import <TWTValidation/TWTValidator.h>
 
 
 @interface TWTJSONObjectValidator : TWTValidator

@@ -76,14 +76,14 @@
 + (TWTBoundedLengthStringValidator *)stringValidatorWithMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
 
 /*!
- @abstract Creates and returns a new string validator that validates that strings are of the specified strings
- have the specified minimum and maximum lengths, given by number of composed characters.
- @discussion This method creates a new TWTBoundedComposedCharacterLengthStringValidator with the appropriate minimum and
- maximum lengths.
+ @abstract Creates and returns a new string validator that validates that strings have the specified minimum 
+     and maximum lengths, where length is defined as the number of composed characters.
+ @discussion This method creates a new TWTBoundedComposedCharacterLengthStringValidator with the appropriate 
+     minimum and maximum lengths.
  @param minimumLength The minimum length for valid strings. Use 0 to indicate no minimum.
  @param maximumLength The maximum length for valid strings. Use NSUIntegerMax to indicate no maximum.
  @result A newly created string validator that validates that strings have the specified minimum and maximum
- lengths.
+     lengths.
  */
 + (TWTBoundedComposedCharacterLengthStringValidator *)stringValidatorWithComposedCharacterMinimumLength:(NSUInteger)minimumLength maximumLength:(NSUInteger)maximumLength;
 

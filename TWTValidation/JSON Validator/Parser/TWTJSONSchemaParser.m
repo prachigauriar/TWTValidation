@@ -201,8 +201,10 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     if (node.pattern) {
         NSError *error = nil;
         NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:node.pattern options:0 error:&error];
-        if (error) {
+        if (!regularExpression) {
+            [self pushPathComponent:TWTJSONSchemaKeywordPattern];
             [self warnWithFormat:@"Pattern %@ is not a valid regular expression, so it will not be used for validation. (All instances will pass.)", node.pattern];
+            [self popPathComponent];
         } else {
             node.regularExpression = regularExpression;
         }
@@ -216,8 +218,14 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     node.minimumPropertyCount = [self parseUnsignedIntegerForKey:TWTJSONSchemaKeywordMinProperties schema:objectSchema];
     NSArray *requiredKeys = [self parseNonEmptyArrayOfUnqiueStringsForKey:TWTJSONSchemaKeywordRequired schema:objectSchema];
     node.requiredPropertyKeys = requiredKeys ? [NSSet setWithArray:requiredKeys] : nil;
-    node.propertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaNamedPropertyASTNode class]];
-    node.patternPropertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordPatternProperties schema:objectSchema keyValuePairNodeClass:[TWTJSONSchemaPatternPropertyASTNode class]];
+    node.propertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordProperties
+                                                         schema:objectSchema
+                                          keyValuePairNodeClass:[TWTJSONSchemaNamedPropertyASTNode class]];
+
+    node.patternPropertySchemas = [self parseDictionaryOfSchemasForKey:TWTJSONSchemaKeywordPatternProperties
+                                                                schema:objectSchema
+                                                 keyValuePairNodeClass:[TWTJSONSchemaPatternPropertyASTNode class]];
+
     node.additionalPropertiesNode = [self parseAdditionalItemsOrPropertiesForKey:TWTJSONSchemaKeywordAdditionalProperties schema:objectSchema];
     node.propertyDependencies = [self parseDependenciesWithSchema:objectSchema];
 }
@@ -227,7 +235,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 {
     node.validTypes = [NSSet setWithArray:types];
 
-    NSMutableArray *subNodes = [[NSMutableArray alloc] init];
+    NSMutableArray *subNodes = [[NSMutableArray alloc] initWithCapacity:types.count];
     for (NSString *type in types) {
         id subNode = nil;
 
@@ -443,7 +451,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     [self pushPathComponent:key];
     [self failIfObjectIsNotArrayWithAtLeastOneItem:array allowsNil:NO];
 
-    NSMutableArray *schemaNodes = [[NSMutableArray alloc] init];
+    NSMutableArray *schemaNodes = [[NSMutableArray alloc] initWithCapacity:array.count];
     [array enumerateObjectsUsingBlock:^(NSDictionary *itemSchema , NSUInteger index, BOOL *stop) {
         [self pushPathComponent:@(index)];
         [schemaNodes addObject:[self parseSchema:itemSchema]];
@@ -470,7 +478,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     [self pushPathComponent:key];
     [self failIfObject:nestedSchema isNotKindOfClass:[NSDictionary class] allowsNil:YES];
 
-    NSMutableArray *propertyNodes = [[NSMutableArray alloc] init];
+    NSMutableArray *propertyNodes = [[NSMutableArray alloc] initWithCapacity:nestedSchema.count];
     [nestedSchema enumerateKeysAndObjectsUsingBlock:^(NSString *propertyKey, id object, BOOL *stop) {
         [self pushPathComponent:propertyKey];
         TWTJSONSchemaASTNode *valueNode = [self parseSchema:object];
@@ -507,7 +515,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     }
 
     [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
-
     if ([type isKindOfClass:[NSArray class]]) {
 
         // Case B: Type is an array
@@ -538,13 +545,13 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         objectKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMaxProperties, TWTJSONSchemaKeywordMinProperties, TWTJSONSchemaKeywordRequired,
-                          TWTJSONSchemaKeywordProperties, TWTJSONSchemaKeywordAdditionalProperties, TWTJSONSchemaKeywordPatternProperties,
-                          TWTJSONSchemaKeywordDependencies, nil];
+                                               TWTJSONSchemaKeywordProperties, TWTJSONSchemaKeywordAdditionalProperties, TWTJSONSchemaKeywordPatternProperties,
+                                               TWTJSONSchemaKeywordDependencies, nil];
         arrayKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordItems, TWTJSONSchemaKeywordAdditionalItems, TWTJSONSchemaKeywordMaxItems,
-                         TWTJSONSchemaKeywordMinItems, TWTJSONSchemaKeywordUniqueItems, nil];
+                                              TWTJSONSchemaKeywordMinItems, TWTJSONSchemaKeywordUniqueItems, nil];
         stringKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMaxLength, TWTJSONSchemaKeywordMinLength, TWTJSONSchemaKeywordPattern, nil];
         numberKeywords = [NSSet setWithObjects:TWTJSONSchemaKeywordMultipleOf, TWTJSONSchemaKeywordMaximum, TWTJSONSchemaKeywordMinimum,
-                          TWTJSONSchemaKeywordExclusiveMaximum, TWTJSONSchemaKeywordExclusiveMinimum, nil];
+                                               TWTJSONSchemaKeywordExclusiveMaximum, TWTJSONSchemaKeywordExclusiveMinimum, nil];
     });
 
     NSSet *keys = [NSSet setWithArray:[schema allKeys]];
@@ -667,7 +674,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     [self pushPathComponent:TWTJSONSchemaKeywordDependencies];
     [self failIfObject:dependencies isNotKindOfClass:[NSDictionary class] allowsNil:NO];
 
-    NSMutableArray *dependencyNodes = [[NSMutableArray alloc] init];
+    NSMutableArray *dependencyNodes = [[NSMutableArray alloc] initWithCapacity:dependencies.count];
     [dependencies enumerateKeysAndObjectsUsingBlock:^(NSString *key, id object, BOOL *stop) {
         [self pushPathComponent:key];
 

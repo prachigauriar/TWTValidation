@@ -59,11 +59,8 @@
 
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
     NSError *parsingError = nil;
-    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&parsingError warnings:outWarnings];
-    if (parsingError) {
-        if (outError) {
-            *outError = parsingError;
-        }
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:outError warnings:outWarnings];
+    if (!topLevelNode) {
         return nil;
     }
 
@@ -87,7 +84,9 @@
 
     if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordBoolean]) {
         typeValidator = [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSValue *)value objCType], @encode(BOOL)) == 0;
+            // Checks that a value is an NSNumber and is encoded as a boolean
+            // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
+            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) == 0;
         }];
     } else if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordNull]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
@@ -110,8 +109,8 @@
     }
 
     TWTValidator *additionalItemsValidator = [self validatorFromNode:arrayNode.additionalItemsNode];
-    TWTJSONSchemaArrayValidator *typeValidator = [[TWTJSONSchemaArrayValidator alloc] initWithMaximumItemCount:arrayNode.maximumItemCount
-                                                                                              minimumItemCount:arrayNode.minimumItemCount
+    TWTJSONSchemaArrayValidator *typeValidator = [[TWTJSONSchemaArrayValidator alloc] initWithMinimumItemCount:arrayNode.minimumItemCount
+                                                                                              maximumItemCount:arrayNode.maximumItemCount
                                                                                            requiresUniqueItems:arrayNode.requiresUniqueItems
                                                                                                  itemValidator:itemValidator
                                                                                          indexedItemValidators:indexedItemValidators
@@ -127,9 +126,7 @@
 
     [self pushNewObject:[[NSMutableArray alloc] init]];
 
-    [self addSubvalidator:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-        return [value isKindOfClass:[NSNumber class]] && strcmp([(NSValue *)value objCType], @encode(BOOL)) != 0;
-    }]];
+    [self addSubvalidator:[self numberTypeValidator]];
 
     if (numberNode.minimum || numberNode.maximum || numberNode.requireIntegralValue) {
         TWTNumberValidator *validator = [[TWTNumberValidator alloc] initWithMinimum:numberNode.minimum maximum:numberNode.maximum];
@@ -142,12 +139,16 @@
     if (numberNode.multipleOf) {
         double multipleOfValue = numberNode.multipleOf.doubleValue;
         [self addSubvalidator:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
+            if (![value isKindOfClass:[NSNumber class]]) {
+                return NO;
+            }
+            
             double result = [(NSNumber *)value doubleValue] / multipleOfValue;
             return result == trunc(result);
         }]];
     }
 
-    TWTValidator *typeValidator = [self collectSubvalidators];
+    TWTValidator *typeValidator = [self validatorFromSubvalidators];
     [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:typeValidator node:numberNode];
 }
 
@@ -160,8 +161,8 @@
     NSArray *patterns = [self validatorsFromNodeArray:objectNode.patternPropertySchemas];
     TWTValidator *additionalPropertiesValidator = [self validatorFromNode:objectNode.additionalPropertiesNode];
     NSDictionary *dependencies = [self dependencyDictionaryFromNodeArray:objectNode.propertyDependencies];
-    TWTJSONSchemaObjectValidator *typeValidator = [[TWTJSONSchemaObjectValidator alloc] initWithMaximumPropertyCount:objectNode.maximumPropertyCount
-                                                                                                minimumPropertyCount:objectNode.minimumPropertyCount
+    TWTJSONSchemaObjectValidator *typeValidator = [[TWTJSONSchemaObjectValidator alloc] initWithMinimumPropertyCount:objectNode.minimumPropertyCount
+                                                                                                maximumPropertyCount:objectNode.maximumPropertyCount
                                                                                                 requiredPropertyKeys:objectNode.requiredPropertyKeys
                                                                                                   propertyValidators:properties
                                                                                            patternPropertyValidators:patterns
@@ -186,7 +187,7 @@
         [self addSubvalidator:[TWTStringValidator stringValidatorWithRegularExpression:stringNode.regularExpression options:0]];
     }
 
-    TWTValidator *typeValidator = [self collectSubvalidators];
+    TWTValidator *typeValidator = [self validatorFromSubvalidators];
     if (!typeValidator) {
         typeValidator = [[TWTStringValidator alloc] init];
     }
@@ -198,7 +199,7 @@
 - (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode
 {
     TWTValidator *commonValidator = [self commonValidatorFromNode:ambiguousNode];
-    NSMutableArray *orValidators = [[NSMutableArray alloc] init];
+    NSMutableArray *orValidators = [[NSMutableArray alloc] initWithCapacity:ambiguousNode.subNodes.count];
     for (TWTJSONSchemaASTNode *subNode in ambiguousNode.subNodes) {
         [subNode acceptProcessor:self];
         [orValidators addObject:[self popCurrentObject]];
@@ -258,7 +259,7 @@
         [self addSubvalidator:[TWTCompoundValidator notValidatorWithSubvalidator:[self popCurrentObject]]];
     }
 
-    return [self collectSubvalidators];
+    return [self validatorFromSubvalidators];
 }
 
 
@@ -319,15 +320,13 @@
 {
     NSParameterAssert(types.count);
 
-    NSMutableSet *subvalidators = [[NSMutableSet alloc] init];
+    NSMutableArray *subvalidators = [[NSMutableArray alloc] initWithCapacity:types.count];
 
     if ([types containsObject:TWTJSONSchemaTypeKeywordArray]) {
         [subvalidators addObject:[TWTValueValidator valueValidatorWithClass:[NSArray class] allowsNil:NO allowsNull:NO]];
     }
     if ([types containsObject:TWTJSONSchemaTypeKeywordNumber]) {
-        [subvalidators addObject:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSValue *)value objCType], @encode(BOOL)) != 0;
-        }]];
+        [subvalidators addObject:[self numberTypeValidator]];
     }
     if ([types containsObject:TWTJSONSchemaTypeKeywordObject]) {
         [subvalidators addObject:[TWTValueValidator valueValidatorWithClass:[NSDictionary class] allowsNil:NO allowsNull:NO]];
@@ -341,8 +340,19 @@
     // "Boolean" and "null" will never be implied types because they have no type-specific keywords.
     // If "any" is the implied type, then no type validator exists as the counterpoint to this "not."
 
-    TWTValidator *subvalidator = subvalidators.count > 1 ? [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators.allObjects] : subvalidators.anyObject;
+    TWTValidator *subvalidator = subvalidators.count > 1 ? [TWTCompoundValidator orValidatorWithSubvalidators:subvalidators] : subvalidators.firstObject;
     return [TWTCompoundValidator notValidatorWithSubvalidator:subvalidator];
+}
+
+
+- (TWTValidator *)numberTypeValidator
+{
+    return [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
+        // Checks that a value is an NSNumber and is NOT encoded as a boolean
+        // The NOT is used because a valid value may be encoded as one of several number types (int, double, float, etc.)
+        // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
+        return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) != 0;
+    }];
 }
 
 
@@ -372,16 +382,14 @@
 }
 
 
-- (TWTValidator *)collectSubvalidators
+- (TWTValidator *)validatorFromSubvalidators
 {
     NSArray *subvalidators = [self popCurrentObject];
     switch (subvalidators.count) {
         case 0:
             return nil;
-
         case 1:
             return subvalidators.firstObject;
-
         default:
             return [TWTCompoundValidator andValidatorWithSubvalidators:subvalidators];
     }

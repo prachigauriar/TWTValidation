@@ -46,7 +46,7 @@
     NSParameterAssert(schema);
     TWTJSONObjectValidatorGenerator *generator = [[TWTJSONObjectValidatorGenerator alloc] init];
     TWTJSONObjectValidator *validator = [generator validatorFromJSONSchema:schema error:outError warnings:outWarnings];
-    validator.schema = [schema copy];
+    validator.schema = schema;
 
     return validator;
 }
@@ -84,13 +84,14 @@
     }
 
     typeof(self) other = object;
-    return [other.commonValidator isEqual:self.commonValidator] && [other.typeValidator isEqual:self.typeValidator];
+    return (other.commonValidator == self.commonValidator || [other.commonValidator isEqual:self.commonValidator]) &&
+        (other.typeValidator == self.typeValidator || [other.typeValidator isEqual:self.typeValidator]);
 }
 
 
 - (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
 {
-    // Does not call super becaues NULL can be valid 
+    // Does not call super because NULL can be valid
     if (!self.commonValidator && !self.typeValidator) {
         return YES;
     }

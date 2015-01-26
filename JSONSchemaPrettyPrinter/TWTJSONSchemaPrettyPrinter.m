@@ -244,7 +244,7 @@
         return nil;
     }
 
-    NSMutableArray *nodeArray = [[NSMutableArray alloc] init];
+    NSMutableArray *nodeArray = [[NSMutableArray alloc] initWithCapacity:array.count];
     for (TWTJSONSchemaASTNode *node in array) {
         [node acceptProcessor:self];
         [nodeArray addObject:[self popCurrentObject]];

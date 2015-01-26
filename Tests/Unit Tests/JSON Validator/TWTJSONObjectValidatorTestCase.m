@@ -94,22 +94,26 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (NSArray *)testsInDirectory:(NSString *)directoryPath
 {
-    NSArray *testFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];
+    NSArray *testFilenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];
     NSMutableArray *tests = [[NSMutableArray alloc] init];
 
-    for (NSString *file in testFiles) {
-        if ([file containsString:@".json"]) {
+    for (NSString *filename in testFilenames) {
+        if ([filename hasSuffix:@".json"]) {
             NSError *error = nil;
-            NSData *fileData = [NSData dataWithContentsOfFile:[directoryPath stringByAppendingString:file]];
+            NSData *fileData = [NSData dataWithContentsOfFile:[directoryPath stringByAppendingPathComponent:filename] options:0 error:&error];
+            if (error) {
+                NSLog(@"%@", error.description);
+                return nil;
+            }
             id JSONObject = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:&error];
 
             if (error) {
-                fprintf(stderr, "Error reading file: %s\n", [error.description UTF8String]);
+                NSLog(@"Error reading file: %@", error.description);
                 return nil;
             }
 
             if (![JSONObject isKindOfClass:[NSArray class]]) {
-                fprintf(stderr, "Expected array of dictionaries with schema as value for ""schema"" key.\n");
+                NSLog(@"Expected array of dictionaries with schema as value for ""schema"" key.");
                 return nil;
             }
             

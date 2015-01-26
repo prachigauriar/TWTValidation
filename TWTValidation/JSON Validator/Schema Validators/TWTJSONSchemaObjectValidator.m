@@ -26,11 +26,15 @@
 
 #import <TWTValidation/TWTJSONSchemaObjectValidator.h>
 
+#import <TWTValidation/TWTKeyedCollectionValidator.h>
+#import <TWTValidation/TWTNumberValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
+
 @interface TWTJSONSchemaObjectValidator ()
 
+@property (nonatomic, strong, readonly) TWTNumberValidator *countValidator;
 @property (nonatomic, strong, readonly) NSDictionary *propertyAndValidators;
 
 @end
@@ -38,8 +42,8 @@
 
 @implementation TWTJSONSchemaObjectValidator
 
-- (instancetype)initWithMaximumPropertyCount:(NSNumber *)maximumPropertyCount
-                        minimumPropertyCount:(NSNumber *)minimumPropertyCount
+- (instancetype)initWithMinimumPropertyCount:(NSNumber *)minimumPropertyCount
+                        maximumPropertyCount:(NSNumber *)maximumPropertyCount
                         requiredPropertyKeys:(NSSet *)requiredPropertyKeys
                           propertyValidators:(NSArray *)propertyValidators
                    patternPropertyValidators:(NSArray *)patternPropertyValidators
@@ -48,8 +52,8 @@
 {
     self = [super init];
     if (self) {
-        _maximumPropertyCount = maximumPropertyCount;
         _minimumPropertyCount = minimumPropertyCount;
+        _maximumPropertyCount = maximumPropertyCount;
         _requiredPropertyKeys = [requiredPropertyKeys copy];
         _propertyValidators = [propertyValidators copy];
         _patternPropertyValidators = [patternPropertyValidators copy];
@@ -63,6 +67,10 @@
         }
         _propertyAndValidators = [propertyValidatorsByKey copy];
 
+        if (minimumPropertyCount || maximumPropertyCount) {
+            _countValidator = [[TWTNumberValidator alloc] initWithMinimum:minimumPropertyCount maximum:maximumPropertyCount];
+        }
+
     }
     return self;
 }
@@ -70,8 +78,34 @@
 
 - (instancetype)init
 {
-    return [self initWithMaximumPropertyCount:nil minimumPropertyCount:nil requiredPropertyKeys:nil propertyValidators:nil patternPropertyValidators:nil
+    return [self initWithMinimumPropertyCount:nil maximumPropertyCount:nil requiredPropertyKeys:nil propertyValidators:nil patternPropertyValidators:nil
                 additionalPropertiesValidator:nil propertyDependencies:nil];
+}
+
+
+- (NSUInteger)hash
+{
+    return [super hash] ^ self.minimumPropertyCount.hash ^ self.maximumPropertyCount.hash ^ self.requiredPropertyKeys.hash ^ self.propertyValidators.hash ^
+        self.patternPropertyValidators.hash ^ self.additionalPropertiesValidator.hash ^ self.propertyDependencies.hash;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![super isEqual:object]) {
+        return NO;
+    } else if (self == object) {
+        return YES;
+    }
+
+    typeof(self) other = object;
+    return  (other.minimumPropertyCount == self.minimumPropertyCount || (self.minimumPropertyCount && [other.minimumPropertyCount isEqual:self.minimumPropertyCount])) &&
+        (other.maximumPropertyCount == self.maximumPropertyCount || (self.maximumPropertyCount && [other.maximumPropertyCount isEqualToNumber:self.maximumPropertyCount])) &&
+        (other.requiredPropertyKeys == self.requiredPropertyKeys || [other.requiredPropertyKeys isEqualToSet:self.requiredPropertyKeys]) &&
+        (other.propertyValidators == self.propertyValidators || [other.propertyValidators isEqualToArray:self.propertyValidators]) &&
+        (other.patternPropertyValidators == self.patternPropertyValidators || [other.patternPropertyValidators isEqualToArray:self.patternPropertyValidators]) &&
+        (other.additionalPropertiesValidator == self.additionalPropertiesValidator || [other.additionalPropertiesValidator isEqual:self.additionalPropertiesValidator]) &&
+        (other.propertyDependencies == self.propertyDependencies || [other.propertyDependencies isEqualToDictionary:self.propertyDependencies]);
 }
 
 
@@ -105,9 +139,8 @@
 
     NSSet *keysSet = [NSSet setWithArray:[value allKeys]];
 
-    if (self.maximumPropertyCount || self.minimumPropertyCount) {
-        TWTValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:self.minimumPropertyCount maximum:self.maximumPropertyCount];
-        countValidated = [countValidator validateValue:@([value count]) error:&countError];
+    if (self.countValidator) {
+        countValidated = [self.countValidator validateValue:@([value count]) error:&countError];
     }
 
     if (self.requiredPropertyKeys && ![self.requiredPropertyKeys isSubsetOfSet:keysSet]) {

@@ -24,13 +24,13 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTValidation.h>
+#import <TWTValidation/TWTValidator.h>
 
 
 @interface TWTJSONSchemaObjectValidator : TWTValidator <NSCopying>
 
-@property (nonatomic, strong, readonly) NSNumber *maximumPropertyCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumPropertyCount;
+@property (nonatomic, strong, readonly) NSNumber *maximumPropertyCount;
 @property (nonatomic, copy, readonly) NSSet *requiredPropertyKeys;
 @property (nonatomic, copy, readonly) NSArray *propertyValidators;
 @property (nonatomic, copy, readonly) NSArray *patternPropertyValidators;
@@ -39,8 +39,8 @@
 @property (nonatomic, copy, readonly) NSDictionary *propertyDependencies;
 
 
-- (instancetype)initWithMaximumPropertyCount:(NSNumber *)maximumPropertyCount
-                        minimumPropertyCount:(NSNumber *)minimumPropertyCount
+- (instancetype)initWithMinimumPropertyCount:(NSNumber *)minimumPropertyCount
+                        maximumPropertyCount:(NSNumber *)maximumPropertyCount
                         requiredPropertyKeys:(NSSet *)requiredPropertyKeys
                           propertyValidators:(NSArray *)propertyValidators
                    patternPropertyValidators:(NSArray *)patternPropertyValidators

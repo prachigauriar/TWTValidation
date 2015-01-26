@@ -24,12 +24,22 @@
 //  THE SOFTWARE.
 //
 
-#import "TWTJSONSchemaArrayValidator.h"
+#import <TWTValidation/TWTJSONSchemaArrayValidator.h>
+
+#import <TWTValidation/TWTNumberValidator.h>
+
+
+@interface TWTJSONSchemaArrayValidator ()
+
+@property (nonatomic, strong, readonly) TWTNumberValidator *countValidator;
+
+@end
+
 
 @implementation TWTJSONSchemaArrayValidator
 
-- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
-                        minimumItemCount:(NSNumber *)minimumItemCount
+- (instancetype)initWithMinimumItemCount:(NSNumber *)minimumItemCount
+                        maximumItemCount:(NSNumber *)maximumItemCount
                      requiresUniqueItems:(BOOL)requiresUniqueItems
                            itemValidator:(TWTValidator *)itemValidator
                    indexedItemValidators:(NSArray *)indexedItemValidators
@@ -37,21 +47,31 @@
 {
     self = [super init];
     if (self) {
-        _maximumItemCount = maximumItemCount;
         _minimumItemCount = minimumItemCount;
+        _maximumItemCount = maximumItemCount;
         _requiresUniqueItems = requiresUniqueItems;
         _itemValidator = itemValidator;
         _indexedItemValidators = [indexedItemValidators copy];
         _additionalItemsValidator = additionalItemsValidator;
+
+        if (minimumItemCount || maximumItemCount) {
+            _countValidator = [[TWTNumberValidator alloc] initWithMinimum:minimumItemCount maximum:maximumItemCount];
+        }
     }
     return self;
 }
 
 
+- (instancetype)init
+{
+    return [self initWithMinimumItemCount:nil maximumItemCount:nil requiresUniqueItems:NO itemValidator:nil indexedItemValidators:nil additionalItemsValidator:nil];
+}
+
+
 - (NSUInteger)hash
 {
-    return [super hash] ^ self.maximumItemCount.hash ^ self.minimumItemCount.hash ^ self.requiresUniqueItems ^ self.itemValidator.hash ^
-    self.indexedItemValidators.hash ^ self.additionalItemsValidator.hash;
+    return [super hash] ^ self.minimumItemCount.hash ^ self.maximumItemCount.hash ^ self.requiresUniqueItems ^ self.itemValidator.hash ^
+        self.indexedItemValidators.hash ^ self.additionalItemsValidator.hash;
 }
 
 
@@ -64,9 +84,12 @@
     }
 
     typeof(self) other = object;
-    return [other.maximumItemCount isEqual:self.maximumItemCount] && [other.minimumItemCount isEqual:self.minimumItemCount] &&
-    other.requiresUniqueItems == self.requiresUniqueItems && [other.itemValidator isEqual:self.itemValidator] &&
-    [other.indexedItemValidators isEqual:self.indexedItemValidators] && [other.additionalItemsValidator isEqual:self.additionalItemsValidator];
+    return other.requiresUniqueItems == self.requiresUniqueItems &&
+        (other.minimumItemCount == self.minimumItemCount || (self.minimumItemCount && [other.minimumItemCount isEqual:self.minimumItemCount])) &&
+        (other.maximumItemCount == self.maximumItemCount || (self.maximumItemCount && [other.maximumItemCount isEqualToNumber:self.maximumItemCount])) &&
+        (other.itemValidator == self.itemValidator || [other.itemValidator isEqual:self.itemValidator]) &&
+        (other.indexedItemValidators == self.indexedItemValidators || [other.indexedItemValidators isEqualToArray:self.indexedItemValidators]) &&
+        (other.additionalItemsValidator == self.additionalItemsValidator || [other.additionalItemsValidator isEqual:self.additionalItemsValidator]);
 
 }
 
@@ -95,9 +118,8 @@
     NSMutableArray *itemsErrors = outError ? [[NSMutableArray alloc] init] : nil;
     NSMutableArray *additionalItemsErrors = outError ? [[NSMutableArray alloc] init] : nil;
 
-    if (self.maximumItemCount || self.minimumItemCount) {
-        TWTValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:self.minimumItemCount maximum:self.maximumItemCount];
-        countValidated = [countValidator validateValue:@([value count]) error:&countError];
+    if (self.countValidator) {
+        countValidated = [self.countValidator validateValue:@([value count]) error:&countError];
     }
 
     if (self.requiresUniqueItems) {

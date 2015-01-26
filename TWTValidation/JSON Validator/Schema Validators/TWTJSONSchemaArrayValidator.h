@@ -24,20 +24,20 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTValidation.h>
+#import <TWTValidation/TWTValidator.h>
 
 
 @interface TWTJSONSchemaArrayValidator : TWTValidator <NSCopying>
 
-@property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
 @property (nonatomic, strong, readonly) NSNumber *minimumItemCount;
+@property (nonatomic, strong, readonly) NSNumber *maximumItemCount;
 @property (nonatomic, assign, readonly) BOOL requiresUniqueItems;
 @property (nonatomic, strong, readonly) TWTValidator *itemValidator;
 @property (nonatomic, copy, readonly) NSArray *indexedItemValidators;
 @property (nonatomic, strong, readonly) TWTValidator *additionalItemsValidator; // either JSON validator or always passing/failing
 
-- (instancetype)initWithMaximumItemCount:(NSNumber *)maximumItemCount
-                        minimumItemCount:(NSNumber *)minimumItemCount
+- (instancetype)initWithMinimumItemCount:(NSNumber *)minimumItemCount
+                        maximumItemCount:(NSNumber *)maximumItemCount
                      requiresUniqueItems:(BOOL)requiresUniqueItems
                            itemValidator:(TWTValidator *)itemValidator
                    indexedItemValidators:(NSArray *)indexedItemValidators
