@@ -32,6 +32,7 @@
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
 #import <TWTValidation/TWTJSONSchemaObjectValidator.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 @interface TWTJSONObjectValidatorGenerator ()
@@ -83,11 +84,7 @@
     TWTValidator *typeValidator = nil;
 
     if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordBoolean]) {
-        typeValidator = [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-            // Checks that a value is an NSNumber and is encoded as a boolean
-            // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
-            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) == 0;
-        }];
+        typeValidator = [self booleanTypeValidator];
     } else if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordNull]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
     }
@@ -214,7 +211,14 @@
 {
     BOOL validates = booleanValueNode.booleanValue;
     [self pushNewObject:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-        // Error needs to be written in validator class because context is unknown here
+        if (!validates && outError) {
+            // If in the future a booleanValue node is used for any node properties other than additional items/properties,
+            // the error code must be updated
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeAdditionalElementsNotAllowed
+                                            failingValidator:nil
+                                                       value:nil
+                                        localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.validationError")];
+        }
         return validates;
     }]];
 }
@@ -351,7 +355,43 @@
         // Checks that a value is an NSNumber and is NOT encoded as a boolean
         // The NOT is used because a valid value may be encoded as one of several number types (int, double, float, etc.)
         // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
-        return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) != 0;
+        BOOL validated = [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) != 0;
+        if (!validated && outError) {
+            NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");
+            NSString *description = nil;
+            if ([value isKindOfClass:[NSNumber class]]) {
+                description = [NSString stringWithFormat:descriptionFormat, @"boolean", @"number"];
+            } else {
+                description = [NSString stringWithFormat:descriptionFormat, [value class], [NSNumber class]];
+            }
+
+            // Failing validator and value are implemented in TWTBlockValidator
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass failingValidator:nil value:nil localizedDescription:description];
+        }
+        return validated;
+    }];
+}
+
+
+- (TWTValidator *)booleanTypeValidator
+{
+    return [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
+        // Checks that a value is an NSNumber and is encoded as a boolean
+        // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
+        BOOL validated = [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) == 0;
+        if (!validated && outError) {
+            NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");
+            NSString *description = nil;
+            if ([value isKindOfClass:[NSNumber class]]) {
+                description = [NSString stringWithFormat:descriptionFormat, @"number", @"boolean"];
+            } else {
+                description = [NSString stringWithFormat:descriptionFormat, [value class], [NSNumber class]];
+            }
+
+            // Failing validator and value are implemented in TWTBlockValidator
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass failingValidator:nil value:nil localizedDescription:description];
+        }
+        return validated;
     }];
 }
 

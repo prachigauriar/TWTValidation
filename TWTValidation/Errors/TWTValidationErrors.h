@@ -142,7 +142,25 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeValueNotCollection,
 
     /*! Indicates a value is not a keyed collection for the purposes of keyed collection validation. */
-    TWTValidationErrorCodeValueNotKeyedCollection
+    TWTValidationErrorCodeValueNotKeyedCollection, 
+
+    /*! Indicates a value is not valid against the JSON schema. */
+    TWTValidationErrorCodeJSONObjectValidatorError,
+
+    /*! Indicates an error occured in the object type JSON schema. */
+    TWTValidationErrorCodeJSONSchemaObjectValidatorError,
+
+    /*! Indicates an error occured in the array type JSON schema. */
+    TWTValidationErrorCodeJSONSchemaArrayValidatorError,
+
+    /*! Indicates a collection's elements are not unique, as is required. */
+    TWTValidationErrorCodeNotUniqueElements,
+
+    /*! Indicates a JSON object does not contain a required property. */
+    TWTValidationErrorCodeRequiredPropertyNotPresent,
+
+    /*! Indicates a JSON object or array contains additional elements that are not allowed. */
+    TWTValidationErrorCodeAdditionalElementsNotAllowed
 };
 
 
