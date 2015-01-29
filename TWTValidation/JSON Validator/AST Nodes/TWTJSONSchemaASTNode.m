@@ -43,5 +43,54 @@
     return nil;
 }
 
+
+- (BOOL)isReferenceNode
+{
+    return NO;
+}
+
+
+- (NSMutableArray *)childrenReferenceNodes
+{
+    NSMutableArray *referenceNodes = [[NSMutableArray alloc] init];
+
+    [referenceNodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.andSchemas]];
+    [referenceNodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.orSchemas]];
+    [referenceNodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.exactlyOneOfSchemas]];
+    [referenceNodes addObjectsFromArray:self.notSchema.childrenReferenceNodes];
+
+    [referenceNodes addObjectsFromArray:[self childrenReferenceNodesFromNodeDictionary:self.definitions]];
+
+    return referenceNodes;
+}
+
+
+- (NSArray *)childrenReferenceNodesFromNodeArray:(NSArray *)array
+{
+    if (!array) {
+        return @[ ];
+    }
+
+    NSMutableArray *referenceNodes = [[NSMutableArray alloc] init];
+    for (TWTJSONSchemaASTNode *node in array) {
+        [referenceNodes addObjectsFromArray:node.childrenReferenceNodes];
+    }
+    return [referenceNodes copy];
+}
+
+
+- (NSArray *)childrenReferenceNodesFromNodeDictionary:(NSDictionary *)dictionary
+{
+    if (!dictionary) {
+        return @[ ];
+    }
+
+    NSMutableArray *referenceNodes = [[NSMutableArray alloc] init];
+    for (NSString *key in dictionary) {
+        [referenceNodes addObjectsFromArray:[dictionary[key] childrenReferenceNodes]];
+    }
+    return [referenceNodes copy];
+}
+
 @end
 

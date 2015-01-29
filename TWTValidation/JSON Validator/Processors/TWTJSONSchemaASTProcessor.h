@@ -38,6 +38,7 @@
 @class TWTJSONSchemaNamedPropertyASTNode;
 @class TWTJSONSchemaPatternPropertyASTNode;
 @class TWTJSONSchemaDependencyASTNode;
+@class TWTJSONSchemaReferenceASTNode;
 
 
 @protocol TWTJSONSchemaASTProcessor <NSObject>
@@ -52,6 +53,7 @@
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
 - (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode;
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
 
 // Specialized nodes for array items and object properties
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode;

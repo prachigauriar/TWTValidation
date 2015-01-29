@@ -102,4 +102,26 @@
  */
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
 
+
+# pragma mark - Only subclasses should invoke
+
+/*!
+ @abstract The children that are of class TWTJSONSchemaReferenceASTNode.
+ @discussion Subclasses must override this. The implementations must invoke super then add the reference nodes from its type-specific properties to the mutable array, except TWTJSONSchemaReferenceASTNode, which should return an array containing self. If no children are reference nodes, this should return an empty array.
+ @result An array containing all children that are reference nodes. An empty array is returned if none exist.
+ */
+- (NSMutableArray *)childrenReferenceNodes;
+
+
+- (NSArray *)childrenReferenceNodesFromNodeArray:(NSArray *)array;
+
+
+- (NSArray *)childrenReferenceNodesFromNodeDictionary:(NSDictionary *)dictionary;
+
+/*!
+ @abstract A flag indicating whether a node is a reference node.
+ @discussion This is a convenience method to facilitate ‑childrenReferenceNodes:.
+ */
+-(BOOL)isReferenceNode;
+
 @end

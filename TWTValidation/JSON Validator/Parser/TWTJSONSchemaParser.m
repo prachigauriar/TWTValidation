@@ -104,6 +104,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
         *outWarnings = [self.warnings copy];
     }
 
+
+    NSArray *referenceNodes = [topLevelNode allReferenceNodes];
+
     return topLevelNode;
 }
 
@@ -121,34 +124,39 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:schema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
 
-    [self pushPathComponent:TWTJSONSchemaKeywordType];
-    BOOL isTypeSpecified = NO;
-    NSArray *types = [self parseTypeKeywordForSchema:schema explicit:&isTypeSpecified];
-    NSString *type = types.firstObject;
     id node = nil;
-
-    if (types.count > 1) {
-        node = [[TWTJSONSchemaAmbiguousASTNode alloc] init];
-        [self parseAmbiguousSchema:schema intoNode:node withTypes:types];
-    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
-        node = [[TWTJSONSchemaArrayASTNode alloc] init];
-        [self parseArraySchema:schema intoNode:node];
-    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordInteger] || [type isEqualToString:TWTJSONSchemaTypeKeywordNumber]) {
-        node = [[TWTJSONSchemaNumberASTNode alloc] init];
-        [self parseNumberSchema:schema intoNode:node withType:type];
-    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
-        node = [[TWTJSONSchemaObjectASTNode alloc] init];
-        [self parseObjectSchema:schema intoNode:node];
-    } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
-        node = [[TWTJSONSchemaStringASTNode alloc] init];
-        [self parseStringSchema:schema intoNode:node];
+    if (schema[TWTJSONSchemaKeywordRef]) {
+        node = [[TWTJSONSchemaReferenceASTNode alloc] init];
+        [self parseReferenceSchema:schema intoNode:node];
     } else {
-        // type = "any", "boolean", or "null"
-        node = [[TWTJSONSchemaGenericASTNode alloc] init];
-        [self parseGenericSchema:schema intoNode:node withType:type];
-    }
+        [self pushPathComponent:TWTJSONSchemaKeywordType];
+        BOOL isTypeSpecified = NO;
+        NSArray *types = [self parseTypeKeywordForSchema:schema explicit:&isTypeSpecified];
+        NSString *type = types.firstObject;
 
-    [node setTypeSpecified:isTypeSpecified];
+        if (types.count > 1) {
+            node = [[TWTJSONSchemaAmbiguousASTNode alloc] init];
+            [self parseAmbiguousSchema:schema intoNode:node withTypes:types];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordArray]) {
+            node = [[TWTJSONSchemaArrayASTNode alloc] init];
+            [self parseArraySchema:schema intoNode:node];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordInteger] || [type isEqualToString:TWTJSONSchemaTypeKeywordNumber]) {
+            node = [[TWTJSONSchemaNumberASTNode alloc] init];
+            [self parseNumberSchema:schema intoNode:node withType:type];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordObject]) {
+            node = [[TWTJSONSchemaObjectASTNode alloc] init];
+            [self parseObjectSchema:schema intoNode:node];
+        } else if ([type isEqualToString:TWTJSONSchemaTypeKeywordString]) {
+            node = [[TWTJSONSchemaStringASTNode alloc] init];
+            [self parseStringSchema:schema intoNode:node];
+        } else {
+            // type = "any", "boolean", or "null"
+            node = [[TWTJSONSchemaGenericASTNode alloc] init];
+            [self parseGenericSchema:schema intoNode:node withType:type];
+        }
+        
+        [node setTypeSpecified:isTypeSpecified];
+    }
     [self parseCommonKeywordsFromSchema:schema intoNode:node];
     return node;
 }
@@ -269,6 +277,52 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     node.subNodes = subNodes;
 }
 
+
+- (void)parseReferenceSchema:(NSDictionary *)schema intoNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    [self pushPathComponent:TWTJSONSchemaKeywordRef];
+    NSString *referencePath = schema[TWTJSONSchemaKeywordRef];
+
+    [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
+    NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
+    if (![pathComponents.firstObject isEqual:@"#"]) {
+        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Expected reference path to begin with # character"];
+    }
+
+    referenceNode.referencePathComponents = pathComponents;
+    [self popPathComponent];
+}
+
+
+//- (NSDictionary *)schemaFromReference:(NSString *)reference
+//{
+//    [self failIfObject:reference isNotKindOfClass:[NSString class] allowsNil:NO];
+//    NSArray *pathComponents = [reference componentsSeparatedByString:@"/"];
+//    if (![pathComponents.firstObject isEqual:@"#"]) {
+//        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:reference format:@"Expected reference path to begin with # character"];
+//    }
+//
+//    // TODO: handle recursion
+//
+//    id objectAtPath = nil;
+//    for (NSString *component in pathComponents) {
+//        if ([component isEqual:@"#"]) {
+//            objectAtPath = self.JSONSchema;
+//        } else if ([component rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound) {
+//            [self failIfObjectIsNotArrayWithAtLeastOneItem:objectAtPath allowsNil:NO];
+//            objectAtPath = objectAtPath[component.integerValue];
+//        } else {
+//            [self failIfObject:objectAtPath isNotKindOfClass:[NSDictionary class] allowsNil:NO];
+//            objectAtPath = objectAtPath[component];
+//        }
+//
+//        [self failIfObjectIsNil:objectAtPath forReferencePath:reference];
+//    }
+//
+//    NSDictionary *referencedSchema = objectAtPath;
+//    return referencedSchema;
+//}
+//
 
 #pragma mark - Nonspecific parser methods
 
@@ -588,7 +642,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     node.orSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordAnyOf schema:schema];
     node.exactlyOneOfSchemas = [self parseNonEmptyArrayOfSchemasForKey:TWTJSONSchemaKeywordOneOf schema:schema];
     node.notSchema = [self parseSchemaForKey:TWTJSONSchemaKeywordNot schema:schema];
-    node.definitions = [self parseDictionaryForKey:TWTJSONSchemaKeywordDefinitions schema:schema];
+    node.definitions = [self parseDefinitionsWithSchema:schema];
 
     return;
 }
@@ -699,6 +753,27 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 }
 
 
+- (NSDictionary *)parseDefinitionsWithSchema:(NSDictionary *)schema
+{
+    NSDictionary *definitions = schema[TWTJSONSchemaKeywordDefinitions];
+    if (!definitions) {
+        return nil;
+    }
+    [self pushPathComponent:TWTJSONSchemaKeywordDefinitions];
+    [self failIfObject:definitions isNotKindOfClass:[NSDictionary class] allowsNil:NO];
+
+    NSMutableDictionary *definitionNodes = [[NSMutableDictionary alloc] initWithCapacity:definitions.count];
+    [definitions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSDictionary *object, BOOL *stop) {
+        [self pushPathComponent:key];
+        TWTJSONSchemaASTNode *node = [self parseSchema:object];
+        [definitionNodes setObject:node forKey:key];
+        [self popPathComponent];
+    }];
+
+    [self popPathComponent];
+    return definitionNodes;
+}
+
 #pragma mark - Warning method
 
 - (void)warnWithFormat:(NSString *)format, ...
@@ -773,6 +848,16 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     NSString *valueString = [[validValues allObjects] componentsJoinedByString:@", "];
     [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:object format:@"Expected one of { %@ } but found %@", valueString, object];
+}
+
+
+- (void)failIfObjectIsNil:(id)object forReferencePath:(NSString *)path
+{
+    if (object) {
+        return;
+    }
+
+    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:object format:@"No value exists for reference path %@ : %@", TWTJSONSchemaKeywordRef, path];
 }
 
 

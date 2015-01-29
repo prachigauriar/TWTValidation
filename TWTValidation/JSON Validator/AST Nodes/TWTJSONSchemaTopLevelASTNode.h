@@ -43,4 +43,7 @@
  */
 @property (nonatomic, strong) TWTJSONSchemaASTNode *schema;
 
+
+- (NSArray *)allReferenceNodes;
+
 @end
