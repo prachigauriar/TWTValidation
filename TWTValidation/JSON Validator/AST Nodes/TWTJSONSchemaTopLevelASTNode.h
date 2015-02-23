@@ -46,4 +46,6 @@
 
 - (NSArray *)allReferenceNodes;
 
+- (TWTJSONSchemaASTNode *)nodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
+
 @end

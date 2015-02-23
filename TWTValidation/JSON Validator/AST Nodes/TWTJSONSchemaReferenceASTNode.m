@@ -60,7 +60,13 @@
 }
 
 
-- (BOOL)isReferenceNode
+- (NSSet *)validTypes
+{
+    return self.referentNode.validTypes;
+}
+
+
+- (BOOL)isTypeSpecified
 {
     return YES;
 }

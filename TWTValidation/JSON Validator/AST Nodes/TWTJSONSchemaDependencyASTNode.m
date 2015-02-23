@@ -74,4 +74,20 @@
     return nil;
 }
 
+
+- (NSMutableArray *)childrenReferenceNodes
+{
+    if (self.valueSchema) {
+        return self.valueSchema.childrenReferenceNodes;
+    }
+
+    return [@[ ] mutableCopy];
+}
+
+
+- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+{
+    return (self.valueSchema && [key isEqualToString:self.key]) ? [self.valueSchema nodeForPathComponents:path] : nil;
+}
+
 @end

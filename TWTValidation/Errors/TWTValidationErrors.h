@@ -176,6 +176,9 @@ typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
 
     /*! Indicates a collection is empty where at least one item is required. */
     TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem,
+
+    /*! Indicates a reference path is invalid and/or does not match a location in the schema. */
+    TWTJSONSchemaParserErrorCodeInvalidReferencePath,
 };
 
 

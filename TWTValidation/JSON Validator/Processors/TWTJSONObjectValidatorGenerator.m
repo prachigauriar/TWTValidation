@@ -32,12 +32,17 @@
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
 #import <TWTValidation/TWTJSONSchemaObjectValidator.h>
+#import <TWTValidation/TWTProxyValidator.h>
 #import <TWTValidation/TWTValidationLocalization.h>
 
 
 @interface TWTJSONObjectValidatorGenerator ()
 
 @property (nonatomic, strong, readonly) NSMutableArray *objectStack;
+
+@property (nonatomic, strong) NSMapTable *referenceNodesToProxyValidators;
+@property (nonatomic, strong) NSMapTable *referentNodesToValidators;
+@property (nonatomic, copy) NSSet *referentNodes;
 
 @end
 
@@ -49,6 +54,8 @@
     self = [super init];
     if (self) {
         _objectStack = [[NSMutableArray alloc] init];
+        _referenceNodesToProxyValidators = [[NSMapTable alloc] init];
+        _referentNodesToValidators = [[NSMapTable alloc] init];
     }
     return self;
 }
@@ -56,16 +63,34 @@
 
 - (TWTJSONObjectValidator *)validatorFromJSONSchema:(NSDictionary *)schema error:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
-    [self.objectStack removeAllObjects];
-
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
-    NSError *parsingError = nil;
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:outError warnings:outWarnings];
     if (!topLevelNode) {
         return nil;
     }
 
+    // Reset properties
+    [self.objectStack removeAllObjects];
+    [self.referenceNodesToProxyValidators removeAllObjects];
+    [self.referentNodesToValidators removeAllObjects];
+
+    // Collect referent nodes
+    NSMutableSet *referentNodes = [[NSMutableSet alloc] initWithCapacity:topLevelNode.allReferenceNodes.count];
+    for (TWTJSONSchemaReferenceASTNode *referenceNode in topLevelNode.allReferenceNodes) {
+        [referentNodes addObject:referenceNode.referentNode];
+    }
+    self.referentNodes = referentNodes;
+
+    // Generate all validators
     [topLevelNode acceptProcessor:self];
+
+    // Connect proxy validators to referenced schema
+    for (TWTJSONSchemaReferenceASTNode *referenceNode in self.referenceNodesToProxyValidators) {
+        TWTProxyValidator *proxyValidator = [self.referenceNodesToProxyValidators objectForKey:referenceNode];
+        TWTValidator *validator = [self.referentNodesToValidators objectForKey:referenceNode.referentNode];
+        proxyValidator.validator = validator;
+    }
+
     return [self popCurrentObject];
 }
 
@@ -247,6 +272,15 @@
 }
 
 
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    TWTValidator *commonValidator = [self commonValidatorFromNode:referenceNode];
+    TWTProxyValidator *proxyValidator = [[TWTProxyValidator alloc] init];
+    [self.referenceNodesToProxyValidators setObject:proxyValidator forKey:referenceNode];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:proxyValidator node:referenceNode];
+}
+
+
 #pragma mark - Node-to-validator conversion methods
 
 - (TWTValidator *)commonValidatorFromNode:(TWTJSONSchemaASTNode *)node
@@ -261,6 +295,13 @@
     if (node.notSchema) {
         [node.notSchema acceptProcessor:self];
         [self addSubvalidator:[TWTCompoundValidator notValidatorWithSubvalidator:[self popCurrentObject]]];
+    }
+
+    if (node.definitions) {
+        for (NSString *key in node.definitions) {
+            // Processes node so that node/validator pair are stored in mapping table
+            [self validatorFromNode:node.definitions[key]];
+        }
     }
 
     return [self validatorFromSubvalidators];
@@ -418,7 +459,12 @@
         expandedTypeValidator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:@[ typeValidator, [self notValidatorForTypes:node.validTypes]]];
     }
 
-    [self pushNewObject:[[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:expandedTypeValidator]];
+    TWTJSONObjectValidator *validator = [[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:expandedTypeValidator];
+    if ([self.referentNodes containsObject:node]) {
+        [self.referentNodesToValidators setObject:validator forKey:node];
+    }
+
+    [self pushNewObject:validator];
 }
 
 

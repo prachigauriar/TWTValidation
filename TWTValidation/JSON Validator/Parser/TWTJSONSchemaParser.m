@@ -106,6 +106,23 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
 
     NSArray *referenceNodes = [topLevelNode allReferenceNodes];
+    if (referenceNodes.count > 0) {
+        for (TWTJSONSchemaReferenceASTNode *referenceNode in referenceNodes) {
+            TWTJSONSchemaASTNode *referent = [topLevelNode nodeForReferenceNode:referenceNode];
+
+            if (referent) {
+                referenceNode.referentNode = referent;
+            } else {
+                if (outError) {
+                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", [referenceNode.referencePathComponents componentsJoinedByString:@"/"]];
+                    *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
+                                                    code:TWTJSONSchemaParserErrorCodeInvalidReferencePath
+                                                userInfo:@{ NSLocalizedDescriptionKey : description }];
+                }
+                return nil;
+            }
+        }
+    }
 
     return topLevelNode;
 }
@@ -293,36 +310,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     [self popPathComponent];
 }
 
-
-//- (NSDictionary *)schemaFromReference:(NSString *)reference
-//{
-//    [self failIfObject:reference isNotKindOfClass:[NSString class] allowsNil:NO];
-//    NSArray *pathComponents = [reference componentsSeparatedByString:@"/"];
-//    if (![pathComponents.firstObject isEqual:@"#"]) {
-//        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:reference format:@"Expected reference path to begin with # character"];
-//    }
-//
-//    // TODO: handle recursion
-//
-//    id objectAtPath = nil;
-//    for (NSString *component in pathComponents) {
-//        if ([component isEqual:@"#"]) {
-//            objectAtPath = self.JSONSchema;
-//        } else if ([component rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound) {
-//            [self failIfObjectIsNotArrayWithAtLeastOneItem:objectAtPath allowsNil:NO];
-//            objectAtPath = objectAtPath[component.integerValue];
-//        } else {
-//            [self failIfObject:objectAtPath isNotKindOfClass:[NSDictionary class] allowsNil:NO];
-//            objectAtPath = objectAtPath[component];
-//        }
-//
-//        [self failIfObjectIsNil:objectAtPath forReferencePath:reference];
-//    }
-//
-//    NSDictionary *referencedSchema = objectAtPath;
-//    return referencedSchema;
-//}
-//
 
 #pragma mark - Nonspecific parser methods
 

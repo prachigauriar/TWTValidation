@@ -137,7 +137,9 @@ static NSString *const TWTTestKeywordValid = @"valid";
     // because Objective-C treats 1/0 as equivalent to YES/NO.
     return [NSSet setWithObjects:@"1 and true are unique",
             @"0 and false are unique",
-            @"unique heterogeneous types are valid", nil];
+            @"unique heterogeneous types are valid",
+            @"remote ref valid", @"remote ref invalid",
+            @"slash", @"tilda", @"percent", nil];
 }
 
 

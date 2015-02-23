@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
 
 #import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
 
 
 @implementation TWTJSONSchemaObjectASTNode
@@ -52,6 +53,51 @@
 - (NSSet *)validTypes
 {
     return [NSSet setWithObject:TWTJSONSchemaTypeKeywordObject];
+}
+
+
+- (NSMutableArray *)childrenReferenceNodes
+{
+    NSMutableArray *nodes = [super childrenReferenceNodes];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.propertySchemas]];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.patternPropertySchemas]];
+    [nodes addObjectsFromArray:self.additionalPropertiesNode.childrenReferenceNodes];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.propertyDependencies]];
+
+    return nodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+{
+    if ([key isEqualToString:TWTJSONSchemaKeywordProperties]) {
+        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.propertySchemas];
+    }
+    if ([key isEqualToString:TWTJSONSchemaKeywordPatternProperties]) {
+        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.patternPropertySchemas];
+    }
+    if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]) {
+        return [self.additionalPropertiesNode nodeForPathComponents:path];
+    }
+    if ([key isEqualToString:TWTJSONSchemaKeywordDependencies]) {
+        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.propertyDependencies];
+    }
+
+    return nil;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path fromKeyValuePairNodeArray:(NSArray *)array
+{
+    NSString *key = path.firstObject;
+
+    for (TWTJSONSchemaKeyValuePairASTNode *subnode in array) {
+        if ([subnode.key isEqualToString:key]) {
+            return [subnode nodeForPathComponents:path];
+        }
+    }
+
+    return nil;
 }
 
 @end
