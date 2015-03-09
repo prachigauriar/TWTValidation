@@ -29,9 +29,6 @@
 @interface TWTJSONSchemaReferenceASTNode : TWTJSONSchemaASTNode
 
 @property (nonatomic, copy) NSArray *referencePathComponents;
-@property (nonatomic, strong) TWTJSONSchemaASTNode *referentNode;
-
-
-//- (instancetype)initWithReferencePath:(NSString *)referencePath;
+@property (nonatomic, weak) TWTJSONSchemaASTNode *referentNode;
 
 @end

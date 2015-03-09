@@ -299,7 +299,7 @@
 
     if (node.definitions) {
         for (NSString *key in node.definitions) {
-            // Processes node so that node/validator pair are stored in mapping table
+            // Processes node so that node/validator pair are stored in map table
             [self validatorFromNode:node.definitions[key]];
         }
     }

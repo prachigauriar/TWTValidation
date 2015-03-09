@@ -28,33 +28,15 @@
 
 @implementation TWTJSONSchemaReferenceASTNode
 
-//- (instancetype)initWithReferencePath:(NSString *)referencePath
-//{
-//    NSParameterAssert(referencePath);
-//
-//    self = [super init];
-//    if (self) {
-//        _referencePath = [referencePath copy];
-//    }
-//    return self;
-//}
-//
-//
-//- (instancetype)init
-//{
-//    return [self initWithReferencePath:nil];
-//}
-
-
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processReferenceNode:self];
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [super childrenReferenceNodes];
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
     [nodes addObject:self];
     return nodes;
 }

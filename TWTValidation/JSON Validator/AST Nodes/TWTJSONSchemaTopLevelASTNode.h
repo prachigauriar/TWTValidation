@@ -43,8 +43,7 @@
  */
 @property (nonatomic, strong) TWTJSONSchemaASTNode *schema;
 
-
-- (NSArray *)allReferenceNodes;
+@property (nonatomic, copy, readonly) NSArray *allReferenceNodes;
 
 - (TWTJSONSchemaASTNode *)nodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
 

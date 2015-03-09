@@ -56,9 +56,9 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [super childrenReferenceNodes];
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
     [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.propertySchemas]];
     [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.patternPropertySchemas]];
     [nodes addObjectsFromArray:self.additionalPropertiesNode.childrenReferenceNodes];
@@ -68,36 +68,44 @@
 }
 
 
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    NSString *key = path.firstObject;
+    NSArray *remainingPath = [self remainingPathFromPath:path];
+
     if ([key isEqualToString:TWTJSONSchemaKeywordProperties]) {
-        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.propertySchemas];
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertySchemas];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordPatternProperties]) {
-        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.patternPropertySchemas];
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.patternPropertySchemas];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]) {
-        return [self.additionalPropertiesNode nodeForPathComponents:path];
+        return [self.additionalPropertiesNode nodeForPathComponents:remainingPath];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordDependencies]) {
-        return [self nodeForPathComponents:path fromKeyValuePairNodeArray:self.propertyDependencies];
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertyDependencies];
     }
 
     return nil;
 }
 
-
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path fromKeyValuePairNodeArray:(NSArray *)array
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromKeyedNodeArray:(NSArray *)array
 {
-    NSString *key = path.firstObject;
+    TWTJSONSchemaASTNode *node = nil;
 
-    for (TWTJSONSchemaKeyValuePairASTNode *subnode in array) {
-        if ([subnode.key isEqualToString:key]) {
-            return [subnode nodeForPathComponents:path];
+    for (TWTJSONSchemaASTNode *subnode in array) {
+        node = [subnode nodeForPathComponents:path];
+        if (node) {
+            break;
         }
     }
 
-    return nil;
+    return node;
 }
 
 @end

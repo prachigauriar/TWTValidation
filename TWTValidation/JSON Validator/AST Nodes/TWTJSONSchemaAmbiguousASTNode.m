@@ -39,20 +39,24 @@
     [processor processAmbiguousNode:self];
 }
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [super childrenReferenceNodes];
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
     [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
 
     return nodes;
 }
 
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
-    TWTJSONSchemaASTNode *node = nil;
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
 
     for (TWTJSONSchemaASTNode *subnode in self.subNodes) {
-        node = [subnode typeSpecificChecksForKey:key referencePath:path];
+        node = [subnode nodeForPathComponents:path];
         if (node) {
             break;
         }

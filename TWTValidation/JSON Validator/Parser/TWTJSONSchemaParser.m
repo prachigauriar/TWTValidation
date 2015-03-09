@@ -838,16 +838,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 }
 
 
-- (void)failIfObjectIsNil:(id)object forReferencePath:(NSString *)path
-{
-    if (object) {
-        return;
-    }
-
-    [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:object format:@"No value exists for reference path %@ : %@", TWTJSONSchemaKeywordRef, path];
-}
-
-
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ...
 {
     object = object ? object : [NSNull null];

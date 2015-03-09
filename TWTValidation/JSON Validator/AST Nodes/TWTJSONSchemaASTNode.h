@@ -107,25 +107,22 @@
 
 /*!
  @abstract The children that are of class TWTJSONSchemaReferenceASTNode.
- @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then add the reference nodes from its type-specific properties to the mutable array, except TWTJSONSchemaReferenceASTNode, which should return an array containing self. If no children are reference nodes, this should return an empty array.
+ @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then add the reference nodes from its type-specific properties to the returned array, except TWTJSONSchemaReferenceASTNode, which should add itself
+      to the array. If no children are reference nodes, this should return an empty array.
  @result An array containing all children that are reference nodes. An empty array is returned if none exist.
  */
-- (NSMutableArray *)childrenReferenceNodes;
+- (NSArray *)childrenReferenceNodes;
 
 
 - (NSArray *)childrenReferenceNodesFromNodeArray:(NSArray *)array;
 
 
-- (NSArray *)childrenReferenceNodesFromNodeDictionary:(NSDictionary *)dictionary;
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path;
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path;
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromNodeArray:(NSArray *)array;
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path fromNodeArray:(NSArray *)array;
-
-
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path;
-
+- (NSArray *)remainingPathFromPath:(NSArray *)path;
 
 @end

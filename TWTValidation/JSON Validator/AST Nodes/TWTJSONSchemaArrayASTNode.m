@@ -55,9 +55,9 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [super childrenReferenceNodes];
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
     if (self.itemSchema) {
         [nodes addObjectsFromArray:self.itemSchema.childrenReferenceNodes];
     } else {
@@ -70,17 +70,25 @@
 }
 
 
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    NSString *key = path.firstObject;
+    NSArray *remainingPath = [self remainingPathFromPath:path];
+
     if ([key isEqualToString:TWTJSONSchemaKeywordItems]) {
         if (self.itemSchema) {
-            return [self.itemSchema nodeForPathComponents:path];
+            return [self.itemSchema nodeForPathComponents:remainingPath];
         } else {
-            return [self nodeForPathComponents:path fromNodeArray:self.indexedItemSchemas];
+            return [self nodeForPathComponents:remainingPath fromNodeArray:self.indexedItemSchemas];
         }
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems]) {
-        return [self.additionalItemsNode nodeForPathComponents:path];
+        return [self.additionalItemsNode nodeForPathComponents:remainingPath];
     }
 
     return nil;

@@ -28,6 +28,14 @@
 
 #import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>
 
+
+@interface TWTJSONSchemaTopLevelASTNode ()
+
+@property (nonatomic, copy, readwrite) NSArray *allReferenceNodes;
+
+@end
+
+
 @implementation TWTJSONSchemaTopLevelASTNode
 
 - (NSSet *)validTypes
@@ -45,12 +53,11 @@
 - (NSArray *)allReferenceNodes
 {
     // Assumes this only runs after the entire AST node tree has been generated, and no changes are made to the tree afterward
-    NSArray *allReferenceNodes = nil;
-    if (!allReferenceNodes) {
-        allReferenceNodes = [[self childrenReferenceNodes] copy];
+    if (!_allReferenceNodes) {
+        _allReferenceNodes = [[self childrenReferenceNodes] copy];
     }
 
-    return allReferenceNodes;
+    return _allReferenceNodes;
 }
 
 
@@ -72,7 +79,7 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
     return [self.schema childrenReferenceNodes];
 }

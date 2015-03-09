@@ -75,19 +75,21 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
     if (self.valueSchema) {
         return self.valueSchema.childrenReferenceNodes;
     }
 
-    return [@[ ] mutableCopy];
+    return @[ ];
 }
 
 
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
-    return (self.valueSchema && [key isEqualToString:self.key]) ? [self.valueSchema nodeForPathComponents:path] : nil;
+    NSString *key = path.firstObject;
+    // Since a reference path should only refer to a valid schema, a reference within dependencies should only be found if it's a schema dependency, not a property one
+    return (self.valueSchema && [key isEqualToString:self.key]) ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
 }
 
 @end

@@ -54,15 +54,16 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
     return self.valueSchema.childrenReferenceNodes;
 }
 
 
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
-    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:path] : nil;
+    NSString *key = path.firstObject;
+    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
 }
 
 @end

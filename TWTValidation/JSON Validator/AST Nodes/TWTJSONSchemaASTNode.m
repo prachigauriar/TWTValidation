@@ -44,7 +44,7 @@
 }
 
 
-- (NSMutableArray *)childrenReferenceNodes
+- (NSArray *)childrenReferenceNodes
 {
     NSMutableArray *referenceNodes = [[NSMutableArray alloc] init];
 
@@ -87,65 +87,66 @@
 }
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
     if (path.count == 0) {
         return self;
     }
 
     NSString *key = path.firstObject;
-    [path removeObjectAtIndex:0];
+    NSArray *remainingPath = [self remainingPathFromPath:path];
 
     if ([key isEqualToString:TWTJSONSchemaKeywordAllOf]) {
-        return [self nodeForPathComponents:path fromNodeArray:self.andSchemas];
+        return [self nodeForPathComponents:remainingPath fromNodeArray:self.andSchemas];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordAnyOf]) {
-        return [self nodeForPathComponents:path fromNodeArray:self.orSchemas];
+        return [self nodeForPathComponents:remainingPath fromNodeArray:self.orSchemas];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordOneOf]) {
-        return [self nodeForPathComponents:path fromNodeArray:self.exactlyOneOfSchemas];
+        return [self nodeForPathComponents:remainingPath fromNodeArray:self.exactlyOneOfSchemas];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordNot]) {
-        return [self.notSchema nodeForPathComponents:path];
+        return [self.notSchema nodeForPathComponents:remainingPath];
     }
     if ([key isEqualToString:TWTJSONSchemaKeywordDefinitions]) {
-        return [self nodeForPathComponents:path fromNodeDictionary:self.definitions];
+        return [self nodeForPathComponents:remainingPath fromDefinitions:self.definitions];
     }
 
-    return [self typeSpecificChecksForKey:key referencePath:path];
-}
-
-
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
-{
     return nil;
 }
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path fromNodeArray:(NSArray *)array
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromNodeArray:(NSArray *)array
 {
     NSString *index = path.firstObject;
     if (!index || ![self componentIsIndex:index] || index.integerValue > array.count) {
         return nil;
     }
 
-    [path removeObjectAtIndex:0];
-    return [array[index.integerValue] nodeForPathComponents:path];
+    return [array[index.integerValue] nodeForPathComponents:[self remainingPathFromPath:path]];
 }
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path fromNodeDictionary:(NSDictionary *)dictionary
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromDefinitions:(NSDictionary *)definitions
 {
     NSString *key = path.firstObject;
-    [path removeObjectAtIndex:0];
 
-    return [dictionary[key] nodeForPathComponents:path];
+    return [definitions[key] nodeForPathComponents:[self remainingPathFromPath:path]];
 }
 
 
 - (BOOL)componentIsIndex:(NSString *)key
 {
     return [key rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound;
+}
+
+
+- (NSArray *)remainingPathFromPath:(NSArray *)path
+{
+    NSRange range;
+    range.location = 1;
+    range.length = path.count - 1;
+    return [path subarrayWithRange:range];
 }
  
 @end
