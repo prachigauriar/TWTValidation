@@ -250,7 +250,7 @@
     NSString *formatDescription = TWTLocalizedString(@"TWTJSONSchemaObjectValidator.requiredPropertyNotPresent.validationError.format");
     NSString *description = [NSString stringWithFormat:formatDescription, missingKeys];
     if (outError) {
-        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeRequiredPropertyNotPresent
                                         failingValidator:self
                                                    value:valueKeys
                                     localizedDescription:description];
