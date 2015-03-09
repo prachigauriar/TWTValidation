@@ -45,6 +45,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 {
     // TODO: make these relative
     NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
+    NSError *error = nil;
     
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
@@ -52,7 +53,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
             if (![[self failingTests] containsObject:testValue[TWTTestKeywordDescription]]) {
                 BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:nil] == shouldPass,
+                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass,
                               @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
                               testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail",
                               testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
@@ -66,12 +67,15 @@ static NSString *const TWTTestKeywordValid = @"valid";
 {
     // TODO: make these relative
     NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
+    NSError *error = nil;
+
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
+            error = nil;
             if ([[self failingTests] containsObject:testValue[TWTTestKeywordDescription]]) {
                 BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:nil] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
+                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
                               testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
             }
         }
@@ -133,7 +137,9 @@ static NSString *const TWTTestKeywordValid = @"valid";
     // because Objective-C treats 1/0 as equivalent to YES/NO.
     return [NSSet setWithObjects:@"1 and true are unique",
             @"0 and false are unique",
-            @"unique heterogeneous types are valid", nil];
+            @"unique heterogeneous types are valid",
+            @"remote ref valid", @"remote ref invalid",
+            @"slash", @"tilda", @"percent", nil];
 }
 
 

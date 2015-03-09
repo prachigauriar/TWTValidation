@@ -53,4 +53,16 @@
     return nil;
 }
 
+
+- (NSMutableArray *)childrenReferenceNodes
+{
+    return self.valueSchema.childrenReferenceNodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+{
+    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:path] : nil;
+}
+
 @end

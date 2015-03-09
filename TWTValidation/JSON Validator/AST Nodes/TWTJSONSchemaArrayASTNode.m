@@ -54,4 +54,36 @@
     return [NSSet setWithObject:TWTJSONSchemaTypeKeywordArray];
 }
 
+
+- (NSMutableArray *)childrenReferenceNodes
+{
+    NSMutableArray *nodes = [super childrenReferenceNodes];
+    if (self.itemSchema) {
+        [nodes addObjectsFromArray:self.itemSchema.childrenReferenceNodes];
+    } else {
+        [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.indexedItemSchemas]];
+    }
+
+    [nodes addObjectsFromArray:self.additionalItemsNode.childrenReferenceNodes];
+
+    return nodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
+{
+    if ([key isEqualToString:TWTJSONSchemaKeywordItems]) {
+        if (self.itemSchema) {
+            return [self.itemSchema nodeForPathComponents:path];
+        } else {
+            return [self nodeForPathComponents:path fromNodeArray:self.indexedItemSchemas];
+        }
+    }
+    if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems]) {
+        return [self.additionalItemsNode nodeForPathComponents:path];
+    }
+
+    return nil;
+}
+
 @end

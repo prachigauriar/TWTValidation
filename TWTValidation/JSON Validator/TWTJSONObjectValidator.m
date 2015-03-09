@@ -27,6 +27,8 @@
 #import <TWTValidation/TWTJSONObjectValidator.h>
 
 #import <TWTValidation/TWTJSONObjectValidatorGenerator.h>
+#import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 @interface TWTJSONObjectValidator ()
@@ -113,7 +115,21 @@
     BOOL validated = commonKeywordsValidated && typeKeywordsValidated;
 
     if (!validated && outError) {
-        //errors
+        NSMutableArray *underlyingErrors = [[NSMutableArray alloc] init];
+
+        if (!commonKeywordsValidated) {
+            [underlyingErrors addObject:commonError];
+        }
+
+        if (!typeKeywordsValidated) {
+            [underlyingErrors addObject:typeError];
+        }
+
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeJSONObjectValidatorError
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.validationError")
+                                        underlyingErrors:underlyingErrors];
     }
 
     return validated;

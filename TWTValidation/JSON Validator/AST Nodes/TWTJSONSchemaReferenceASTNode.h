@@ -1,8 +1,8 @@
 //
-//  TWTJSONSchemaAmbiguousASTNode.m
+//  TWTJSONSchemaReferenceASTNode.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 1/12/15.
+//  Created by Jill Cohen on 1/29/15.
 //  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,41 +24,14 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>
+#import <TWTValidation/TWTJSONSchemaASTNode.h>
 
-#import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+@interface TWTJSONSchemaReferenceASTNode : TWTJSONSchemaASTNode
 
-
-@implementation TWTJSONSchemaAmbiguousASTNode
-
-@synthesize validTypes;
+@property (nonatomic, copy) NSArray *referencePathComponents;
+@property (nonatomic, strong) TWTJSONSchemaASTNode *referentNode;
 
 
-- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
-{
-    [processor processAmbiguousNode:self];
-}
-
-- (NSMutableArray *)childrenReferenceNodes
-{
-    NSMutableArray *nodes = [super childrenReferenceNodes];
-    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
-
-    return nodes;
-}
-
-- (TWTJSONSchemaASTNode *)typeSpecificChecksForKey:(NSString *)key referencePath:(NSMutableArray *)path
-{
-    TWTJSONSchemaASTNode *node = nil;
-
-    for (TWTJSONSchemaASTNode *subnode in self.subNodes) {
-        node = [subnode typeSpecificChecksForKey:key referencePath:path];
-        if (node) {
-            break;
-        }
-    }
-
-    return node;
-}
+//- (instancetype)initWithReferencePath:(NSString *)referencePath;
 
 @end
