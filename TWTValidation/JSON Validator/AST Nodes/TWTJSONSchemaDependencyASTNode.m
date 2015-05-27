@@ -77,11 +77,7 @@
 
 - (NSArray *)childrenReferenceNodes
 {
-    if (self.valueSchema) {
-        return self.valueSchema.childrenReferenceNodes;
-    }
-
-    return @[ ];
+    return self.valueSchema ? self.valueSchema.childrenReferenceNodes : @[ ];
 }
 
 

@@ -80,32 +80,28 @@
 
     if ([key isEqualToString:TWTJSONSchemaKeywordProperties]) {
         return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertySchemas];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordPatternProperties]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordPatternProperties]) {
         return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.patternPropertySchemas];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]) {
         return [self.additionalPropertiesNode nodeForPathComponents:remainingPath];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordDependencies]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordDependencies]) {
         return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertyDependencies];
     }
 
     return nil;
 }
 
+
 - (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromKeyedNodeArray:(NSArray *)array
 {
-    TWTJSONSchemaASTNode *node = nil;
-
     for (TWTJSONSchemaASTNode *subnode in array) {
-        node = [subnode nodeForPathComponents:path];
+        TWTJSONSchemaASTNode *node = [subnode nodeForPathComponents:path];
         if (node) {
-            break;
+            return node;
         }
     }
 
-    return node;
+    return nil;
 }
 
 @end

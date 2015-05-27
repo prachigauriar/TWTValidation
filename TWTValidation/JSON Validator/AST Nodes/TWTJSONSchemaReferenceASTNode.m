@@ -36,9 +36,7 @@
 
 - (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
-    [nodes addObject:self];
-    return nodes;
+    return [[super childrenReferenceNodes] arrayByAddingObject:self];
 }
 
 

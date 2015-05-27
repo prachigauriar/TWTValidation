@@ -73,9 +73,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
-    [self.warnings removeAllObjects];
-    [self.pathStack removeAllObjects];
-
     [self pushPathComponent:TWTJSONSchemaKeywordSchema];
     if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
         [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on draft 4.", TWTJSONSchemaKeywordSchema];
@@ -100,11 +97,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
         }
     }
 
-    if (outWarnings) {
-        *outWarnings = [self.warnings copy];
-    }
-
-
     NSArray *referenceNodes = [topLevelNode allReferenceNodes];
     if (referenceNodes.count > 0) {
         for (TWTJSONSchemaReferenceASTNode *referenceNode in referenceNodes) {
@@ -122,6 +114,17 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
                 return nil;
             }
         }
+    }
+
+    if (outWarnings) {
+        *outWarnings = [self.warnings copy];
+    }
+
+    [self.warnings removeAllObjects];
+    [self.pathStack removeAllObjects];
+
+    if (!topLevelNode) {
+        NSLog(@"oops");
     }
 
     return topLevelNode;
@@ -302,7 +305,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
-    if (![pathComponents.firstObject isEqual:@"#"]) {
+    if (![pathComponents.firstObject isEqualToString:@"#"]) {
         [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Expected reference path to begin with # character"];
     }
 

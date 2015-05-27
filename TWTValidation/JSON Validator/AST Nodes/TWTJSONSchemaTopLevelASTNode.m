@@ -63,19 +63,18 @@
 
 - (TWTJSONSchemaASTNode *)nodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
 {
-    return [self nodeForPathComponents:[referenceNode.referencePathComponents mutableCopy]];
+    return [self nodeForPathComponents:referenceNode.referencePathComponents];
 }
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSMutableArray *)path
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
     // Assumes key is @"#"
     if (path.count == 1) {
         return self.schema;
     }
 
-    [path removeObjectAtIndex:0];
-    return [self.schema nodeForPathComponents:path];
+    return [self.schema nodeForPathComponents:[self remainingPathFromPath:path]];
 }
 
 

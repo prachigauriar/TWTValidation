@@ -41,10 +41,7 @@
 
 - (NSArray *)childrenReferenceNodes
 {
-    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
-    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
-
-    return nodes;
+    return [[super childrenReferenceNodes] arrayByAddingObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
 }
 
 
@@ -58,11 +55,11 @@
     for (TWTJSONSchemaASTNode *subnode in self.subNodes) {
         node = [subnode nodeForPathComponents:path];
         if (node) {
-            break;
+            return node;
         }
     }
 
-    return node;
+    return nil;
 }
 
 @end

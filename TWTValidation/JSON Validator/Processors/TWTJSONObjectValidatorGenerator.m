@@ -54,8 +54,8 @@
     self = [super init];
     if (self) {
         _objectStack = [[NSMutableArray alloc] init];
-        _referenceNodesToProxyValidators = [[NSMapTable alloc] init];
-        _referentNodesToValidators = [[NSMapTable alloc] init];
+        _referenceNodesToProxyValidators = [NSMapTable strongToStrongObjectsMapTable];
+        _referentNodesToValidators = [NSMapTable strongToStrongObjectsMapTable];
     }
     return self;
 }
@@ -68,11 +68,6 @@
     if (!topLevelNode) {
         return nil;
     }
-
-    // Reset properties
-    [self.objectStack removeAllObjects];
-    [self.referenceNodesToProxyValidators removeAllObjects];
-    [self.referentNodesToValidators removeAllObjects];
 
     // Collect referent nodes
     NSMutableSet *referentNodes = [[NSMutableSet alloc] initWithCapacity:topLevelNode.allReferenceNodes.count];
@@ -91,7 +86,18 @@
         proxyValidator.validator = validator;
     }
 
-    return [self popCurrentObject];
+    TWTJSONObjectValidator *finalValidator = [self popCurrentObject];
+
+    // Reset properties
+    [self.objectStack removeAllObjects];
+    [self.referenceNodesToProxyValidators removeAllObjects];
+    [self.referentNodesToValidators removeAllObjects];
+
+    if (!finalValidator) {
+        NSLog(@"oops");
+    }
+
+    return finalValidator;
 }
 
 

@@ -97,7 +97,8 @@
 
 /*!
  @abstract The interface for accepting a TWTJSONSchemaASTProcessor.
- @discussion Subclasses must override this, and the implementations must invoke the appropriate method from the TWTJSONSchemaASTProcessor protocol on the processor (for example, [processor processArrayNode:self]). If called on an instance of this class, this will throw a umk_subclassResponsibilityException.
+ @discussion Subclasses must override this, and the implementations must invoke the appropriate method from the TWTJSONSchemaASTProcessor 
+     protocol on the processor (for example, [processor processArrayNode:self]). If called on an instance of this class, this will throw a umk_subclassResponsibilityException.
  @param processor The processor on which a method from the TWTJSONSchemaASTProcessor protocol should be invoked.
  */
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
@@ -106,23 +107,50 @@
 # pragma mark - Only subclasses should invoke
 
 /*!
- @abstract The children that are of class TWTJSONSchemaReferenceASTNode.
- @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then add the reference nodes from its type-specific properties to the returned array, except TWTJSONSchemaReferenceASTNode, which should add itself
-      to the array. If no children are reference nodes, this should return an empty array.
+ @abstract The children that are of class TWTJSONSchemaReferenceASTNode, which models a schema with the "$ref" keyword.
+ @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then add the 
+     reference nodes from its type-specific properties to the returned array, except TWTJSONSchemaReferenceASTNode, which should add itself
+     to the array. If no children are reference nodes, this should return an empty array. See TWTJSONSchemaTopLevelASTNode for the external interface.
  @result An array containing all children that are reference nodes. An empty array is returned if none exist.
  */
 - (NSArray *)childrenReferenceNodes;
 
-
+/*!
+ @abstract The children of nodes in an array that are of class TWTJSONSchemaReferenceASTNode.
+ @discussion This is a convenience method to retrieve reference nodes from all the nodes in an array property.
+ @param array The array from which children reference nodes are to be collected. This can be nil, in which case an empty array will be returned.
+ @result An array containing all children that are reference nodes. An empty array is returned if none exist.
+ */
 - (NSArray *)childrenReferenceNodesFromNodeArray:(NSArray *)array;
 
+/*!
+ @abstract The node for a reference path.
+ @discussion Subclasses should override this if they have type-specific children nodes. The implementations must: 
+      1) invoke super, which handles common keywords and the case where self is the referent 
+      2) check if a node is returned from super and if so return it 
+      3) otherwise, check the first path component against its type-specific keywords. For a match, it should pass the remaining components to that property to serve up the referent node.
 
+      This implementation should only be used internal to the AST node tree. See TWTJSONSchemaTopLevelASTNode for the external interface.
+ @param path An array of path components. The path is with respect to the recipient of the m
+ 
+ The root of the path  location of the recipient is considered the root of the path.
+ @result The node that matches a given reference path, or nil if no match is found.
+ */
 - (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path;
 
-
+/*!
+ @abstract The node that matches a given reference path within a node array, or nil if none exists.
+ @discussion This is a convenience method to retrieve a node from an array property. The first component is expected to be a string representation of the element's index.
+ @param path An array of nodes.
+ @result An array containing all children that are reference nodes. An empty array is returned if none exist.
+ */
 - (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromNodeArray:(NSArray *)array;
 
-
+/*!
+ @abstract A convenience method to get the remaining path after removing the first component.
+ @param path An array of path components.
+ @result The new path after removing the first component.
+ */
 - (NSArray *)remainingPathFromPath:(NSArray *)path;
 
 @end

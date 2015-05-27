@@ -86,8 +86,7 @@
         } else {
             return [self nodeForPathComponents:remainingPath fromNodeArray:self.indexedItemSchemas];
         }
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems]) {
         return [self.additionalItemsNode nodeForPathComponents:remainingPath];
     }
 

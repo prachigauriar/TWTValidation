@@ -98,17 +98,13 @@
 
     if ([key isEqualToString:TWTJSONSchemaKeywordAllOf]) {
         return [self nodeForPathComponents:remainingPath fromNodeArray:self.andSchemas];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordAnyOf]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordAnyOf]) {
         return [self nodeForPathComponents:remainingPath fromNodeArray:self.orSchemas];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordOneOf]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordOneOf]) {
         return [self nodeForPathComponents:remainingPath fromNodeArray:self.exactlyOneOfSchemas];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordNot]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordNot]) {
         return [self.notSchema nodeForPathComponents:remainingPath];
-    }
-    if ([key isEqualToString:TWTJSONSchemaKeywordDefinitions]) {
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordDefinitions]) {
         return [self nodeForPathComponents:remainingPath fromDefinitions:self.definitions];
     }
 
@@ -137,16 +133,14 @@
 
 - (BOOL)componentIsIndex:(NSString *)key
 {
-    return [key rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound;
+    NSRange nonDigitCharacterRange = [key rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]];
+    return nonDigitCharacterRange.location == NSNotFound;
 }
 
 
 - (NSArray *)remainingPathFromPath:(NSArray *)path
 {
-    NSRange range;
-    range.location = 1;
-    range.length = path.count - 1;
-    return [path subarrayWithRange:range];
+    return [path subarrayWithRange:NSMakeRange(1, path.count - 1)];
 }
  
 @end
