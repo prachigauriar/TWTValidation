@@ -93,10 +93,6 @@
     [self.referenceNodesToProxyValidators removeAllObjects];
     [self.referentNodesToValidators removeAllObjects];
 
-    if (!finalValidator) {
-        NSLog(@"oops");
-    }
-
     return finalValidator;
 }
 

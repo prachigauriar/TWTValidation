@@ -123,10 +123,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     [self.warnings removeAllObjects];
     [self.pathStack removeAllObjects];
 
-    if (!topLevelNode) {
-        NSLog(@"oops");
-    }
-
     return topLevelNode;
 }
 

@@ -30,7 +30,10 @@
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 
 /*!
- TWTJSONSchemaASTNodes model a valid JSON schema, as defined by http://json-schema.org/draft-04/schema#, or a building block of one (e.g., TWTJSONSchemaKeyValuePairASTNode). Nodes modeling valid schemas can represent either the entire schema (see TWTJSONSchemaTopLevelASTNode) or nested schemas (e.g., self.andNodes represent the schemas that are the value of "allOf"). This is an abstract class that defines common properties and the interface for accepting a TWTJSONSchemaASTProcessor.
+ TWTJSONSchemaASTNodes model a valid JSON schema, as defined by http://json-schema.org/draft-04/schema#, or a building block of
+ one (e.g., TWTJSONSchemaKeyValuePairASTNode). Nodes modeling valid schemas can represent either the entire schema (see
+ TWTJSONSchemaTopLevelASTNode) or nested schemas (e.g., self.andNodes represent the schemas that are the value of "allOf"). This
+ is an abstract class that defines common properties and the interface for accepting a TWTJSONSchemaASTProcessor.
  */
 @interface TWTJSONSchemaASTNode : NSObject
 
@@ -48,13 +51,15 @@
 
 /*!
  @abstract A flag indicating whether the "type" keyword is present in the schema.
- @discussion A YES requires that an instance be of the type specified. A NO indicates that types not matching type-specific keywords will be ignored for those keywords.
+ @discussion A YES requires that an instance be of the type specified. A NO indicates that types not matching type-specific
+	 keywords will be ignored for those keywords.
  */
 @property (nonatomic, assign, getter = isTypeSpecified) BOOL typeSpecified;
 
 /*!
  @abstract A set of type keywords indicating the valid types for an instance described by the schema.
- @discussion Subclasses must override this implementation with either a returned set or allowing readwrite access. May be nil, indicating type is not meaningful (e.g., dependencyNode).
+ @discussion Subclasses must override this implementation with either a returned set or allowing readwrite access. May be nil,
+	 indicating type is not meaningful (e.g., dependencyNode).
  */
 @property (nonatomic, copy, readonly) NSSet *validTypes;
 
@@ -97,8 +102,9 @@
 
 /*!
  @abstract The interface for accepting a TWTJSONSchemaASTProcessor.
- @discussion Subclasses must override this, and the implementations must invoke the appropriate method from the TWTJSONSchemaASTProcessor 
-     protocol on the processor (for example, [processor processArrayNode:self]). If called on an instance of this class, this will throw a umk_subclassResponsibilityException.
+ @discussion Subclasses must override this, and the implementations must invoke the appropriate method from the
+	 TWTJSONSchemaASTProcessor protocol on the processor (for example, [processor processArrayNode:self]). If called on an
+	 instance of this class, this will throw a subclass responsibility exception.
  @param processor The processor on which a method from the TWTJSONSchemaASTProcessor protocol should be invoked.
  */
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor;
@@ -108,9 +114,10 @@
 
 /*!
  @abstract The children that are of class TWTJSONSchemaReferenceASTNode, which models a schema with the "$ref" keyword.
- @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then add the 
-     reference nodes from its type-specific properties to the returned array, except TWTJSONSchemaReferenceASTNode, which should add itself
-     to the array. If no children are reference nodes, this should return an empty array. See TWTJSONSchemaTopLevelASTNode for the external interface.
+ @discussion Subclasses should override this if they have type-specific children nodes. The implementations must invoke super then
+	 add the reference nodes from its type-specific properties to the returned array, except TWTJSONSchemaReferenceASTNode, which
+	 should add itself to the array. If no children are reference nodes, this should return an empty array. See
+	 TWTJSONSchemaTopLevelASTNode for the external interface.
  @result An array containing all children that are reference nodes. An empty array is returned if none exist.
  */
 - (NSArray *)childrenReferenceNodes;
@@ -128,7 +135,8 @@
  @discussion Subclasses should override this if they have type-specific children nodes. The implementations must: 
       1) invoke super, which handles common keywords and the case where self is the referent 
       2) check if a node is returned from super and if so return it 
-      3) otherwise, check the first path component against its type-specific keywords. For a match, it should pass the remaining components to that property to serve up the referent node.
+      3) otherwise, check the first path component against its type-specific keywords. For a match, it should pass the remaining
+      components to that property to serve up the referent node.
 
       This implementation should only be used internal to the AST node tree. See TWTJSONSchemaTopLevelASTNode for the external interface.
  @param path An array of path components. The path is with respect to the recipient of the m
@@ -140,7 +148,8 @@
 
 /*!
  @abstract The node that matches a given reference path within a node array, or nil if none exists.
- @discussion This is a convenience method to retrieve a node from an array property. The first component is expected to be a string representation of the element's index.
+ @discussion This is a convenience method to retrieve a node from an array property. The first component is expected to be a
+	 string representation of the element's index.
  @param path An array of nodes.
  @result An array containing all children that are reference nodes. An empty array is returned if none exist.
  */
