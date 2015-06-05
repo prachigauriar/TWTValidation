@@ -156,7 +156,7 @@
             propertyIsDefined = YES;
             if (![propertyValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                 propertiesValidated = NO;
-                if (outError) {
+                if (error) {
                     [propertiesErrors addObject:error];
                 }
             }
@@ -173,7 +173,7 @@
 
                     if (![patternValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                         patternPropertiesValidated = NO;
-                        if (outError) {
+                        if (error) {
                             [propertiesErrors addObject:error];
                         }
                     };
@@ -185,7 +185,7 @@
         if (!propertyIsDefined) {
             if (![self.additionalPropertiesValidator validateValue:objectForKey error:outError ? &error : NULL]) {
                 additionalPropertiesValidated = NO;
-                if (outError) {
+                if (error) {
                     [propertiesErrors addObject:error];
                 }
             }
@@ -200,7 +200,7 @@
                 // dependencyValue is a schema validator
                 if (![dependency validateValue:value error:outError ? &error : NULL]) {
                     dependenciesValidated = NO;
-                    if (outError) {
+                    if (error) {
                         [dependenciesErrors addObject:error];
                     }
                 }
@@ -245,12 +245,12 @@
         return YES;
     }
 
-    NSMutableSet *missingKeys = [requiredKeys mutableCopy];
-    [missingKeys minusSet:valueKeys];
-    NSString *formatDescription = TWTLocalizedString(@"TWTJSONSchemaObjectValidator.requiredPropertyNotPresent.validationError.format");
-    NSString *description = [NSString stringWithFormat:formatDescription, missingKeys];
     if (outError) {
-        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueNotInSet
+        NSMutableSet *missingKeys = [requiredKeys mutableCopy];
+        [missingKeys minusSet:valueKeys];
+        NSString *formatDescription = TWTLocalizedString(@"TWTJSONSchemaObjectValidator.requiredPropertyMissing.validationError.format");
+        NSString *description = [NSString stringWithFormat:formatDescription, missingKeys];
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeRequiredPropertyMissing
                                         failingValidator:self
                                                    value:valueKeys
                                     localizedDescription:description];

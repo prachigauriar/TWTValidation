@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, TWTValidationErrorCode) {
     TWTValidationErrorCodeNotUniqueElements,
 
     /*! Indicates a JSON object does not contain a required property. */
-    TWTValidationErrorCodeRequiredPropertyNotPresent,
+    TWTValidationErrorCodeRequiredPropertyMissing,
 
     /*! Indicates a JSON object or array contains additional elements that are not allowed. */
     TWTValidationErrorCodeAdditionalElementsNotAllowed

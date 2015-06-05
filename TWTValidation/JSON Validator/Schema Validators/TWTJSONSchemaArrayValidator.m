@@ -156,14 +156,14 @@
             if (index < self.indexedItemValidators.count) {
                 if (![self.indexedItemValidators[index] validateValue:item error:outError ? &error : NULL]) {
                     itemsValidated = NO;
-                    if (outError) {
+                    if (error) {
                         [itemErrors addObject:error];
                     }
                 }
             } else {
                 if (![self.additionalItemsValidator validateValue:item error:outError ? &error : NULL]) {
                     additionalItemsValidated = NO;
-                    if (outError) {
+                    if (error) {
                         [itemErrors addObject:error];
                     }
                 }

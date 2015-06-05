@@ -26,8 +26,10 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
+
 /*!
- TWTJSONSchemaGenericASTNodes model a schema that expects instances of type boolean, null, or any. These types have no special keywords associated with them, so instances are only validated against common keywords.
+ TWTJSONSchemaGenericASTNodes model a schema that expects instances of type boolean, null, or any. These types have no special 
+ keywords associated with them, so instances are only validated against common keywords.
  */
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 

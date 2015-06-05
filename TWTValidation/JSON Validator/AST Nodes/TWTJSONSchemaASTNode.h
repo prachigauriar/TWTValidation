@@ -29,10 +29,11 @@
 #import <TWTValidation/TWTJSONSchemaASTProcessor.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 
+
 /*!
  TWTJSONSchemaASTNodes model a valid JSON schema, as defined by http://json-schema.org/draft-04/schema#, or a building block of
  one (e.g., TWTJSONSchemaKeyValuePairASTNode). Nodes modeling valid schemas can represent either the entire schema (see
- TWTJSONSchemaTopLevelASTNode) or nested schemas (e.g., self.andNodes represent the schemas that are the value of "allOf"). This
+ TWTJSONSchemaTopLevelASTNode) or nested schemas, e.g., self.andNodes represent the schemas that are the value of "allOf". This
  is an abstract class that defines common properties and the interface for accepting a TWTJSONSchemaASTProcessor.
  */
 @interface TWTJSONSchemaASTNode : NSObject
