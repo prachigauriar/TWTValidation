@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaKeyValuePairASTNode.m
+//  TWTJSONSchemaReferenceASTNode.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 1/29/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,46 +24,31 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
+#import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>
 
+@implementation TWTJSONSchemaReferenceASTNode
 
-@implementation TWTJSONSchemaKeyValuePairASTNode
-
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
+- (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
-    NSParameterAssert(key);
-
-    self = [super init];
-    if (self) {
-        _key = [key copy];
-        _valueSchema = value;
-    }
-    return self;
-}
-
-
-- (instancetype)init
-{
-    return [self initWithKey:nil valueSchema:nil];
-}
-
-
-- (NSSet *)validTypes
-{
-    return nil;
+    [processor processReferenceNode:self];
 }
 
 
 - (NSArray *)childrenReferenceNodes
 {
-    return self.valueSchema.childrenReferenceNodes;
+    return [[super childrenReferenceNodes] arrayByAddingObject:self];
 }
 
 
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+- (NSSet *)validTypes
 {
-    NSString *key = path.firstObject;
-    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
+    return self.referentNode.validTypes;
+}
+
+
+- (BOOL)isTypeSpecified
+{
+    return YES;
 }
 
 @end

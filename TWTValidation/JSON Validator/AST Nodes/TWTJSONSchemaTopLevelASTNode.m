@@ -26,6 +26,15 @@
 
 #import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>
 
+#import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>
+
+
+@interface TWTJSONSchemaTopLevelASTNode ()
+
+@property (nonatomic, copy, readwrite) NSArray *allReferenceNodes;
+
+@end
+
 
 @implementation TWTJSONSchemaTopLevelASTNode
 
@@ -38,6 +47,40 @@
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processTopLevelNode:self];
+}
+
+
+- (NSArray *)allReferenceNodes
+{
+    // Assumes this only runs after the entire AST node tree has been generated, and no changes are made to the tree afterward
+    if (!_allReferenceNodes) {
+        _allReferenceNodes = [[self childrenReferenceNodes] copy];
+    }
+
+    return _allReferenceNodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    return [self nodeForPathComponents:referenceNode.referencePathComponents];
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    // Assumes key is @"#"
+    if (path.count == 1) {
+        return self.schema;
+    }
+
+    return [self.schema nodeForPathComponents:[self remainingPathFromPath:path]];
+}
+
+
+- (NSArray *)childrenReferenceNodes
+{
+    return [self.schema childrenReferenceNodes];
 }
 
 @end

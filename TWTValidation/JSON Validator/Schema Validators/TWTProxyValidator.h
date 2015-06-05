@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaKeyValuePairASTNode.m
+//  TWTProxyValidator.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Created by Jill Cohen on 2/23/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,46 +24,11 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
+#import <TWTValidation/TWTValidation.h>
 
 
-@implementation TWTJSONSchemaKeyValuePairASTNode
+@interface TWTProxyValidator : TWTValidator
 
-- (instancetype)initWithKey:(NSString *)key valueSchema:(TWTJSONSchemaASTNode *)value
-{
-    NSParameterAssert(key);
-
-    self = [super init];
-    if (self) {
-        _key = [key copy];
-        _valueSchema = value;
-    }
-    return self;
-}
-
-
-- (instancetype)init
-{
-    return [self initWithKey:nil valueSchema:nil];
-}
-
-
-- (NSSet *)validTypes
-{
-    return nil;
-}
-
-
-- (NSArray *)childrenReferenceNodes
-{
-    return self.valueSchema.childrenReferenceNodes;
-}
-
-
-- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
-{
-    NSString *key = path.firstObject;
-    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
-}
+@property (nonatomic, copy) TWTValidator *validator;
 
 @end
