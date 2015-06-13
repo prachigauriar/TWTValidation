@@ -976,7 +976,7 @@
 			attributes = {
 				CLASSPREFIX = TWT;
 				LastUpgradeCheck = 0610;
-				ORGANIZATIONNAME = "Two Toasters, LLC";
+				ORGANIZATIONNAME = "Ticketmaster Entertainment, Inc.";
 				TargetAttributes = {
 					4C96CAAD1A563D90003763D3 = {
 						CreatedOnToolsVersion = 6.1.1;
