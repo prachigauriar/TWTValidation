@@ -81,16 +81,17 @@ int main(int argc, const char *argv[])
             TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
 
             if (error) {
-                fprintf(stderr, "Error parsing schema: %s\n", [error.description UTF8String]);
-                return -1;
-            }
+                fprintf(stderr, "Error parsing schema: %s\n", [error.localizedDescription UTF8String]);
+                [testOutputs addObject:@{ @"ERROR" : error.localizedDescription} ];
+            } else {
 
-            if (debug && warnings.count > 0) {
-                fprintf(stderr, "Warnings parsing schema: %s\n", [warnings.description UTF8String]);
-            }
+                if (debug && warnings.count > 0) {
+                    fprintf(stderr, "Warnings parsing schema: %s\n", [warnings.description UTF8String]);
+                }
 
-            TWTJSONSchemaPrettyPrinter *prettyPrinter = [[TWTJSONSchemaPrettyPrinter alloc] init];
-            [testOutputs addObject:[prettyPrinter objectFromTopLevelNode:topLevelNode]];
+                TWTJSONSchemaPrettyPrinter *prettyPrinter = [[TWTJSONSchemaPrettyPrinter alloc] init];
+                [testOutputs addObject:[prettyPrinter objectFromTopLevelNode:topLevelNode]];
+            }
         }
 
         error = nil;

@@ -137,6 +137,14 @@
 }
 
 
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    [self pushNewObject:[[NSMutableDictionary alloc] init]];
+    NSString *referencePath = [referenceNode.referencePathComponents componentsJoinedByString:@"/"];
+    [self setObject:referencePath inCurrentSchemaForKey:TWTJSONSchemaKeywordRef];
+}
+
+
 // Adds a boolean object to the stack
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode
 {

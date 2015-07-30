@@ -37,6 +37,7 @@ NSString *const TWTJSONSchemaKeywordAllOf = @"allOf";
 NSString *const TWTJSONSchemaKeywordOneOf = @"oneOf";
 NSString *const TWTJSONSchemaKeywordNot = @"not";
 NSString *const TWTJSONSchemaKeywordDefinitions = @"definitions";
+NSString *const TWTJSONSchemaKeywordRef= @"$ref";
 
 // Arrays
 NSString *const TWTJSONSchemaKeywordItems = @"items";

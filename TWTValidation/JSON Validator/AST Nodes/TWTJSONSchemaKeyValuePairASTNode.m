@@ -53,4 +53,17 @@
     return nil;
 }
 
+
+- (NSArray *)childrenReferenceNodes
+{
+    return self.valueSchema.childrenReferenceNodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    NSString *key = path.firstObject;
+    return [key isEqualToString:self.key] ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
+}
+
 @end

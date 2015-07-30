@@ -32,11 +32,17 @@
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
 #import <TWTValidation/TWTJSONSchemaObjectValidator.h>
+#import <TWTValidation/TWTProxyValidator.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 @interface TWTJSONObjectValidatorGenerator ()
 
 @property (nonatomic, strong, readonly) NSMutableArray *objectStack;
+
+@property (nonatomic, strong) NSMapTable *referenceNodesToProxyValidators;
+@property (nonatomic, strong) NSMapTable *referentNodesToValidators;
+@property (nonatomic, copy) NSSet *referentNodes;
 
 @end
 
@@ -48,6 +54,8 @@
     self = [super init];
     if (self) {
         _objectStack = [[NSMutableArray alloc] init];
+        _referenceNodesToProxyValidators = [NSMapTable strongToStrongObjectsMapTable];
+        _referentNodesToValidators = [NSMapTable strongToStrongObjectsMapTable];
     }
     return self;
 }
@@ -55,17 +63,37 @@
 
 - (TWTJSONObjectValidator *)validatorFromJSONSchema:(NSDictionary *)schema error:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
-    [self.objectStack removeAllObjects];
-
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
-    NSError *parsingError = nil;
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:outError warnings:outWarnings];
     if (!topLevelNode) {
         return nil;
     }
 
+    // Collect referent nodes
+    NSMutableSet *referentNodes = [[NSMutableSet alloc] initWithCapacity:topLevelNode.allReferenceNodes.count];
+    for (TWTJSONSchemaReferenceASTNode *referenceNode in topLevelNode.allReferenceNodes) {
+        [referentNodes addObject:referenceNode.referentNode];
+    }
+    self.referentNodes = referentNodes;
+
+    // Generate all validators
     [topLevelNode acceptProcessor:self];
-    return [self popCurrentObject];
+
+    // Connect proxy validators to referenced schema
+    for (TWTJSONSchemaReferenceASTNode *referenceNode in self.referenceNodesToProxyValidators) {
+        TWTProxyValidator *proxyValidator = [self.referenceNodesToProxyValidators objectForKey:referenceNode];
+        TWTValidator *validator = [self.referentNodesToValidators objectForKey:referenceNode.referentNode];
+        proxyValidator.validator = validator;
+    }
+
+    TWTJSONObjectValidator *finalValidator = [self popCurrentObject];
+
+    // Reset properties
+    [self.objectStack removeAllObjects];
+    [self.referenceNodesToProxyValidators removeAllObjects];
+    [self.referentNodesToValidators removeAllObjects];
+
+    return finalValidator;
 }
 
 
@@ -83,11 +111,7 @@
     TWTValidator *typeValidator = nil;
 
     if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordBoolean]) {
-        typeValidator = [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-            // Checks that a value is an NSNumber and is encoded as a boolean
-            // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
-            return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) == 0;
-        }];
+        typeValidator = [self booleanTypeValidator];
     } else if ([genericNode.validTypes containsObject:TWTJSONSchemaTypeKeywordNull]) {
         typeValidator = [TWTValueValidator valueValidatorWithClass:[NSNull class] allowsNil:NO allowsNull:YES];
     }
@@ -214,7 +238,14 @@
 {
     BOOL validates = booleanValueNode.booleanValue;
     [self pushNewObject:[[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
-        // Error needs to be written in validator class because context is unknown here
+        if (!validates && outError) {
+            // If in the future a booleanValue node is used for any node properties other than additional items/properties,
+            // the error code must be updated
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeAdditionalElementsNotAllowed
+                                            failingValidator:nil
+                                                       value:nil
+                                        localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.validationError")];
+        }
         return validates;
     }]];
 }
@@ -243,6 +274,15 @@
 }
 
 
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    TWTValidator *commonValidator = [self commonValidatorFromNode:referenceNode];
+    TWTProxyValidator *proxyValidator = [[TWTProxyValidator alloc] init];
+    [self.referenceNodesToProxyValidators setObject:proxyValidator forKey:referenceNode];
+    [self pushJSONObjectValidatorWithCommonValidator:commonValidator typeValidator:proxyValidator node:referenceNode];
+}
+
+
 #pragma mark - Node-to-validator conversion methods
 
 - (TWTValidator *)commonValidatorFromNode:(TWTJSONSchemaASTNode *)node
@@ -257,6 +297,13 @@
     if (node.notSchema) {
         [node.notSchema acceptProcessor:self];
         [self addSubvalidator:[TWTCompoundValidator notValidatorWithSubvalidator:[self popCurrentObject]]];
+    }
+
+    if (node.definitions) {
+        for (NSString *key in node.definitions) {
+            // Processes node so that node/validator pair are stored in map table
+            [self validatorFromNode:node.definitions[key]];
+        }
     }
 
     return [self validatorFromSubvalidators];
@@ -351,7 +398,43 @@
         // Checks that a value is an NSNumber and is NOT encoded as a boolean
         // The NOT is used because a valid value may be encoded as one of several number types (int, double, float, etc.)
         // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
-        return [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) != 0;
+        BOOL validated = [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) != 0;
+        if (!validated && outError) {
+            NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");
+            NSString *description = nil;
+            if ([value isKindOfClass:[NSNumber class]]) {
+                description = [NSString stringWithFormat:descriptionFormat, @"boolean", @"number"];
+            } else {
+                description = [NSString stringWithFormat:descriptionFormat, [value class], [NSNumber class]];
+            }
+
+            // Failing validator and value are implemented in TWTBlockValidator
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass failingValidator:nil value:nil localizedDescription:description];
+        }
+        return validated;
+    }];
+}
+
+
+- (TWTValidator *)booleanTypeValidator
+{
+    return [[TWTBlockValidator alloc] initWithBlock:^BOOL(id value, NSError *__autoreleasing *outError) {
+        // Checks that a value is an NSNumber and is encoded as a boolean
+        // This enables the TWTJSONObjectValidator to differentiate between numbers and booleans
+        BOOL validated = [value isKindOfClass:[NSNumber class]] && strcmp([(NSNumber *)value objCType], @encode(BOOL)) == 0;
+        if (!validated && outError) {
+            NSString *descriptionFormat = TWTLocalizedString(@"TWTValueValidator.valueHasIncorrectClass.validationError.format");
+            NSString *description = nil;
+            if ([value isKindOfClass:[NSNumber class]]) {
+                description = [NSString stringWithFormat:descriptionFormat, @"number", @"boolean"];
+            } else {
+                description = [NSString stringWithFormat:descriptionFormat, [value class], [NSNumber class]];
+            }
+
+            // Failing validator and value are implemented in TWTBlockValidator
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass failingValidator:nil value:nil localizedDescription:description];
+        }
+        return validated;
     }];
 }
 
@@ -378,7 +461,12 @@
         expandedTypeValidator = [TWTCompoundValidator mutualExclusionValidatorWithSubvalidators:@[ typeValidator, [self notValidatorForTypes:node.validTypes]]];
     }
 
-    [self pushNewObject:[[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:expandedTypeValidator]];
+    TWTJSONObjectValidator *validator = [[TWTJSONObjectValidator alloc] initWithCommonValidator:commonValidator typeValidator:expandedTypeValidator];
+    if ([self.referentNodes containsObject:node]) {
+        [self.referentNodesToValidators setObject:validator forKey:node];
+    }
+
+    [self pushNewObject:validator];
 }
 
 

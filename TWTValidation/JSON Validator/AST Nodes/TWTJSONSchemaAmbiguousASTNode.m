@@ -39,4 +39,27 @@
     [processor processAmbiguousNode:self];
 }
 
+- (NSArray *)childrenReferenceNodes
+{
+    return [[super childrenReferenceNodes] arrayByAddingObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    for (TWTJSONSchemaASTNode *subnode in self.subNodes) {
+        node = [subnode nodeForPathComponents:path];
+        if (node) {
+            return node;
+        }
+    }
+
+    return nil;
+}
+
 @end

@@ -37,6 +37,7 @@ extern NSString *const TWTJSONSchemaKeywordAllOf;
 extern NSString *const TWTJSONSchemaKeywordOneOf;
 extern NSString *const TWTJSONSchemaKeywordNot;
 extern NSString *const TWTJSONSchemaKeywordDefinitions;
+extern NSString *const TWTJSONSchemaKeywordRef;
 
 // Arrays
 extern NSString *const TWTJSONSchemaKeywordItems;

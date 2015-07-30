@@ -27,6 +27,8 @@
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
 
 #import <TWTValidation/TWTNumberValidator.h>
+#import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 @interface TWTJSONSchemaArrayValidator ()
@@ -100,10 +102,10 @@
         return NO;
     } else if (![value isKindOfClass:[NSArray class]]) {
         if (outError) {
-            //            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass
-            //                                            failingValidator:self
-            //                                                       value:value
-            //                                        localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.notArrayError")];
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeValueHasIncorrectClass
+                                            failingValidator:self
+                                                       value:value
+                                        localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.notArrayError")];
         }
         return NO;
     }
@@ -115,8 +117,8 @@
 
     NSError *countError = nil;
     NSError *uniqueItemsError = nil;
-    NSMutableArray *itemsErrors = outError ? [[NSMutableArray alloc] init] : nil;
-    NSMutableArray *additionalItemsErrors = outError ? [[NSMutableArray alloc] init] : nil;
+    NSError *error = nil;
+    NSMutableArray *itemErrors = outError ? [[NSMutableArray alloc] init] : nil;
 
     if (self.countValidator) {
         countValidated = [self.countValidator validateValue:@([value count]) error:&countError];
@@ -129,19 +131,21 @@
         }];
         if (repeats.count > 0) {
             uniqueItemsValidated = NO;
-            //            uniqueItemsError =
+            uniqueItemsError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeNotUniqueElements
+                                                   failingValidator:self
+                                                              value:value
+                                               localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.nonUniqueItems.validationError")];
         }
     }
-
-    NSError *error = nil;
-
 
     if (self.itemValidator) {
         for (id item in value) {
             error = nil;
             if (![self.itemValidator validateValue:item error:outError ? &error : NULL]) {
                 itemsValidated = NO;
-                //                    itemsErrors addObject:
+                if (error) {
+                    [itemErrors addObject:error];
+                }
             }
         }
     } else if (self.indexedItemValidators) {
@@ -152,12 +156,16 @@
             if (index < self.indexedItemValidators.count) {
                 if (![self.indexedItemValidators[index] validateValue:item error:outError ? &error : NULL]) {
                     itemsValidated = NO;
-                    //                        add error
+                    if (error) {
+                        [itemErrors addObject:error];
+                    }
                 }
             } else {
                 if (![self.additionalItemsValidator validateValue:item error:outError ? &error : NULL]) {
                     additionalItemsValidated = NO;
-                    //                        add error
+                    if (error) {
+                        [itemErrors addObject:error];
+                    }
                 }
             }
             index++;
@@ -167,7 +175,19 @@
 
     BOOL validated = countValidated && uniqueItemsValidated && itemsValidated && additionalItemsValidated;
     if (!validated && outError) {
-        //error
+        if (!countValidated) {
+            [itemErrors addObject:countError];
+        }
+
+        if (!uniqueItemsValidated) {
+            [itemErrors addObject:uniqueItemsError];
+        }
+
+        *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeJSONSchemaArrayValidatorError
+                                        failingValidator:self
+                                                   value:value
+                                    localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.validationError")
+                                        underlyingErrors:itemErrors];
     }
     
     return validated;

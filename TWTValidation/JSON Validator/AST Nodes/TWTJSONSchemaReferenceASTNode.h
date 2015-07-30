@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaArrayASTNode.h
+//  TWTJSONSchemaReferenceASTNode.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/15/14.
-//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
+//  Created by Jill Cohen on 1/29/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,21 +26,9 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
+@interface TWTJSONSchemaReferenceASTNode : TWTJSONSchemaASTNode
 
-/*!
- TWTJSONSchemaArrayASTNodes model a schema that expects instances of type array.
- */
-@interface TWTJSONSchemaArrayASTNode : TWTJSONSchemaASTNode
-
-/*!
- @abstract The maximum number of items allowed in the array, given by "maxItems."
- @discussion Nil indicates that "maxItems" is not present in the schema.
- */
-@property (nonatomic, strong) NSNumber *maximumItemCount;
-@property (nonatomic, strong) NSNumber *minimumItemCount;
-@property (nonatomic, assign) BOOL requiresUniqueItems;
-@property (nonatomic, strong) TWTJSONSchemaASTNode *itemSchema;
-@property (nonatomic, copy) NSArray *indexedItemSchemas; // array of nodes
-@property (nonatomic, strong) TWTJSONSchemaASTNode *additionalItemsNode; // parser will set to booleanValueNode or type-specific
+@property (nonatomic, copy) NSArray *referencePathComponents;
+@property (nonatomic, weak) TWTJSONSchemaASTNode *referentNode;
 
 @end

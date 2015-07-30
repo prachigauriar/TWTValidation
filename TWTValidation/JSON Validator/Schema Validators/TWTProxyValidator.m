@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaArrayASTNode.h
+//  TWTProxyValidator.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/15/14.
-//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
+//  Created by Jill Cohen on 2/23/15.
+//  Copyright (c) 2015 Two Toasters, LLC.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,14 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTJSONSchemaASTNode.h>
+#import <TWTValidation/TWTProxyValidator.h>
 
 
-/*!
- TWTJSONSchemaArrayASTNodes model a schema that expects instances of type array.
- */
-@interface TWTJSONSchemaArrayASTNode : TWTJSONSchemaASTNode
+@implementation TWTProxyValidator
 
-/*!
- @abstract The maximum number of items allowed in the array, given by "maxItems."
- @discussion Nil indicates that "maxItems" is not present in the schema.
- */
-@property (nonatomic, strong) NSNumber *maximumItemCount;
-@property (nonatomic, strong) NSNumber *minimumItemCount;
-@property (nonatomic, assign) BOOL requiresUniqueItems;
-@property (nonatomic, strong) TWTJSONSchemaASTNode *itemSchema;
-@property (nonatomic, copy) NSArray *indexedItemSchemas; // array of nodes
-@property (nonatomic, strong) TWTJSONSchemaASTNode *additionalItemsNode; // parser will set to booleanValueNode or type-specific
+- (BOOL)validateValue:(id)value error:(out NSError *__autoreleasing *)outError
+{
+    return [self.validator validateValue:value error:outError];
+}
 
 @end

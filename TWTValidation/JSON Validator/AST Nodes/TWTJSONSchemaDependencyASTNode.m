@@ -74,4 +74,18 @@
     return nil;
 }
 
+
+- (NSArray *)childrenReferenceNodes
+{
+    return self.valueSchema ? self.valueSchema.childrenReferenceNodes : @[ ];
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    NSString *key = path.firstObject;
+    // Since a reference path should only refer to a valid schema, a reference within dependencies should only be found if it's a schema dependency, not a property one
+    return (self.valueSchema && [key isEqualToString:self.key]) ? [self.valueSchema nodeForPathComponents:[self remainingPathFromPath:path]] : nil;
+}
+
 @end
