@@ -666,44 +666,44 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 // Keyword: dependencies
 // Dependencies are either property or schema dependencies. Note these two examples are equivalent for validation.
 // 1. Property dependency, i.e., "dependencies" object's value is an array
-//	{
-//		"type": "object",
-//		"properties": {
-//			"billing_address": {
-//				"type": "string"
-//			},
-//			"credit_card": {
-//				"type": "number"
-//			}
-//		},
-//		"dependencies": {
-//			"credit_card": [
-//				"billing_address"
-//			]
-//		}
-//	}
+//    {
+//        "type": "object",
+//        "properties": {
+//            "billing_address": {
+//                "type": "string"
+//            },
+//            "credit_card": {
+//                "type": "number"
+//            }
+//        },
+//        "dependencies": {
+//            "credit_card": [
+//                "billing_address"
+//            ]
+//        }
+//    }
 //
 // 2. Schema dependency, i.e., "dependencies" object's value is a schema
-//	 {
-//		"type": "object",
-//		"properties": {
-//			"credit_card": {
-//				"type": "number"
-//			}
-//		},
-//		"dependencies": {
-//			"credit_card": {
-//				"properties": {
-//					"billing_address": {
-//						"type": "string"
-//					}
-//				},
-//				"required": [
-//					"billing_address"
-//				]
-//			}
-//		}
-//	}
+//    {
+//       "type": "object",
+//       "properties": {
+//           "credit_card": {
+//               "type": "number"
+//           }
+//       },
+//       "dependencies": {
+//           "credit_card": {
+//               "properties": {
+//                   "billing_address": {
+//                       "type": "string"
+//                   }
+//               },
+//               "required": [
+//                   "billing_address"
+//               ]
+//           }
+//       }
+//   }
 
 - (NSArray *)parseDependenciesWithSchema:(NSDictionary *)schema
 {
