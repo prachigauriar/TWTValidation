@@ -300,12 +300,24 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSString *referencePath = schema[TWTJSONSchemaKeywordRef];
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
+
+    // See JSON Pointer doc (section 3. Syntax) for special characters
+    referencePath = [referencePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    referencePath = [referencePath stringByReplacingOccurrencesOfString:TWTJSONPointerTildaEncoding withString:TWTJSONPointerTildaValue];
+
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
+    // Currently only support references to this schema
     if (![pathComponents.firstObject isEqualToString:@"#"]) {
         [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Expected reference path to begin with # character"];
     }
 
-    referenceNode.referencePathComponents = pathComponents;
+    NSMutableArray *decodedComponents = [[NSMutableArray alloc] initWithCapacity:pathComponents.count];
+    for (NSString *component in pathComponents) {
+        NSString *decodedComponent = [component stringByReplacingOccurrencesOfString:TWTJSONPointerSlashEncoding withString:TWTJSONPointerSlashValue];
+        [decodedComponents addObject:decodedComponent];
+    }
+
+    referenceNode.referencePathComponents = decodedComponents;
     [self popPathComponent];
 }
 
