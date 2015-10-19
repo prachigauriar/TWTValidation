@@ -69,8 +69,8 @@
 
 - (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
-    // Assumes key is @"#"
-    if (path.count == 1) {
+    // Assumes key is @"#" or the entire schema
+    if (path.count <= 1) {
         return self.schema;
     }
 

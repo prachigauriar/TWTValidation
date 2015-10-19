@@ -28,6 +28,13 @@
 
 @interface TWTJSONSchemaReferenceASTNode : TWTJSONSchemaASTNode
 
+// In the example:
+// /subSchemas.json#/definitions/integer
+// The file path is "/subSchemas.json"
+// referencePathComponents is [ "#", "definitions", "integer" ]
+
+// nil file path indicates the referencePathComponents refer to the same schema that this node is in
+@property (nonatomic, copy) NSString *filePath;
 @property (nonatomic, copy) NSArray *referencePathComponents;
 @property (nonatomic, weak) TWTJSONSchemaASTNode *referentNode;
 

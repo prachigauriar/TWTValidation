@@ -26,6 +26,7 @@
 
 #import <TWTValidation/TWTJSONSchemaParser.h>
 
+#import <TWTValidation/TWTJSONRemoteSchemaManager.h>
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 #import <TWTValidation/TWTValidationErrors.h>
@@ -40,6 +41,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 @property (nonatomic, copy, readonly) NSDictionary *JSONSchema;
 @property (nonatomic, strong, readonly) NSMutableArray *pathStack;
 @property (nonatomic, strong) NSMutableArray *warnings;
+
+@property (nonatomic, strong, readonly) TWTJSONRemoteSchemaManager *remoteSchemaManager;
+
 
 - (void)warnWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 - (void)failIfObject:(id)object isNotKindOfOneOfClasses:(Class)validClass1, ... NS_REQUIRES_NIL_TERMINATION;
@@ -100,13 +104,16 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSArray *referenceNodes = [topLevelNode allReferenceNodes];
     if (referenceNodes.count > 0) {
         for (TWTJSONSchemaReferenceASTNode *referenceNode in referenceNodes) {
-            TWTJSONSchemaASTNode *referent = [topLevelNode nodeForReferenceNode:referenceNode];
+            TWTJSONSchemaASTNode *referent = (referenceNode.filePath ?
+                                              [self.remoteSchemaManager remoteNodeForReferenceNode:referenceNode] :
+                                              [topLevelNode nodeForReferenceNode:referenceNode]);
 
             if (referent) {
                 referenceNode.referentNode = referent;
             } else {
                 if (outError) {
-                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", [referenceNode.referencePathComponents componentsJoinedByString:@"/"]];
+                    NSString *fullReferencePath = [[@"" stringByAppendingString:referenceNode.filePath] stringByAppendingString:[referenceNode.referencePathComponents componentsJoinedByString:@"/"]];
+                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", fullReferencePath];
                     *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                                     code:TWTJSONSchemaParserErrorCodeInvalidReferencePath
                                                 userInfo:@{ NSLocalizedDescriptionKey : description }];
@@ -300,12 +307,14 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSString *referencePath = schema[TWTJSONSchemaKeywordRef];
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
+
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
-    if (![pathComponents.firstObject isEqualToString:@"#"]) {
-        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Expected reference path to begin with # character"];
+    if ([pathComponents.firstObject isEqualToString:@"#"]) {
+        referenceNode.referencePathComponents = pathComponents;
+    } else if (![self.remoteSchemaManager attemptToConfigureFilePath:referencePath onReferenceNode:referenceNode]) {
+        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Reference path does not refer to the current schema or a valid file path"];
     }
 
-    referenceNode.referencePathComponents = pathComponents;
     [self popPathComponent];
 }
 
@@ -896,6 +905,18 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     });
 
     return types;
+}
+
+
+#pragma mark - Accessors
+
+@synthesize remoteSchemaManager = _remoteSchemaManager;
+- (TWTJSONRemoteSchemaManager *)remoteSchemaManager
+{
+    if (!_remoteSchemaManager) {
+        _remoteSchemaManager = [[TWTJSONRemoteSchemaManager alloc] init];
+    }
+    return _remoteSchemaManager;
 }
 
 @end
