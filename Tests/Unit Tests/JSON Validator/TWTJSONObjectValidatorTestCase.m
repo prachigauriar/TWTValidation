@@ -115,6 +115,17 @@ static NSString *const TWTTestKeywordValid = @"valid";
 }
 
 
+- (void)testDraft4
+{
+    NSData *data =[NSData dataWithContentsOfFile:[[NSBundle bundleForClass:[TWTJSONObjectValidator class]] pathForResource:@"JSONSchemaDraft4" ofType:@"json"]];
+    NSDictionary *draft4 = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:draft4 error:nil warnings:nil];
+    XCTAssertNotNil(validator, @"validator is nil from draft 4 schema");
+
+    XCTAssertTrue([validator validateValue:draft4 error:nil]);
+}
+
+
 - (NSArray *)testsInDirectory:(NSString *)directoryPath
 {
     NSArray *testFilenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];

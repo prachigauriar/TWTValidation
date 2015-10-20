@@ -37,6 +37,10 @@
         return YES;
     }
 
+    if ([filePath isEqualToString:TWTJSONSchemaKeywordDraft4Path]) {
+        filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"JSONSchemaDraft4" ofType:@"json"];
+    }
+
     NSRange range = [filePath rangeOfString:@"#"];
     if (range.location == NSNotFound) {
         referenceNode.filePath = filePath;

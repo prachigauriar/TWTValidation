@@ -54,6 +54,19 @@
 
 }
 
+
+- (void)testDraft4File
+{
+    TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
+
+    TWTJSONSchemaReferenceASTNode *referenceNode = [[TWTJSONSchemaReferenceASTNode alloc] init];
+    BOOL success = [remoteManager attemptToConfigureFilePath:TWTJSONSchemaKeywordDraft4Path onReferenceNode:referenceNode];
+
+    XCTAssertTrue(success, @"JSON draft 4 file path was not successful");
+    XCTAssertNotNil([remoteManager remoteNodeForReferenceNode:referenceNode], @"Cannot retreive remote referant node at path %@", TWTJSONSchemaKeywordDraft4Path);
+}
+
+
 - (void)testFailureCase
 {
     NSString *invalidPath = UMKRandomAlphanumericString();
