@@ -576,6 +576,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
     if ([type isKindOfClass:[NSArray class]]) {
+        [self failIfObjectIsNotArrayWithAtLeastOneItem:type allowsNil:NO];
 
         // Case B: Type is an array
         [(NSArray *)type enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {

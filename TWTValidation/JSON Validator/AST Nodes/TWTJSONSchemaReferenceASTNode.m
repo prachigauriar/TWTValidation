@@ -36,7 +36,15 @@
 
 - (NSArray *)childrenReferenceNodes
 {
-    return [[super childrenReferenceNodes] arrayByAddingObject:self];
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
+    [nodes addObject:self];
+
+    // If the referent is not in the same tree as the reference node, add its children
+    if (self.filePath) {
+        [nodes addObjectsFromArray:self.referentNode.childrenReferenceNodes];
+    }
+
+    return nodes;
 }
 
 

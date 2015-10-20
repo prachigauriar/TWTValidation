@@ -60,7 +60,8 @@
 
 - (BOOL)fetchFileAtPath:(NSString *)filePath
 {
-    NSData *data = [[NSFileManager defaultManager] contentsAtPath:filePath];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+
     if (!data) {
         return NO;
     }
