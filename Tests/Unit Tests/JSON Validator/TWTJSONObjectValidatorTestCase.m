@@ -45,8 +45,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 {
     // TODO: make these relative
     NSString *directoryPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
-    NSError *error = nil;
-    
+
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         if ([[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
             continue;
@@ -60,12 +59,16 @@ static NSString *const TWTTestKeywordValid = @"valid";
                 continue;
             }
 
+            NSError *error = nil;
             BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
             XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass,
                           @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
                           testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail",
                           testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
 
+            if (!shouldPass) {
+                XCTAssertNotNil(error, @"error was not set for a failing value");
+            }
         }
     }
 }
@@ -97,10 +100,16 @@ static NSString *const TWTTestKeywordValid = @"valid";
     NSString *directoryPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/";
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
+
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
+            NSError *error = nil;
             BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-            XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:nil] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
+            XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
                           testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
+
+            if (!shouldPass) {
+                XCTAssertNotNil(error, @"error was not set for a failing value");
+            }
         }
     }
 }

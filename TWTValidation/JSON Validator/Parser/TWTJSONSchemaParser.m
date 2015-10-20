@@ -308,10 +308,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
 
-    if ([referencePath containsString:@"~"]) {
-        NSLog(@"asdf");
-    }
-
     referencePath = [referencePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
