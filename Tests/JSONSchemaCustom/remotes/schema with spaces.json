@@ -1,0 +1,13 @@
+{
+    "definitions": {
+        "percent%field": {
+            "type": "integer"
+        },
+        "slash/field": {
+            "type": "integer"
+        },
+        "tilda~field": {
+            "type": "integer"
+        }
+    }
+}

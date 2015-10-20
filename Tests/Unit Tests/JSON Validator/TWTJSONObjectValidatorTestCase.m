@@ -48,17 +48,24 @@ static NSString *const TWTTestKeywordValid = @"valid";
     NSError *error = nil;
     
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
+        if ([[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
+            continue;
+        }
+
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
         XCTAssertNotNil(validator, @"validator is nil from schema: %@", test[TWTTestKeywordSchema]);
-        for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
 
-            if (![[self failingTests] containsObject:testValue[TWTTestKeywordDescription]]) {
-                BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass,
-                              @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
-                              testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail",
-                              testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
+        for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
+            if ([[self failingTestDescriptions] containsObject:testValue[TWTTestKeywordDescription]]) {
+                continue;
             }
+
+            BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
+            XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass,
+                          @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
+                          testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail",
+                          testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
+
         }
     }
 }
@@ -139,9 +146,14 @@ static NSString *const TWTTestKeywordValid = @"valid";
     return [NSSet setWithObjects:@"1 and true are unique",
             @"0 and false are unique",
             @"unique heterogeneous types are valid",
-            @"remote ref valid", @"remote ref invalid",
-            @"slash", @"tilda", @"percent", nil];
+            @"remote ref valid", @"remote ref invalid", nil];
 }
 
+
+- (NSSet *)failingTests
+{
+    // Not currently supporting http URLs
+    return [NSSet setWithObject:@"remote ref, containing refs itself"];
+}
 
 @end
