@@ -308,12 +308,27 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
 
+    if ([referencePath containsString:@"~"]) {
+        NSLog(@"asdf");
+    }
+
+    referencePath = [referencePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
     if ([pathComponents.firstObject isEqualToString:@"#"]) {
         referenceNode.referencePathComponents = pathComponents;
     } else if (![self.remoteSchemaManager attemptToConfigureFilePath:referencePath onReferenceNode:referenceNode]) {
         [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Reference path does not refer to the current schema or a valid file path"];
     }
+
+    // See JSON Pointer doc (section 3. Syntax) for special characters
+    NSMutableArray *decodedComponents = [[NSMutableArray alloc] initWithCapacity:referenceNode.referencePathComponents.count];
+    for (NSString *component in referenceNode.referencePathComponents) {
+        NSString *decodedComponent = [[component stringByReplacingOccurrencesOfString:TWTJSONPointerSlashEncoding withString:TWTJSONPointerSlashValue] stringByReplacingOccurrencesOfString:TWTJSONPointerTildaEncoding withString:TWTJSONPointerTildaValue];
+        [decodedComponents addObject:decodedComponent];
+    }
+
+    referenceNode.referencePathComponents = decodedComponents;
 
     [self popPathComponent];
 }

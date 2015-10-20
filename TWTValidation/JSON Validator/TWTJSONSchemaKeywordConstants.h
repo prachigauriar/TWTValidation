@@ -69,7 +69,13 @@ extern NSString *const TWTJSONSchemaKeywordPattern;
 
 // Top level
 extern NSString *const TWTJSONSchemaKeywordSchema;
-extern NSString *const TWTJSONSchemaKeywordDraft4Path; 
+extern NSString *const TWTJSONSchemaKeywordDraft4Path;
+
+// Reference
+extern NSString *const TWTJSONPointerTildaEncoding;
+extern NSString *const TWTJSONPointerTildaValue;
+extern NSString *const TWTJSONPointerSlashEncoding;
+extern NSString *const TWTJSONPointerSlashValue;
 
 // Valid types
 extern NSString *const TWTJSONSchemaTypeKeywordAny;
