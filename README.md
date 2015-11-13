@@ -256,7 +256,7 @@ validate a keyed collection’s count, keys, and values, as well as specific key
 ```objc
 TWTNumberValidator *countValidator = [[TWTNumberValidator alloc] initWithMinimum:@1 maximum:@3];
 TWTStringValidator *keyValidator = [[TWTStringValidator alloc] init];
-TWTStringValidator *valueValidator = [[TWTNumberValidator alloc] init];
+TWTNumberValidator *valueValidator = [[TWTNumberValidator alloc] init];
 
 TWTNumberValidator *ageValidator = [[TWTNumberValidator alloc] initWithMinimum:@0 maximum:@130];
 TWTKeyValuePairValidator *agePairValidator = [[TWTKeyValuePairValidator alloc] initWithKey:@"age"
