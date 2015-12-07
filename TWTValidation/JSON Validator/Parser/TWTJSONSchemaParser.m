@@ -77,6 +77,8 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
+    [self failIfObject:self.JSONSchema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
+
     [self pushPathComponent:TWTJSONSchemaKeywordSchema];
     if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
         [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on draft 4.", TWTJSONSchemaKeywordSchema];

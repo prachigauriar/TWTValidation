@@ -12,6 +12,9 @@
 #import <TWTValidation/TWTJSONSchemaParser.h>
 
 
+static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
+
+
 @interface TWTJSONRemoteSchemaManager ()
 
 @property (nonatomic, strong) NSMutableDictionary *filePathsToJSONSchemaTopLevelNodes;
@@ -31,33 +34,34 @@
 }
 
 
-- (BOOL)attemptToConfigureFilePath:(NSString *)filePath onReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+- (BOOL)attemptToConfigureFilePath:(NSString *)fullReferencePath onReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
 {
-    if (self.filePathsToJSONSchemaTopLevelNodes[filePath]) {
-        return YES;
+    // Some references require validation against the schema rules; redirect these to the file's location in this bundle
+    if ([fullReferencePath isEqualToString:TWTJSONSchemaKeywordDraft4Path]) {
+        fullReferencePath = [[NSBundle bundleForClass:[self class]] pathForResource:kTWTJSONSchemaDraftFileInBundle ofType:@"json"];
     }
 
-    if ([filePath isEqualToString:TWTJSONSchemaKeywordDraft4Path]) {
-        filePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"JSONSchemaDraft4" ofType:@"json"];
+    // Break the full path into the file path and components
+    NSUInteger subschemaLocation = [fullReferencePath rangeOfString:@"#"].location;
+    NSString *filePath;
+    NSArray *components;
+    if (subschemaLocation == NSNotFound) {
+        filePath = fullReferencePath;
+    } else {
+        filePath = [fullReferencePath substringToIndex:subschemaLocation];
+        NSString *componentString = [fullReferencePath substringFromIndex:subschemaLocation];
+        components = [componentString componentsSeparatedByString:@"/"];
     }
 
-    NSRange range = [filePath rangeOfString:@"#"];
-    if (range.location == NSNotFound) {
-        referenceNode.filePath = filePath;
-        if (![self fetchFileAtPath:referenceNode.filePath]) {
-            return NO;
-        }
-
-        return YES;
-    }
-
-    referenceNode.filePath = [filePath substringWithRange:NSMakeRange(0, range.location)];
-    if (![self fetchFileAtPath:referenceNode.filePath]) {
+    // If the file has not already been loaded, attempt to load it
+    if (!self.filePathsToJSONSchemaTopLevelNodes[filePath] && ![self fetchFileAtPath:filePath]) {
         return NO;
     }
 
-    NSString *componentString = [filePath substringWithRange:NSMakeRange(range.location, filePath.length - range.location)];
-    referenceNode.referencePathComponents = [componentString componentsSeparatedByString:@"/"];
+    // The file has been loaded, set the reference node properties and return
+    referenceNode.filePath = filePath;
+    referenceNode.referencePathComponents = components;
+
     return YES;
 }
 

@@ -67,6 +67,33 @@
 }
 
 
+- (void)testMutlipleFileReferences
+{
+    NSString *filePath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json";
+    NSString *components1 = @"#";
+    NSString *components2 = @"#/properties/id";
+    TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
+
+    TWTJSONSchemaReferenceASTNode *referenceNode1 = [[TWTJSONSchemaReferenceASTNode alloc] init];
+    TWTJSONSchemaReferenceASTNode *referenceNode2 = [[TWTJSONSchemaReferenceASTNode alloc] init];
+
+    BOOL success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components1] onReferenceNode:referenceNode1];
+
+    XCTAssertTrue(success, @"Valid file path was not successful");
+    XCTAssertEqualObjects(filePath, referenceNode1.filePath, @"file path not configured correctly");
+    XCTAssertEqualObjects(referenceNode1.referencePathComponents, @[components1], @"path componenets not set correctly");
+
+    success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components2] onReferenceNode:referenceNode2];
+    XCTAssertTrue(success, @"File path that was previously loaded was not successful");
+    XCTAssertEqualObjects(filePath, referenceNode2.filePath, @"File path that was previously loaded not configured correctly");
+    XCTAssertEqualObjects(referenceNode2.referencePathComponents, [components2 componentsSeparatedByString:@"/"], @"Path componenets for file path that was previously loaded not set correctly");
+
+    XCTAssertNotNil([remoteManager remoteNodeForReferenceNode:referenceNode2], @"Cannot retreive remote referant node at path %@", [filePath stringByAppendingString:components2]);
+
+    XCTAssertNotEqual([remoteManager remoteNodeForReferenceNode:referenceNode1], [remoteManager remoteNodeForReferenceNode:referenceNode2], @"remote manager returns the same referent node for different reference paths");
+}
+
+
 - (void)testFailureCase
 {
     NSString *invalidPath = UMKRandomAlphanumericString();
