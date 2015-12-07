@@ -312,10 +312,11 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     referencePath = [referencePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
+    NSError *error;
     if ([pathComponents.firstObject isEqualToString:@"#"]) {
         referenceNode.referencePathComponents = pathComponents;
-    } else if (![self.remoteSchemaManager attemptToConfigureFilePath:referencePath onReferenceNode:referenceNode]) {
-        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Reference path does not refer to the current schema or a valid file path"];
+    } else if (![self.remoteSchemaManager attemptToConfigureFilePath:referencePath onReferenceNode:referenceNode error:&error]) {
+        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath description:error.localizedDescription];
     }
 
     // See JSON Pointer doc (section 3. Syntax) for special characters
@@ -859,6 +860,15 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 }
 
 
+- (void)failWithErrorCode:(NSUInteger)code object:(id)object description:(NSString *)description
+{
+    NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
+                                                                                                   NSLocalizedDescriptionKey : description }];
+
+    @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
+}
+
+
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ...
 {
     object = object ? object : [NSNull null];
@@ -870,10 +880,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     va_end(arguments);
 
     description = [@"Error at " stringByAppendingFormat:@"%@. %@", [self currentPathString], description];
-    NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
-                                                                                                   NSLocalizedDescriptionKey : description }];
-
-    @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
+    [self failWithErrorCode:code object:object description:description];
 }
 
 

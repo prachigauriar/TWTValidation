@@ -26,7 +26,7 @@
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
 
     TWTJSONSchemaReferenceASTNode *referenceNode = [[TWTJSONSchemaReferenceASTNode alloc] init];
-    BOOL success = [remoteManager attemptToConfigureFilePath:integerFilePath onReferenceNode:referenceNode];
+    BOOL success = [remoteManager attemptToConfigureFilePath:integerFilePath onReferenceNode:referenceNode error:nil];
 
     XCTAssertTrue(success, @"Valid file path was not successful");
     XCTAssertEqualObjects(integerFilePath, referenceNode.filePath, @"file path not configured correctly");
@@ -44,7 +44,7 @@
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
     TWTJSONSchemaReferenceASTNode *referenceNode = [[TWTJSONSchemaReferenceASTNode alloc] init];
 
-    BOOL success = [remoteManager attemptToConfigureFilePath:filePathWithComponents onReferenceNode:referenceNode];
+    BOOL success = [remoteManager attemptToConfigureFilePath:filePathWithComponents onReferenceNode:referenceNode error:nil];
 
     XCTAssertTrue(success, @"Valid file path was not successful");
     XCTAssertEqualObjects(subschemasFilePath, referenceNode.filePath, @"file path not configured correctly");
@@ -60,7 +60,7 @@
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
 
     TWTJSONSchemaReferenceASTNode *referenceNode = [[TWTJSONSchemaReferenceASTNode alloc] init];
-    BOOL success = [remoteManager attemptToConfigureFilePath:TWTJSONSchemaKeywordDraft4Path onReferenceNode:referenceNode];
+    BOOL success = [remoteManager attemptToConfigureFilePath:TWTJSONSchemaKeywordDraft4Path onReferenceNode:referenceNode error:nil];
 
     XCTAssertTrue(success, @"JSON draft 4 file path was not successful");
     XCTAssertNotNil([remoteManager remoteNodeForReferenceNode:referenceNode], @"Cannot retreive remote referant node at path %@", TWTJSONSchemaKeywordDraft4Path);
@@ -77,13 +77,13 @@
     TWTJSONSchemaReferenceASTNode *referenceNode1 = [[TWTJSONSchemaReferenceASTNode alloc] init];
     TWTJSONSchemaReferenceASTNode *referenceNode2 = [[TWTJSONSchemaReferenceASTNode alloc] init];
 
-    BOOL success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components1] onReferenceNode:referenceNode1];
+    BOOL success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components1] onReferenceNode:referenceNode1 error:nil];
 
     XCTAssertTrue(success, @"Valid file path was not successful");
     XCTAssertEqualObjects(filePath, referenceNode1.filePath, @"file path not configured correctly");
     XCTAssertEqualObjects(referenceNode1.referencePathComponents, @[components1], @"path componenets not set correctly");
 
-    success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components2] onReferenceNode:referenceNode2];
+    success = [remoteManager attemptToConfigureFilePath:[filePath stringByAppendingString:components2] onReferenceNode:referenceNode2 error:nil];
     XCTAssertTrue(success, @"File path that was previously loaded was not successful");
     XCTAssertEqualObjects(filePath, referenceNode2.filePath, @"File path that was previously loaded not configured correctly");
     XCTAssertEqualObjects(referenceNode2.referencePathComponents, [components2 componentsSeparatedByString:@"/"], @"Path componenets for file path that was previously loaded not set correctly");
@@ -101,8 +101,11 @@
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
     TWTJSONSchemaReferenceASTNode *referenceNode = [[TWTJSONSchemaReferenceASTNode alloc] init];
     BOOL success = YES;
-    success = [remoteManager attemptToConfigureFilePath:invalidPath onReferenceNode:referenceNode];
+    NSError *error;
+    success = [remoteManager attemptToConfigureFilePath:invalidPath onReferenceNode:referenceNode error:&error];
     XCTAssertFalse(success, @"Invalid file path was successful");
+    XCTAssertNotNil(error, @"Error was not set for invalid file");
+    XCTAssertEqual(error.code, TWTJSONRemoteSchemaManagerErrorCodeLoadFileFailure, @"Error was not coded correctly for invalid file");
 }
 
 @end
