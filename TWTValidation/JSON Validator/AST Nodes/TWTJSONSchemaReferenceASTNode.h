@@ -36,6 +36,7 @@
 // nil file path indicates the referencePathComponents refer to the same schema that this node is in
 @property (nonatomic, copy) NSString *filePath;
 @property (nonatomic, copy) NSArray *referencePathComponents;
+@property (nonatomic, copy, readonly) NSString *fullReferencePath;
 @property (nonatomic, weak) TWTJSONSchemaASTNode *referentNode;
 
 @end

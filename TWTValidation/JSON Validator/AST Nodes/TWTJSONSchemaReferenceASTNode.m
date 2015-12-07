@@ -59,4 +59,20 @@
     return YES;
 }
 
+
+- (NSString *)fullReferencePath
+{
+    NSMutableString *path = [[NSMutableString alloc] init];
+    
+    if (self.filePath) {
+        [path appendString:self.filePath];
+    }
+
+    if (self.referencePathComponents.count) {
+       [path appendString:[self.referencePathComponents componentsJoinedByString:@"/"]];
+    }
+
+    return path;
+}
+
 @end

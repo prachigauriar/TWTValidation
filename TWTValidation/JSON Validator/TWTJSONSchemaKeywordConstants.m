@@ -72,8 +72,8 @@ NSString *const TWTJSONSchemaKeywordSchema = @"$schema";
 NSString *const TWTJSONSchemaKeywordDraft4Path = @"http://json-schema.org/draft-04/schema#";
 
 // Reference
-NSString *const TWTJSONPointerTildaEncoding = @"~0";
-NSString *const TWTJSONPointerTildaValue = @"~";
+NSString *const TWTJSONPointerTildeEncoding = @"~0";
+NSString *const TWTJSONPointerTildeValue = @"~";
 NSString *const TWTJSONPointerSlashEncoding = @"~1";
 NSString *const TWTJSONPointerSlashValue = @"/";
 

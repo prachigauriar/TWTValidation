@@ -85,7 +85,7 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
         return NO;
     }
 
-    [self.filePathsToJSONSchemaTopLevelNodes setObject:topLevelNode forKey:filePath];
+    self.filePathsToJSONSchemaTopLevelNodes[filePath] = topLevelNode;
     return YES;
 }
 

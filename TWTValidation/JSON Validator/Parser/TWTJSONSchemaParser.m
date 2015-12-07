@@ -114,8 +114,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
                 referenceNode.referentNode = referent;
             } else {
                 if (outError) {
-                    NSString *fullReferencePath = [[@"" stringByAppendingString:referenceNode.filePath] stringByAppendingString:[referenceNode.referencePathComponents componentsJoinedByString:@"/"]];
-                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", fullReferencePath];
+                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", referenceNode.fullReferencePath];
                     *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                                     code:TWTJSONSchemaParserErrorCodeInvalidReferencePath
                                                 userInfo:@{ NSLocalizedDescriptionKey : description }];
@@ -322,7 +321,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     // See JSON Pointer doc (section 3. Syntax) for special characters
     NSMutableArray *decodedComponents = [[NSMutableArray alloc] initWithCapacity:referenceNode.referencePathComponents.count];
     for (NSString *component in referenceNode.referencePathComponents) {
-        NSString *decodedComponent = [[component stringByReplacingOccurrencesOfString:TWTJSONPointerSlashEncoding withString:TWTJSONPointerSlashValue] stringByReplacingOccurrencesOfString:TWTJSONPointerTildaEncoding withString:TWTJSONPointerTildaValue];
+        NSString *decodedComponent = [[component stringByReplacingOccurrencesOfString:TWTJSONPointerSlashEncoding withString:TWTJSONPointerSlashValue] stringByReplacingOccurrencesOfString:TWTJSONPointerTildeEncoding withString:TWTJSONPointerTildeValue];
         [decodedComponents addObject:decodedComponent];
     }
 
