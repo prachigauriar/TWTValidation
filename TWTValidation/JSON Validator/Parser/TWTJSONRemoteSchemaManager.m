@@ -69,35 +69,39 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
 
 - (BOOL)fetchFileAtPath:(NSString *)filePath error:(NSError **)outError
 {
-    NSData *data = [NSData dataWithContentsOfFile:filePath options:0 error:nil];
+    NSError *error;
+    NSData *data = [NSData dataWithContentsOfFile:filePath options:0 error:&error];
 
     if (!data) {
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                            code:TWTJSONRemoteSchemaManagerErrorCodeLoadFileFailure
-                                       userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"A data object could not be created from the file with path %@", filePath] }];
+                                       userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"A data object could not be created from the file with path %@", nil), filePath],
+                                                   NSUnderlyingErrorKey : error }];
         }
 
         return NO;
     }
 
-    NSDictionary *remoteSchema = [NSJSONSerialization JSONObjectWithData:data options:0 error:outError];
+    NSDictionary *remoteSchema = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (!remoteSchema) {
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                             code:TWTJSONRemoteSchemaManagerErrorCodeJSONSerializationError
-                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"An error occurred serializing the data with file path %@", filePath] }];
+                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"An error occurred serializing the data with file path %@", nil), filePath],
+                                                    NSUnderlyingErrorKey : error }];
         }
         return NO;
     }
 
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:remoteSchema];
-    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:outError warnings:nil];
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:nil];
     if (!topLevelNode) {
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                             code:TWTJSONRemoteSchemaManagerErrorCodeInvalidSchemaError
-                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"The reference file %@ does not contain a valid JSON Schema", filePath] }];
+                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"The reference file %@ does not contain a valid JSON Schema", filePath],
+                                                    NSUnderlyingErrorKey : error }];
         }
         return NO;
     }
