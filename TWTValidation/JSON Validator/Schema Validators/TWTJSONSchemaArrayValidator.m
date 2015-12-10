@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 1/15/15.
-//  Copyright (c) 2015 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@
         }];
         if (repeats.count > 0) {
             uniqueItemsValidated = NO;
-            uniqueItemsError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeNotUniqueElements
+            uniqueItemsError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeJSONSchemaNotUniqueElements
                                                    failingValidator:self
                                                               value:value
                                                localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.nonUniqueItems.validationError")];
@@ -156,14 +156,14 @@
             if (index < self.indexedItemValidators.count) {
                 if (![self.indexedItemValidators[index] validateValue:item error:outError ? &error : NULL]) {
                     itemsValidated = NO;
-                    if (outError) {
+                    if (error) {
                         [itemErrors addObject:error];
                     }
                 }
             } else {
                 if (![self.additionalItemsValidator validateValue:item error:outError ? &error : NULL]) {
                     additionalItemsValidated = NO;
-                    if (outError) {
+                    if (error) {
                         [itemErrors addObject:error];
                     }
                 }

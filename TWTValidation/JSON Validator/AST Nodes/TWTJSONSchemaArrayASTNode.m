@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/15/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,45 @@
 - (NSSet *)validTypes
 {
     return [NSSet setWithObject:TWTJSONSchemaTypeKeywordArray];
+}
+
+
+- (NSArray *)childrenReferenceNodes
+{
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
+    if (self.itemSchema) {
+        [nodes addObjectsFromArray:self.itemSchema.childrenReferenceNodes];
+    } else {
+        [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.indexedItemSchemas]];
+    }
+
+    [nodes addObjectsFromArray:self.additionalItemsNode.childrenReferenceNodes];
+
+    return nodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    NSString *key = path.firstObject;
+    NSArray *remainingPath = [self remainingPathFromPath:path];
+
+    if ([key isEqualToString:TWTJSONSchemaKeywordItems]) {
+        if (self.itemSchema) {
+            return [self.itemSchema nodeForPathComponents:remainingPath];
+        } else {
+            return [self nodeForPathComponents:remainingPath fromNodeArray:self.indexedItemSchemas];
+        }
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalItems]) {
+        return [self.additionalItemsNode nodeForPathComponents:remainingPath];
+    }
+
+    return nil;
 }
 
 @end

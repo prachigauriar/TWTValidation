@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/15/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 #import <TWTValidation/TWTJSONSchemaObjectASTNode.h>
 
 #import <TWTValidation/TWTJSONSchemaBooleanValueASTNode.h>
+#import <TWTValidation/TWTJSONSchemaKeyValuePairASTNode.h>
 
 
 @implementation TWTJSONSchemaObjectASTNode
@@ -52,6 +53,55 @@
 - (NSSet *)validTypes
 {
     return [NSSet setWithObject:TWTJSONSchemaTypeKeywordObject];
+}
+
+
+- (NSArray *)childrenReferenceNodes
+{
+    NSMutableArray *nodes = [[super childrenReferenceNodes] mutableCopy];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.propertySchemas]];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.patternPropertySchemas]];
+    [nodes addObjectsFromArray:self.additionalPropertiesNode.childrenReferenceNodes];
+    [nodes addObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.propertyDependencies]];
+
+    return nodes;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    NSString *key = path.firstObject;
+    NSArray *remainingPath = [self remainingPathFromPath:path];
+
+    if ([key isEqualToString:TWTJSONSchemaKeywordProperties]) {
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertySchemas];
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordPatternProperties]) {
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.patternPropertySchemas];
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordAdditionalProperties]) {
+        return [self.additionalPropertiesNode nodeForPathComponents:remainingPath];
+    } else if ([key isEqualToString:TWTJSONSchemaKeywordDependencies]) {
+        return [self nodeForPathComponents:remainingPath fromKeyedNodeArray:self.propertyDependencies];
+    }
+
+    return nil;
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path fromKeyedNodeArray:(NSArray *)array
+{
+    for (TWTJSONSchemaASTNode *subnode in array) {
+        TWTJSONSchemaASTNode *node = [subnode nodeForPathComponents:path];
+        if (node) {
+            return node;
+        }
+    }
+
+    return nil;
 }
 
 @end

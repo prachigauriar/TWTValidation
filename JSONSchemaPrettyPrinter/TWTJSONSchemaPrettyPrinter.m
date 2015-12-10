@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 1/7/15.
-//  Copyright (c) 2015 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -134,6 +134,14 @@
         NSDictionary *subtypeSchema = [self popCurrentObject];
         [[self currentObject] addEntriesFromDictionary:subtypeSchema];
     }
+}
+
+
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode
+{
+    [self pushNewObject:[[NSMutableDictionary alloc] init]];
+    NSString *referencePath = [referenceNode.referencePathComponents componentsJoinedByString:@"/"];
+    [self setObject:referencePath inCurrentSchemaForKey:TWTJSONSchemaKeywordRef];
 }
 
 

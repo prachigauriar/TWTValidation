@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@
 @class TWTJSONSchemaNamedPropertyASTNode;
 @class TWTJSONSchemaPatternPropertyASTNode;
 @class TWTJSONSchemaDependencyASTNode;
+@class TWTJSONSchemaReferenceASTNode;
 
 
 @protocol TWTJSONSchemaASTProcessor <NSObject>
@@ -52,6 +53,7 @@
 - (void)processObjectNode:(TWTJSONSchemaObjectASTNode *)objectNode;
 - (void)processStringNode:(TWTJSONSchemaStringASTNode *)stringNode;
 - (void)processAmbiguousNode:(TWTJSONSchemaAmbiguousASTNode *)ambiguousNode;
+- (void)processReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
 
 // Specialized nodes for array items and object properties
 - (void)processBooleanValueNode:(TWTJSONSchemaBooleanValueASTNode *)booleanValueNode;

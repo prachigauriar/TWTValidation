@@ -3,7 +3,7 @@
   TWTValidation
 
   Created by Prachi Gauriar on 4/3/2014.
-  Copyright (c) 2014 Two Toasters, LLC.
+ //  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -69,11 +69,11 @@
 
 /* JSON Schema Object validator */
 "TWTJSONSchemaObjectValidator.notJSONObjectError" = "value is not a JSON object";
-"TWTJSONSchemaObjectValidator.requiredPropertyNotPresent.validationError.format" = "required property (%1$@) is not present";
+"TWTJSONSchemaObjectValidator.requiredPropertyMissing.validationError.format" = "required property (%1$@) is missing";
 "TWTJSONSchemaObjectValidator.validationError" = "value is invalid against schema";
 
 /* JSON Schema Array validator */
 "TWTJSONSchemaArrayValidator.notArrayError" = "value is not an array";
-"TWTJSONSchemaArrayValidator.nonUniqueItems.validationError" = "value contians non-unique items";
+"TWTJSONSchemaArrayValidator.nonUniqueItems.validationError" = "value contains non-unique items";
 "TWTJSONSchemaArrayValidator.validationError" = "value is invalid against schema";
 

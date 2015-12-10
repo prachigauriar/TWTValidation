@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 1/12/15.
-//  Copyright (c) 2015 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,29 @@
 - (void)acceptProcessor:(id<TWTJSONSchemaASTProcessor>)processor
 {
     [processor processAmbiguousNode:self];
+}
+
+- (NSArray *)childrenReferenceNodes
+{
+    return [[super childrenReferenceNodes] arrayByAddingObjectsFromArray:[self childrenReferenceNodesFromNodeArray:self.subNodes]];
+}
+
+
+- (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
+{
+    TWTJSONSchemaASTNode *node = [super nodeForPathComponents:path];
+    if (node) {
+        return node;
+    }
+
+    for (TWTJSONSchemaASTNode *subnode in self.subNodes) {
+        node = [subnode nodeForPathComponents:path];
+        if (node) {
+            return node;
+        }
+    }
+
+    return nil;
 }
 
 @end

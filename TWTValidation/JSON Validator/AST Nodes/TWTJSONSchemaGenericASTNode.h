@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 12/15/14.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,10 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
+
 /*!
- TWTJSONSchemaGenericASTNodes model a schema that expects instances of type boolean, null, or any. These types have no special keywords associated with them, so instances are only validated against common keywords.
+ TWTJSONSchemaGenericASTNodes model a schema that expects instances of type boolean, null, or any. These types have no special 
+ keywords associated with them, so instances are only validated against common keywords.
  */
 @interface TWTJSONSchemaGenericASTNode : TWTJSONSchemaASTNode
 

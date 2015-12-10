@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Jill Cohen on 1/5/15.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -36,3 +36,4 @@
 #import <TWTValidation/TWTJSONSchemaStringASTNode.h>
 #import <TWTValidation/TWTJSONSchemaTopLevelASTNode.h>
 #import <TWTValidation/TWTJSONSchemaAmbiguousASTNode.h>
+#import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>

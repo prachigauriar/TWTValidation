@@ -3,7 +3,7 @@
 //  TWTValidation
 //
 //  Created by Prachi Gauriar on 3/29/2014.
-//  Copyright (c) 2014 Two Toasters, LLC.
+//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -176,6 +176,9 @@ typedef NS_ENUM(NSUInteger, TWTJSONSchemaParserErrorCode) {
 
     /*! Indicates a collection is empty where at least one item is required. */
     TWTJSONSchemaParserErrorCodeRequiresAtLeastOneItem,
+
+    /*! Indicates a reference path is invalid and/or does not match a location in the schema. */
+    TWTJSONSchemaParserErrorCodeInvalidReferencePath,
 };
 
 

@@ -136,7 +136,7 @@
 			attributes = {
 				CLASSPREFIX = TWT;
 				LastUpgradeCheck = 0510;
-				ORGANIZATIONNAME = "Two Toasters";
+				ORGANIZATIONNAME = "Ticketmaster Entertainment, Inc.";
 			};
 			buildConfigurationList = 84F6F25D194A1F650006BE7B /* Build configuration list for PBXProject "TWTValidationExample" */;
 			compatibilityVersion = "Xcode 3.2";
