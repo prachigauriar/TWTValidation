@@ -131,7 +131,7 @@
         }];
         if (repeats.count > 0) {
             uniqueItemsValidated = NO;
-            uniqueItemsError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeNotUniqueElements
+            uniqueItemsError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeJSONSchemaNotUniqueElements
                                                    failingValidator:self
                                                               value:value
                                                localizedDescription:TWTLocalizedString(@"TWTJSONSchemaArrayValidator.nonUniqueItems.validationError")];
