@@ -53,7 +53,6 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 - (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema
 {
     NSParameterAssert(topLevelSchema);
-    NSParameterAssert([NSJSONSerialization isValidJSONObject:topLevelSchema]);
 
     self = [super init];
     if (self) {
@@ -73,18 +72,23 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
-    [self pushPathComponent:TWTJSONSchemaKeywordSchema];
-    if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
-        [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on draft 4.", TWTJSONSchemaKeywordSchema];
-    } else {
-        [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
-    }
-    [self popPathComponent];
-
     TWTJSONSchemaTopLevelASTNode *topLevelNode = [[TWTJSONSchemaTopLevelASTNode alloc] init];
-    topLevelNode.schemaPath = self.JSONSchema[TWTJSONSchemaKeywordSchema];
 
     @try {
+        [self failIfObject:self.JSONSchema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
+        if (![NSJSONSerialization isValidJSONObject:self.JSONSchema]) {
+            [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:self.JSONSchema format:@"Schema is not a valid JSON object"];
+        }
+
+        [self pushPathComponent:TWTJSONSchemaKeywordSchema];
+        if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
+            [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on draft 4.", TWTJSONSchemaKeywordSchema];
+        } else {
+            [self failIfObject:self.JSONSchema[TWTJSONSchemaKeywordSchema] isNotMemberOfSet:[NSSet setWithObject:TWTJSONSchemaKeywordDraft4Path]];
+        }
+        topLevelNode.schemaPath = self.JSONSchema[TWTJSONSchemaKeywordSchema];
+        [self popPathComponent];
+
         topLevelNode.schema = [self parseSchema:self.JSONSchema];
     } @catch (NSException *exception) {
         if (![exception.name isEqualToString:TWTJSONParserException]) {
@@ -433,7 +437,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 }
 
 
-// Keyword: required
+// Keyword: required, property dependencies
 // Example: { "required" : [ "name" ] }
 - (NSArray *)parseNonEmptyArrayOfUnqiueStringsForKey:(NSString *)key schema:(NSDictionary *)schema
 {
@@ -556,6 +560,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
     if ([type isKindOfClass:[NSArray class]]) {
+        [self failIfObjectIsNotArrayWithAtLeastOneItem:type allowsNil:NO];
 
         // Case B: Type is an array
         [(NSArray *)type enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {

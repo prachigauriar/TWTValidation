@@ -32,6 +32,9 @@
 
 @interface TWTJSONSchemaParser : NSObject
 
+/*!
+ @param topLevelSchema The schema to be parsed. Throws an exception if this paramter is nil.
+ */
 - (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSArray **)outWarnings;
