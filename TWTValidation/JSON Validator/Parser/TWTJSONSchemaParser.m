@@ -315,8 +315,15 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSError *error;
     if ([pathComponents.firstObject isEqualToString:@"#"]) {
         referenceNode.referencePathComponents = pathComponents;
-    } else if (![self.remoteSchemaManager attemptToConfigureFilePath:referencePath onReferenceNode:referenceNode error:&error]) {
-        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath description:error.localizedDescription];
+    } else {
+        NSString *filePath;
+        pathComponents = nil;
+        if (![self.remoteSchemaManager loadSchemaForReferencePath:referencePath filePath:&filePath pathComponents:&pathComponents error:&error]) {
+            [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath description:error.localizedDescription];
+        }
+
+        referenceNode.filePath = filePath;
+        referenceNode.referencePathComponents = pathComponents;
     }
 
     // See JSON Pointer doc (section 3. Syntax) for special characters
@@ -863,7 +870,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object description:(NSString *)description
 {
     NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
-                                                                                                   NSLocalizedDescriptionKey : description }];
+                                                                                                   NSLocalizedDescriptionKey : NSLocalizedString(description, nil) }];
 
     @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
 }

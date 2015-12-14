@@ -27,10 +27,14 @@ typedef NS_ENUM(NSInteger, TWTJSONRemoteSchemaManagerErrorCode) {
 };
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface TWTJSONRemoteSchemaManager : NSObject
 
 - (TWTJSONSchemaASTNode *)remoteNodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
 
-- (BOOL)attemptToConfigureFilePath:(NSString *)filePath onReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode error:(NSError **)outError;
+- (BOOL)loadSchemaForReferencePath:(NSString *)referencePath filePath:(NSString *_Nullable *_Nonnull)outFilePath pathComponents:(NSArray *_Nullable *_Nonnull)outPathComponents error:(NSError *_Nullable *_Nullable)outError;
 
 @end
+
+NS_ASSUME_NONNULL_END
