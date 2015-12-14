@@ -1,0 +1,52 @@
+[
+    {
+        "description": "escaped pointer ref",
+        "schema": {
+            "definitions": {
+                "percent%field": {
+                    "type": "integer"
+                },
+                "slash/field": {
+                    "type": "integer"
+                },
+                "tilda~field": {
+                    "type": "integer"
+                }
+            },
+            "properties": {
+                "percent": {
+                    "$ref": "#/definitions/percent%25field"
+                },
+                "slash": {
+                    "$ref": "#/definitions/slash~1field"
+                },
+                "tilda": {
+                    "$ref": "#/definitions/tilda~0field"
+                }
+            }
+        },
+        "tests": [
+            {
+                "data": {
+                    "slash": "aoeu"
+                },
+                "description": "slash",
+                "valid": false
+            },
+            {
+                "data": {
+                    "tilda": "aoeu"
+                },
+                "description": "tilda",
+                "valid": false
+            },
+            {
+                "data": {
+                    "percent": "aoeu"
+                },
+                "description": "percent",
+                "valid": false
+            }
+        ]
+    }
+]

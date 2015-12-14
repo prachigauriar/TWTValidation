@@ -79,6 +79,17 @@
     // Generate all validators
     [topLevelNode acceptProcessor:self];
 
+    // If any referenced schemas were remote, create validators for them too
+    NSSet *remoteReferentNodes = [self.referentNodes objectsPassingTest:^BOOL(TWTJSONSchemaASTNode *node, BOOL *stop) {
+        return [self.referentNodesToValidators objectForKey:node] == nil;
+    }];
+    for (TWTJSONSchemaASTNode *node in remoteReferentNodes) {
+        // Process the nodes so they get saved into the map table
+        // Then immediately pop them off the stack; only the top-level validator should be left
+        [node acceptProcessor:self];
+        [self popCurrentObject];
+    }
+
     // Connect proxy validators to referenced schema
     for (TWTJSONSchemaReferenceASTNode *referenceNode in self.referenceNodesToProxyValidators) {
         TWTProxyValidator *proxyValidator = [self.referenceNodesToProxyValidators objectForKey:referenceNode];

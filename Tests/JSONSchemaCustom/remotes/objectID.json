@@ -1,0 +1,10 @@
+{
+    "properties": {
+        "id": {
+            "maximum": 9999,
+            "minimum": 1000,
+            "type": "integer"
+        }
+    },
+    "type": "object"
+}
