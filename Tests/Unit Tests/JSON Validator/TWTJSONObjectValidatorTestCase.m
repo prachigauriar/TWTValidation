@@ -26,6 +26,10 @@
 
 #import "TWTRandomizedTestCase.h"
 
+// Converts the preprocessor macros for test directory paths into strings
+#define STRING_FROM_SYMBOL(x) #x
+#define STRING_FROM_MACRO(x) STRING_FROM_SYMBOL(x)
+
 
 static NSString *const TWTTestKeywordSchema = @"schema";
 static NSString *const TWTTestKeywordDescription = @"description";
@@ -41,10 +45,23 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 @implementation TWTJSONObjectValidatorTestCase
 
++ (NSString *)pathForTestSuite
+{
+    // To change the directory of the test suite, edit the value for JSON_SCHEMA_VALIDATOR_TEST_SUITE in Build Settings
+    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_TEST_SUITE)];
+}
+
+
++ (NSString *)pathForCustomTests
+{
+    // To change the directory of the custom tests, edit the value for JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS in Build Settings
+    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS)];
+}
+
+
 - (void)testSuite
 {
-    // TODO: make these relative
-    NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
+    NSString *directoryPath = [[self class] pathForTestSuite];
     NSError *error = nil;
     
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
@@ -66,8 +83,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testKnownFailingTests
 {
-    // TODO: make these relative
-    NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
+    NSString *directoryPath = [[self class] pathForTestSuite];
     NSError *error = nil;
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
@@ -87,7 +103,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testCustom
 {
-    NSString *directoryPath = @"/Users/jillcohen/Developer/TWTValidation/Tests/JSONSchemaCustom/";
+    NSString *directoryPath = [[self class] pathForCustomTests];
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
