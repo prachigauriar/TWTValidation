@@ -35,22 +35,22 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
 }
 
 
-- (BOOL)loadSchemaForReferencePath:(NSString *)fullReferencePath filePath:(NSString **)outFilePath pathComponents:(NSArray **)outPathComponents error:(NSError **)outError;
+- (BOOL)loadSchemaForReferencePath:(NSString *)referencePath filePath:(NSString **)outFilePath pathComponents:(NSArray **)outPathComponents error:(NSError **)outError;
 {
     // Some references require validation against the schema rules; redirect these to the file's location in this bundle
-    if ([fullReferencePath isEqualToString:TWTJSONSchemaKeywordDraft4Path]) {
-        fullReferencePath = [[NSBundle bundleForClass:[self class]] pathForResource:kTWTJSONSchemaDraftFileInBundle ofType:@"json"];
+    if ([referencePath isEqualToString:TWTJSONSchemaKeywordDraft4Path]) {
+        referencePath = [[NSBundle bundleForClass:[self class]] pathForResource:kTWTJSONSchemaDraftFileInBundle ofType:@"json"];
     }
 
     // Break the full path into the file path and components
-    NSUInteger subschemaLocation = [fullReferencePath rangeOfString:@"#"].location;
+    NSUInteger subschemaLocation = [referencePath rangeOfString:@"#"].location;
     NSString *filePath;
     NSArray *components;
     if (subschemaLocation == NSNotFound) {
-        filePath = fullReferencePath;
+        filePath = referencePath;
     } else {
-        filePath = [fullReferencePath substringToIndex:subschemaLocation];
-        NSString *componentString = [fullReferencePath substringFromIndex:subschemaLocation];
+        filePath = [referencePath substringToIndex:subschemaLocation];
+        NSString *componentString = [referencePath substringFromIndex:subschemaLocation];
         components = [componentString componentsSeparatedByString:@"/"];
     }
 

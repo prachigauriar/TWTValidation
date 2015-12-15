@@ -26,9 +26,7 @@
 
 #import "TWTRandomizedTestCase.h"
 
-// Converts the preprocessor macros for test directory paths into strings
-#define STRING_FROM_SYMBOL(x) #x
-#define STRING_FROM_MACRO(x) STRING_FROM_SYMBOL(x)
+#import "TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"
 
 
 static NSString *const TWTTestKeywordSchema = @"schema";
@@ -45,23 +43,9 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 @implementation TWTJSONObjectValidatorTestCase
 
-+ (NSString *)pathForTestSuite
-{
-    // To change the directory of the test suite, edit the value for JSON_SCHEMA_VALIDATOR_TEST_SUITE in Build Settings
-    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_TEST_SUITE)];
-}
-
-
-+ (NSString *)pathForCustomTests
-{
-    // To change the directory of the custom tests, edit the value for JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS in Build Settings
-    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS)];
-}
-
-
 - (void)testSuite
 {
-    NSString *directoryPath = [[self class] pathForTestSuite];
+    NSString *directoryPath = [[self class] twt_pathForDraft4TestSuite];
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         if ([[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
@@ -95,19 +79,25 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testKnownFailingTests
 {
-    NSString *directoryPath = [[self class] pathForTestSuite];
+    NSString *directoryPath = [[self class] twt_pathForDraft4TestSuite];
     NSError *error = nil;
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
+        if (![[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
+            continue;
+        }
+
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
-            error = nil;
-            if ([[self failingTests] containsObject:testValue[TWTTestKeywordDescription]]) {
-                BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
-                              testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
-                XCTAssertNotNil(error, @"Error not set on failing test");
+            if (![[self failingTestDescriptions] containsObject:testValue[TWTTestKeywordDescription]]) {
+                continue;
             }
+
+            asdf
+
+            BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
+            XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
+                          testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
         }
     }
 }
@@ -116,7 +106,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testCustom
 {
-    NSString *directoryPath = [[self class] pathForCustomTests];
+    NSString *directoryPath = [[self class] twt_pathForCustomTests];
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];

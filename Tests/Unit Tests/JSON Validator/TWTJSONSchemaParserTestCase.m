@@ -28,6 +28,8 @@
 
 #import <TWTValidation/TWTValidation.h>
 
+#import "TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"
+
 #import "TWTJSONSchemaParser.h"
 #import "TWTJSONSchemaASTNode.h"
 
@@ -63,6 +65,7 @@
     XCTAssertNil(error, @"Error was returned while parsing a valid schema");
     XCTAssert(warnings.count == 0, @"Warnings were added while parsing a valid schema");
 }
+
 
 - (void)testParsingErrorSchemas
 {
@@ -118,31 +121,34 @@
 }
 
 
-//- (void)testParsingRemoteSchema
-//{
-//    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json#/properties/id" };
-//    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
-//    NSError *error = nil;
-//    NSArray *warnings = nil;
-//    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
-//
-//    XCTAssertNotNil(topLevelNode);
-//    XCTAssertNil(error);
-//    XCTAssert(warnings.count == 0);
-//}
-//
-//
-//- (void)testParsingRemoteErrorScham
-//{
-//    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/remoteErrorSchema.json" };
-//    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
-//    NSError *error = nil;
-//    NSArray *warnings = nil;
-//    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
-//
-//    XCTAssertNotNil(error);
-//    XCTAssertNil(topLevelNode);
-//}
+- (void)testParsingRemoteSchema
+{
+    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [[[self class] twt_pathForCustomTests] stringByAppendingString:@"/remotes/objectID.json#/properties/id"],
+                              TWTJSONSchemaKeywordSchema : TWTJSONSchemaKeywordDraft4Path };
+    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
+    NSError *error = nil;
+    NSArray *warnings = nil;
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
+
+    XCTAssertNotNil(topLevelNode);
+    XCTAssertNil(error);
+    XCTAssert(warnings.count == 0);
+}
+
+
+- (void)testParsingRemoteErrorScham
+{
+    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [[[self class] twt_pathForCustomTests] stringByAppendingString:@"/remotes/remoteErrorSchema.json"],
+                              TWTJSONSchemaKeywordSchema : TWTJSONSchemaKeywordDraft4Path };
+    TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
+    NSError *error = nil;
+    NSArray *warnings = nil;
+    TWTJSONSchemaTopLevelASTNode *topLevelNode = [parser parseWithError:&error warnings:&warnings];
+
+    XCTAssertNotNil(error);
+    XCTAssertNil(topLevelNode);
+    XCTAssert(warnings.count == 0);
+}
 
 
 #pragma mark - Schema examples
