@@ -11,6 +11,7 @@
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
@@ -79,7 +80,7 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                             code:TWTJSONRemoteSchemaManagerErrorCodeLoadFileFailure
-                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"A data object could not be created from the file with path %@", nil), filePath],
+                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:TWTLocalizedString(@"A data object could not be created from the file with path %@"), filePath],
                                                     NSUnderlyingErrorKey : error }];
             // Note: Foundation documentation guarantees that error will be returned from dataWithContentsOfFile:options:error:
         }
@@ -92,7 +93,7 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                             code:TWTJSONRemoteSchemaManagerErrorCodeJSONSerializationError
-                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"An error occurred serializing the data with file path %@", nil), filePath],
+                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:TWTLocalizedString(@"An error occurred serializing the data with file path %@"), filePath],
                                                     NSUnderlyingErrorKey : error }];
             // Note: Foundation documentation guarantees that error will be returned from JSONObjectWithData:options:error:
         }
@@ -105,7 +106,7 @@ static NSString *const kTWTJSONSchemaDraftFileInBundle = @"JSONSchemaDraft4";
         if (outError) {
             *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                             code:TWTJSONRemoteSchemaManagerErrorCodeInvalidSchemaError
-                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:NSLocalizedString(@"The reference file %@ does not contain a valid JSON Schema", nil), filePath],
+                                        userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:TWTLocalizedString(@"The reference file %@ does not contain a valid JSON Schema"), filePath],
                                                     NSUnderlyingErrorKey : error }];
             // Note: This framework guarantees that error will be returned from parseWithError:warnings:
         }

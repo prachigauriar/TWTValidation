@@ -30,6 +30,7 @@
 
 #import <TWTValidation/TWTCompoundValidator.h>
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 #pragma mark Functions
@@ -129,7 +130,7 @@ static SEL TWTKeyValueCodingValidatorSelectorForKey(NSString *key)
     if (!validated && outError) {
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
         userInfo[TWTValidationFailingValidatorKey] = self;
-        userInfo[NSLocalizedDescriptionKey] = NSLocalizedString(@"TWTKeyValueCodingValidator.validationError", nil);
+        userInfo[NSLocalizedDescriptionKey] = TWTLocalizedString(@"TWTKeyValueCodingValidator.validationError");
 
         if (object) {
             userInfo[TWTValidationValidatedValueKey] = object;
