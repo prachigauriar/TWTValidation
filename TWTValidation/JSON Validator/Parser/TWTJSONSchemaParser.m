@@ -26,9 +26,11 @@
 
 #import <TWTValidation/TWTJSONSchemaParser.h>
 
+#import <TWTValidation/TWTJSONRemoteSchemaManager.h>
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 static NSString *const TWTJSONParserException = @"TWTJSONParserException";
@@ -40,6 +42,9 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 @property (nonatomic, copy, readonly) NSDictionary *JSONSchema;
 @property (nonatomic, strong, readonly) NSMutableArray *pathStack;
 @property (nonatomic, strong) NSMutableArray *warnings;
+
+@property (nonatomic, strong, readonly) TWTJSONRemoteSchemaManager *remoteSchemaManager;
+
 
 - (void)warnWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 - (void)failIfObject:(id)object isNotKindOfOneOfClasses:(Class)validClass1, ... NS_REQUIRES_NIL_TERMINATION;
@@ -73,6 +78,8 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
 - (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError *__autoreleasing *)outError warnings:(NSArray *__autoreleasing *)outWarnings
 {
+    [self failIfObject:self.JSONSchema isNotKindOfClass:[NSDictionary class] allowsNil:NO];
+
     [self pushPathComponent:TWTJSONSchemaKeywordSchema];
     if (!self.JSONSchema[TWTJSONSchemaKeywordSchema]) {
         [self warnWithFormat:@"JSON Schema version not present with keyword %@. Processing schema based on draft 4.", TWTJSONSchemaKeywordSchema];
@@ -100,13 +107,15 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSArray *referenceNodes = [topLevelNode allReferenceNodes];
     if (referenceNodes.count > 0) {
         for (TWTJSONSchemaReferenceASTNode *referenceNode in referenceNodes) {
-            TWTJSONSchemaASTNode *referent = [topLevelNode nodeForReferenceNode:referenceNode];
+            TWTJSONSchemaASTNode *referent = (referenceNode.filePath ?
+                                              [self.remoteSchemaManager remoteNodeForReferenceNode:referenceNode] :
+                                              [topLevelNode nodeForReferenceNode:referenceNode]);
 
             if (referent) {
                 referenceNode.referentNode = referent;
             } else {
                 if (outError) {
-                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", [referenceNode.referencePathComponents componentsJoinedByString:@"/"]];
+                    NSString *description = [NSString stringWithFormat:@"Reference path %@ is invalid and/or does not match this schema.", referenceNode.fullReferencePath];
                     *outError = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain
                                                     code:TWTJSONSchemaParserErrorCodeInvalidReferencePath
                                                 userInfo:@{ NSLocalizedDescriptionKey : description }];
@@ -300,12 +309,33 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     NSString *referencePath = schema[TWTJSONSchemaKeywordRef];
 
     [self failIfObject:referencePath isNotKindOfClass:[NSString class] allowsNil:NO];
+
+    referencePath = [referencePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
     NSArray *pathComponents = [referencePath componentsSeparatedByString:@"/"];
-    if (![pathComponents.firstObject isEqualToString:@"#"]) {
-        [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath format:@"Expected reference path to begin with # character"];
+    NSError *error;
+    if ([pathComponents.firstObject isEqualToString:@"#"]) {
+        referenceNode.referencePathComponents = pathComponents;
+    } else {
+        NSString *filePath;
+        pathComponents = nil;
+        if (![self.remoteSchemaManager loadSchemaForReferencePath:referencePath filePath:&filePath pathComponents:&pathComponents error:&error]) {
+            [self failWithErrorCode:TWTJSONSchemaParserErrorCodeInvalidValue object:referencePath description:error.localizedDescription];
+        }
+
+        referenceNode.filePath = filePath;
+        referenceNode.referencePathComponents = pathComponents;
     }
 
-    referenceNode.referencePathComponents = pathComponents;
+    // See JSON Pointer doc (section 3. Syntax) for special characters
+    NSMutableArray *decodedComponents = [[NSMutableArray alloc] initWithCapacity:referenceNode.referencePathComponents.count];
+    for (NSString *component in referenceNode.referencePathComponents) {
+        NSString *decodedComponent = [[component stringByReplacingOccurrencesOfString:TWTJSONPointerSlashEncoding withString:TWTJSONPointerSlashValue] stringByReplacingOccurrencesOfString:TWTJSONPointerTildeEncoding withString:TWTJSONPointerTildeValue];
+        [decodedComponents addObject:decodedComponent];
+    }
+
+    referenceNode.referencePathComponents = decodedComponents;
+
     [self popPathComponent];
 }
 
@@ -556,6 +586,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 
     [self failIfObject:type isNotKindOfOneOfClasses:[NSString class], [NSArray class], nil];
     if ([type isKindOfClass:[NSArray class]]) {
+        [self failIfObjectIsNotArrayWithAtLeastOneItem:type allowsNil:NO];
 
         // Case B: Type is an array
         [(NSArray *)type enumerateObjectsUsingBlock:^(NSString *typeString, NSUInteger index, BOOL *stop) {
@@ -837,6 +868,15 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 }
 
 
+- (void)failWithErrorCode:(NSUInteger)code object:(id)object description:(NSString *)description
+{
+    NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
+                                                                                                   NSLocalizedDescriptionKey : TWTLocalizedString(description) }];
+
+    @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
+}
+
+
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object format:(NSString *)format, ...
 {
     object = object ? object : [NSNull null];
@@ -848,10 +888,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     va_end(arguments);
 
     description = [@"Error at " stringByAppendingFormat:@"%@. %@", [self currentPathString], description];
-    NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
-                                                                                                   NSLocalizedDescriptionKey : description }];
-
-    @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
+    [self failWithErrorCode:code object:object description:description];
 }
 
 
@@ -896,6 +933,18 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
     });
 
     return types;
+}
+
+
+#pragma mark - Accessors
+
+@synthesize remoteSchemaManager = _remoteSchemaManager;
+- (TWTJSONRemoteSchemaManager *)remoteSchemaManager
+{
+    if (!_remoteSchemaManager) {
+        _remoteSchemaManager = [[TWTJSONRemoteSchemaManager alloc] init];
+    }
+    return _remoteSchemaManager;
 }
 
 @end

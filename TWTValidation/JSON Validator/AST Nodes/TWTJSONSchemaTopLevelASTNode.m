@@ -29,13 +29,6 @@
 #import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>
 
 
-@interface TWTJSONSchemaTopLevelASTNode ()
-
-@property (nonatomic, copy, readwrite) NSArray *allReferenceNodes;
-
-@end
-
-
 @implementation TWTJSONSchemaTopLevelASTNode
 
 - (NSSet *)validTypes
@@ -52,12 +45,8 @@
 
 - (NSArray *)allReferenceNodes
 {
-    // Assumes this only runs after the entire AST node tree has been generated, and no changes are made to the tree afterward
-    if (!_allReferenceNodes) {
-        _allReferenceNodes = [[self childrenReferenceNodes] copy];
-    }
-
-    return _allReferenceNodes;
+    // This must recalculated because it's run once by the parser to identify internal reference nodes, then again by the generator to get all reference nodes (including those in remote referants)
+    return [self childrenReferenceNodes];
 }
 
 
@@ -69,8 +58,8 @@
 
 - (TWTJSONSchemaASTNode *)nodeForPathComponents:(NSArray *)path
 {
-    // Assumes key is @"#"
-    if (path.count == 1) {
+    // Assumes key is @"#" or the entire schema
+    if (path.count <= 1) {
         return self.schema;
     }
 

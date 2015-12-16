@@ -1,0 +1,92 @@
+[
+    {
+        "description": "schemas can be remote files",
+        "schema": {
+            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json"
+        },
+        "tests": [
+            {
+                "data": {
+                    "id": 1001
+                },
+                "description": "valid object",
+                "valid": true
+            },
+            {
+                "data": {
+                    "id": 10001
+                },
+                "description": "invalid object",
+                "valid": false
+            },
+            {
+                "data": "string",
+                "description": "invalid object",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "schemas can be subschemas in remote files",
+        "schema": {
+            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json#/properties/id"
+        },
+        "tests": [
+            {
+                "data": 1001,
+                "description": "valid ID",
+                "valid": true
+            },
+            {
+                "data": 10001,
+                "description": "invalid ID",
+                "valid": false
+            },
+            {
+                "data": "10001",
+                "description": "invalid ID",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "schemas can be remote files with encoded spaces & percent fields",
+        "schema": {
+            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/schema%20with%20spaces.json#/definitions/percent%25field"
+        },
+        "tests": [
+            {
+                "data": 1001,
+                "description": "percent",
+                "valid": true
+            },
+            {
+                "data": {
+                    "slash": "aoeu"
+                },
+                "description": "percent",
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "schemas can be remote files with encoded spaces & slash fields",
+        "schema": {
+            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/schema%20with%20spaces.json#/definitions/slash~1field"
+        },
+        "tests": [
+            {
+                "data": 1001,
+                "description": "slash",
+                "valid": true
+            },
+            {
+                "data": {
+                    "slash": "aoeu"
+                },
+                "description": "slash",
+                "valid": false
+            }
+        ]
+    }
+]
