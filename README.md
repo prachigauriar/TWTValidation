@@ -376,12 +376,21 @@ provide some convenience methods for building error objects, which can be found 
 `TWTValidationErrors.h`.
 
 
+### Owners
+
+@jnjosh, @prachigauriar, and @dfowj currently act as the owners of TWTValidation. Mention us in issues or pull requests for questions about features, project direction, or to request code review.
+
+
 ## Contributing, Filing Bugs, and Requesting Enhancements
 
 If you would like to help fix bugs or add features to TWTValidation, send us a pull request!
 
 We use GitHub issues for bugs, enhancement requests, and the limited support we provide, so open an
 issue for any of those.
+
+Typically, a pull request should receive a code review and a :+1: from at least 2 project owners before being merged.
+In cases where a pull request review needs to be expedited a single :+1: from an owner will suffice, though this should 
+be the exception, not the rule.
 
 
 ## License
