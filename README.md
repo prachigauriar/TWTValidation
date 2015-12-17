@@ -367,7 +367,7 @@ explained using an example:
 For a more detailed example of how to use key-value coding validators, see our example project.
 
 
-### Creating Custom Validators
+## Creating Custom Validators
 
 If one of TWTValidation’s validators doesn’t meet your needs, it’s easy to add new validators or
 extend existing ones. Simply subclass `TWTValidator` or one of its subclasses and override
