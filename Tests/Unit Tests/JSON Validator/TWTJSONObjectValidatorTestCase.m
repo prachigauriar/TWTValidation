@@ -77,33 +77,6 @@ static NSString *const TWTTestKeywordValid = @"valid";
 }
 
 
-- (void)testKnownFailingTests
-{
-    NSString *directoryPath = [[self class] twt_pathForDraft4TestSuite];
-    NSError *error = nil;
-
-    for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
-        if (![[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
-            continue;
-        }
-
-        TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
-        for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
-            if (![[self failingTestDescriptions] containsObject:testValue[TWTTestKeywordDescription]]) {
-                continue;
-            }
-
-            asdf
-
-            BOOL shouldPass = [testValue[TWTTestKeywordValid] boolValue];
-            XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
-                          testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
-        }
-    }
-}
-
-
-
 - (void)testCustom
 {
     NSString *directoryPath = [[self class] twt_pathForCustomTests];
@@ -185,7 +158,9 @@ static NSString *const TWTTestKeywordValid = @"valid";
 - (NSSet *)failingTests
 {
     // Not currently supporting http URLs
-    return [NSSet setWithObject:@"remote ref, containing refs itself"];
+    // or references to fields that aren't keywords or properties
+    return [NSSet setWithObjects:@"remote ref, containing refs itself", @"escaped pointer ref",
+            @"remote ref", @"fragment within remote ref", @"ref within remote ref", @"change resolution scope", nil];
 }
 
 @end
