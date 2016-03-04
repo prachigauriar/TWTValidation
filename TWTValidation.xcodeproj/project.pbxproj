@@ -352,6 +352,7 @@
 		4CD62FC118E88EC0007F7EF3 /* TWTValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTValidatorTests.m; sourceTree = "<group>"; };
 		4CD62FC818E8C938007F7EF3 /* TWTCompoundValidatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWTCompoundValidatorTests.m; sourceTree = "<group>"; };
 		528228ACBA1AAA748B450172 /* libPods-TWTValidation-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TWTValidation-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		710791C71C8A3D1600C6A913 /* TWTJSONObjectValidator-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TWTJSONObjectValidator-Private.h"; path = "JSON Validator/TWTJSONObjectValidator-Private.h"; sourceTree = "<group>"; };
 		71267ABD1A64777900C78278 /* TWTJSONSchemaAmbiguousASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = TWTJSONSchemaAmbiguousASTNode.h; path = "JSON Validator/AST Nodes/TWTJSONSchemaAmbiguousASTNode.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		71267ABE1A64777900C78278 /* TWTJSONSchemaAmbiguousASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TWTJSONSchemaAmbiguousASTNode.m; path = "JSON Validator/AST Nodes/TWTJSONSchemaAmbiguousASTNode.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		71269E231C1F424B004CDF60 /* TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = "TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"; path = "JSON Validator/TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -700,6 +701,7 @@
 			isa = PBXGroup;
 			children = (
 				7127C6FB1A66BF74003C7C11 /* TWTJSONObjectValidator.h */,
+				710791C71C8A3D1600C6A913 /* TWTJSONObjectValidator-Private.h */,
 				7127C6FC1A66BF74003C7C11 /* TWTJSONObjectValidator.m */,
 				713430E71A3F537600C63013 /* TWTJSONSchemaKeywordConstants.h */,
 				713430E81A3F537600C63013 /* TWTJSONSchemaKeywordConstants.m */,

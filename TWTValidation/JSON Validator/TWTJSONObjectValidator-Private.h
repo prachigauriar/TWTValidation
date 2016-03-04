@@ -1,9 +1,9 @@
 //
-//  TWTJSONObjectValidator.h
+//  TWTJSONObjectValidator-Private.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 1/14/15.
-//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
+//  Created by Jill Cohen on 3/4/16.
+//  Copyright © 2016 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,12 @@
 //  THE SOFTWARE.
 //
 
-#import <TWTValidation/TWTValidator.h>
+#import "TWTJSONObjectValidator.h"
 
-/*!
- TWTJSONObjectValidators validate JSON objects against a schema that describes the expected structure of the object. They are useful when validating responses from an API before mapping the response into a model object.
- 
- Schemas are expected to be in the format described by http://json-schema.org and http://json-schema.org/latest/json-schema-validation.html
- 
- This class is not meant to be subclassed.
- */
-@interface TWTJSONObjectValidator : TWTValidator
 
-@property (nonatomic, copy, readonly) NSDictionary *schema;
+@interface TWTJSONObjectValidator ()
 
-+ (TWTJSONObjectValidator *)validatorWithJSONSchema:(NSDictionary *)schema
-                                              error:(NSError *__autoreleasing *)outError
-                                           warnings:(NSArray *__autoreleasing *)outWarnings;
+- (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator
+                          typeValidator:(TWTValidator *)typeValidator;
 
 @end

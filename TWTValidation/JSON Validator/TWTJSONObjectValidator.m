@@ -25,6 +25,7 @@
 //
 
 #import <TWTValidation/TWTJSONObjectValidator.h>
+#import "TWTJSONObjectValidator-Private.h"
 
 #import <TWTValidation/TWTJSONObjectValidatorGenerator.h>
 #import <TWTValidation/TWTValidationErrors.h>

@@ -28,6 +28,8 @@
 
 #import <TWTValidation/TWTValidation.h>
 
+#import "TWTJSONObjectValidator-Private.h"
+
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
