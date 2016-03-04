@@ -30,6 +30,7 @@
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaKeywordConstants.h>
 #import <TWTValidation/TWTValidationErrors.h>
+#import <TWTValidation/TWTValidationLocalization.h>
 
 
 static NSString *const TWTJSONParserException = @"TWTJSONParserException";
@@ -872,7 +873,7 @@ static NSString *const TWTJSONExceptionErrorKey = @"TWTJSONExceptionError";
 - (void)failWithErrorCode:(NSUInteger)code object:(id)object description:(NSString *)description
 {
     NSError *error = [NSError errorWithDomain:TWTJSONSchemaParserErrorDomain code:code userInfo:@{ TWTJSONSchemaParserInvalidObjectKey : object,
-                                                                                                   NSLocalizedDescriptionKey : NSLocalizedString(description, nil) }];
+                                                                                                   NSLocalizedDescriptionKey : TWTLocalizedString(description) }];
 
     @throw [NSException exceptionWithName:TWTJSONParserException reason:nil userInfo:@{ TWTJSONExceptionErrorKey : error }];
 }
