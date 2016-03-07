@@ -29,7 +29,22 @@
 
 @interface TWTJSONObjectValidator ()
 
+/*!
+ @abstract Initializes a TWTJSONObjectValidator with a combination of validators representing validation rules
+ 	defined by a schema.
+ @discussion This initializer is used by a TWTJSONObjectValidatorGenerator to create a validator from a schema. The
+ 	initializer, as well as the concepts of common and type validators, is private because it reveals implementation
+ 	details that are specific to the TWTJSONObjectValidatorGenerator. This is also reason subclassing is discouraged
+ 	-- the implementation of `‑validateValue` relies on this the concept of common and type validators.
+ @warning This initializer is not intended for use by other classes; instead, the constructor
+ 	`‑validatorWithJSONSchema:error:warnings:` should be used.
+ @param commonValidator A validator representing the validation rules for keywords common across all types (e.g.,
+ 	anyOf, definitions).
+ @param typeValidator A validator representing the validation rules for keywords specific to a type (e.g., minLength
+ 	for a string).
+ @result A configured TWTJSONObjectValidator.
+ */
 - (instancetype)initWithCommonValidator:(TWTValidator *)commonValidator
-                          typeValidator:(TWTValidator *)typeValidator;
+                          typeValidator:(TWTValidator *)typeValidator NS_DESIGNATED_INITIALIZER;
 
 @end
