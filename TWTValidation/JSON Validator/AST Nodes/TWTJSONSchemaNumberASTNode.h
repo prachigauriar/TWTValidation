@@ -26,14 +26,39 @@
 
 #import <TWTValidation/TWTJSONSchemaASTNode.h>
 
-
+/*!
+ TWTJSONSchemaNumberASTNodes model a schema that expects instances of type number or integer.
+ */
 @interface TWTJSONSchemaNumberASTNode : TWTJSONSchemaASTNode
 
+/*!
+ @abstract The number of which a value must be a multiple, given by "multipleOf," or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSNumber *multipleOf;
+
+/*!
+ @abstract The maximum value allowed, given by "maximum," or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSNumber *maximum;
+
+/*!
+ @abstract The minimum value allowed, given by "minimum," or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSNumber *minimum;
+
+/*!
+ @abstract A boolean indicating whether a value cannot be equal to the maximum, given by "exclusiveMaximum". Defaults to NO. Ignored if maximum is nil.
+ */
 @property (nonatomic, assign) BOOL exclusiveMaximum;
+
+/*!
+ @abstract A boolean indicating whether a value cannot be equal to the minimum, given by "exclusiveMinimum". Defaults to NO. Ignored if maximum is nil.
+ */
 @property (nonatomic, assign) BOOL exclusiveMinimum;
+
+/*!
+ @abstract A boolean indicating whether a value must be an integer, derived from whether the type keyword requires an integer.
+ */
 @property (nonatomic, assign) BOOL requireIntegralValue;
 
 @end

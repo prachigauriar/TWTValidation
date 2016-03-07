@@ -52,8 +52,16 @@
  */
 @property (nonatomic, strong) TWTJSONSchemaASTNode *schema;
 
+/*!
+ @abstract All of the nodes representing schemas or nested schemas with the $ref keyword.
+ */
 @property (nonatomic, copy, readonly) NSArray *allReferenceNodes;
 
+/*!
+ @abstract Searches the tree for the node referred to by a reference node.
+ @param referenceNode The reference node containing the path to the referant.
+ @result The referant node, or nil if it cannot be found.
+ */
 - (TWTJSONSchemaASTNode *)nodeForReferenceNode:(TWTJSONSchemaReferenceASTNode *)referenceNode;
 
 @end

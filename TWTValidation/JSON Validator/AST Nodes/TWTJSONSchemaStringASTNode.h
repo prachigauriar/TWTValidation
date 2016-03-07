@@ -29,9 +29,24 @@
 
 @interface TWTJSONSchemaStringASTNode : TWTJSONSchemaASTNode
 
+/*!
+ @abstract The maximum length allowed, given by "maxLength," or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSNumber *maximumLength;
+
+/*!
+ @abstract The minimum length allowed, given by "minLength," or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSNumber *minimumLength;
+
+/*!
+ @abstract The string value of the "pattern" keyword, or nil if the keyword is not present.
+ */
 @property (nonatomic, strong) NSString *pattern;
+
+/*!
+ @abstract A regular expression created from the string value of the "pattern" keyword, or nil if the keyword is not present or a regular expression could not be created from it.
+ */
 @property (nonatomic, strong) NSRegularExpression *regularExpression;
 
 @end
