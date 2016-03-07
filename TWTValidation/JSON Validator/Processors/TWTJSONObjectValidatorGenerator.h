@@ -34,8 +34,8 @@
 
 @interface TWTJSONObjectValidatorGenerator : NSObject <TWTJSONSchemaASTProcessor>
 
-- (TWTJSONObjectValidator *)validatorFromJSONSchema:(NSDictionary *)schema
-                                              error:(NSError *__autoreleasing *)outError
-                                           warnings:(NSArray *__autoreleasing *)outWarnings;
+- (nullable TWTJSONObjectValidator *)validatorFromJSONSchema:(nonnull NSDictionary *)schema
+                                                       error:(NSError *_Nullable *_Nullable)outError
+                                                    warnings:(NSArray *_Nullable *_Nullable)outWarnings;
 
 @end
