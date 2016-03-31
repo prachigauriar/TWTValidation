@@ -26,7 +26,7 @@
 
 #import "TWTRandomizedTestCase.h"
 
-#import "TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"
+#import "TWTJSONSchemaTestDirectories.h"
 
 
 static NSString *const TWTTestKeywordSchema = @"schema";
@@ -45,7 +45,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testSuite
 {
-    NSString *directoryPath = [[self class] twt_pathForDraft4TestSuite];
+    NSString *directoryPath = TWTPathForDraft4TestSuite();
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         if ([[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
@@ -79,7 +79,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testCustom
 {
-    NSString *directoryPath = [[self class] twt_pathForCustomTests];
+    NSString *directoryPath = TWTPathForCustomJSONSchemaTests();
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];

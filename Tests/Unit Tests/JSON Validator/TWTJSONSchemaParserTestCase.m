@@ -28,10 +28,9 @@
 
 #import <TWTValidation/TWTValidation.h>
 
-#import "TWTRandomizedTestCase+TWTJSONSchemaTestDirectories.h"
-
-#import "TWTJSONSchemaParser.h"
 #import "TWTJSONSchemaASTNode.h"
+#import "TWTJSONSchemaParser.h"
+#import "TWTJSONSchemaTestDirectories.h"
 
 
 @interface TWTJSONSchemaParserTestCase : TWTRandomizedTestCase
@@ -50,7 +49,7 @@
 
     XCTAssertNotNil(topLevelNode, @"Parser did not produce top level node from valid schema");
     XCTAssertNil(error, @"Error was returned while parsing a valid schema");
-    XCTAssert(warnings.count == 0, @"Warnings were added while parsing a valid schema");
+    XCTAssertEqual(warnings.count, 0, @"Warnings were added while parsing a valid schema");
 }
 
 
@@ -63,7 +62,7 @@
 
     XCTAssertNotNil(topLevelNode, @"Parser did not produce top level node from valid schema");
     XCTAssertNil(error, @"Error was returned while parsing a valid schema");
-    XCTAssert(warnings.count == 0, @"Warnings were added while parsing a valid schema");
+    XCTAssertEqual(warnings.count, 0, @"Warnings were added while parsing a valid schema");
 }
 
 
@@ -123,7 +122,7 @@
 
 - (void)testParsingRemoteSchema
 {
-    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [[[self class] twt_pathForCustomTests] stringByAppendingString:@"/remotes/objectID.json#/properties/id"],
+    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [TWTPathForCustomJSONSchemaTests() stringByAppendingString:@"/remotes/objectID.json#/properties/id"],
                               TWTJSONSchemaKeywordSchema : TWTJSONSchemaKeywordDraft4Path };
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
     NSError *error = nil;
@@ -138,7 +137,7 @@
 
 - (void)testParsingRemoteErrorScham
 {
-    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [[[self class] twt_pathForCustomTests] stringByAppendingString:@"/remotes/remoteErrorSchema.json"],
+    NSDictionary *schema = @{ TWTJSONSchemaKeywordRef : [TWTPathForCustomJSONSchemaTests() stringByAppendingString:@"/remotes/remoteErrorSchema.json"],
                               TWTJSONSchemaKeywordSchema : TWTJSONSchemaKeywordDraft4Path };
     TWTJSONSchemaParser *parser = [[TWTJSONSchemaParser alloc] initWithJSONSchema:schema];
     NSError *error = nil;
@@ -172,9 +171,9 @@
                 @"type": @"string",
                 @"minLength" : @1,
                 @"maxLength" : @5 ,
-                @"enum" : @[ @"hello", @"hi" ]
-                };
+                @"enum" : @[ @"hello", @"hi" ] };
 }
+
 
 - (NSDictionary *)multiLevelObjectSchema
 {
@@ -258,8 +257,7 @@
               @{ @"definitions" : @[ @{ @"1" : @{} } ] },
               @{ TWTJSONSchemaKeywordSchema : @"not draft 4" },
               @{ @1 : @"not valid JSON" },
-              @{ @[ @1 ]: @"not valid JSON" }
-              ];
+              @{ @[ @1 ]: @"not valid JSON" } ];
 }
 
 
