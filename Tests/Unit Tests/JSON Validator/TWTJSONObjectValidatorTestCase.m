@@ -81,7 +81,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 {
     NSString *directoryPath = TWTPathForCustomJSONSchemaTests();
 
-    for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
+    for (NSDictionary *test in [self testsInDirectory:directoryPath replaceCustom:YES]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
 
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
@@ -113,6 +113,12 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (NSArray *)testsInDirectory:(NSString *)directoryPath
 {
+    return [self testsInDirectory:directoryPath replaceCustom:NO];
+}
+
+
+- (NSArray *)testsInDirectory:(NSString *)directoryPath replaceCustom:(BOOL)replace
+{
     NSArray *testFilenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];
     NSMutableArray *tests = [[NSMutableArray alloc] init];
 
@@ -124,6 +130,15 @@ static NSString *const TWTTestKeywordValid = @"valid";
                 NSLog(@"%@", error.description);
                 return nil;
             }
+
+            // Any paths to the local directory are marked with {CUSTOM} in the json file, instead of hardcoding the absolute path
+            // Replace this occurance with the path to the custom test directory
+            if (replace) {
+                NSString *original = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+                NSString *replaced = [original stringByReplacingOccurrencesOfString:@"{CUSTOM}" withString:TWTPathForCustomJSONSchemaTests()];
+                fileData = [replaced dataUsingEncoding:NSUTF8StringEncoding];
+            }
+
             id JSONObject = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:&error];
 
             if (error) {

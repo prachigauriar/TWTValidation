@@ -165,10 +165,13 @@
     XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:invalidPath filePath:&filePath pathComponents:&pathComponents error:nil]);
 
     NSString *validPath = [TWTPathForJSONSchemaTestSuite() stringByAppendingString:@"/remotes/integer.json"];
+    filePath = nil;
+    pathComponents = nil;
     XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:&filePath pathComponents:&pathComponents error:nil]);
 
     remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
-    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:&filePath pathComponents:&pathComponents error:nil]);
+    filePath = nil;
+    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:&filePath pathComponents:nil error:nil]);
 
     XCTAssertNil(filePath, @"File path was set without corresponding components");
 }
