@@ -28,6 +28,8 @@
 
 #import <TWTValidation/TWTValidation.h>
 
+#import "TWTJSONObjectValidator-Private.h"
+
 #import <TWTValidation/TWTJSONSchemaASTCommon.h>
 #import <TWTValidation/TWTJSONSchemaParser.h>
 #import <TWTValidation/TWTJSONSchemaArrayValidator.h>
@@ -177,7 +179,7 @@
             if (![value isKindOfClass:[NSNumber class]]) {
                 return NO;
             }
-            
+
             double result = [(NSNumber *)value doubleValue] / multipleOfValue;
             return result == trunc(result);
         }]];
@@ -464,6 +466,17 @@
                                      typeValidator:(TWTValidator *)typeValidator
                                               node:(TWTJSONSchemaASTNode *)node
 {
+    /*
+     Note: If the type keyword is not specified, a value is processed as such:
+     1. If type-specific keywords exist and the value is of that type, it must validate against those keywords.
+     2. If type-specific keywords exist and the value is NOT of that type, those keywords are ignored.
+
+     For example, for the schema { minLength: 5}, "hi" fails since it is fewer than 5 characters,
+     but [1, 2, 3] passes since it is not a string.
+
+     This is acheived by creating a TWTJSONObjectValidator whose typeValidator is a mutual exclusion validator: either
+     the value passes the original type validator, or it is NOT one of the types implied by the type-specific keywords.
+     */
     TWTValidator *expandedTypeValidator = typeValidator;
 
     if (!node.isTypeSpecified && typeValidator) {
