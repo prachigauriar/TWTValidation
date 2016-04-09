@@ -56,6 +56,17 @@
 }
 
 
++ (instancetype)valueSetValidatorWithValidValues:(NSSet *)validValues;
+{
+    return [[self alloc] initWithValidValues:validValues];
+}
+
++ (instancetype)valueSetValidatorWithValidValues:(NSSet *)validValues allowsNil:(BOOL)allowsNil
+{
+  return [[self alloc] initWithValidValues:validValues allowsNil:allowsNil];
+}
+
+
 - (NSUInteger)hash
 {
     return [super hash] ^ self.allowsNil ^ self.validValues.hash;

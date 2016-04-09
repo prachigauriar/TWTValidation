@@ -55,13 +55,13 @@
     XCTAssertNil(validator.validValues, @"valid values is non-nil");
 
     NSSet *validValues = [self randomObjectSet];
-    validator = [[TWTValueSetValidator alloc] initWithValidValues:validValues];
+    validator = [TWTValueSetValidator valueSetValidatorWithValidValues:validValues];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertEqualObjects(validator.validValues, validValues, @"valid values is not set correctly");
     XCTAssertFalse(validator.allowsNil, @"allowsNil is YES");
 
     BOOL allowsNil = UMKRandomBoolean();
-    validator = [[TWTValueSetValidator alloc] initWithValidValues:validValues allowsNil:allowsNil];
+    validator = [TWTValueSetValidator  valueSetValidatorWithValidValues:validValues allowsNil:allowsNil];
     XCTAssertNotNil(validator, @"returns nil");
     XCTAssertEqualObjects(validator.validValues, validValues, @"valid values is not set correctly");
     XCTAssertEqual(validator.allowsNil, allowsNil, @"allowsNil is not set correctly");

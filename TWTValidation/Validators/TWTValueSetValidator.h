@@ -68,4 +68,25 @@
  */
 - (instancetype)initWithValidValues:(NSSet *)validValues allowsNil:(BOOL)allowsNil;
 
+/*!
+ @abstract Creates and returns a new value set validator with the specified valid values.
+ @discussion The returned validator does not allow nil values.
+ @param validValues The set of values the validator should consider valid. If nil or empty, the validator will
+     never consider a value valid.
+ @result A newly created value set validator with the specified valid values.
+ */
++ (instancetype)valueSetValidatorWithValidValues:(NSSet *)validValues;
+
+
+/*!
+ @abstract Creates and returns a new value set validator with the specified valid values and
+     whether to allow nil.
+ @discussion This is the class’s designated initializer.
+ @param validValues The set of values the validator should consider valid. If nil or empty, the validator will
+     never consider a value valid.
+ @param allowsNil Whether the validator should allow nil values.
+ @result A newly created value set validator with the specified valid values and whether to allow nil.
+ */
++ (instancetype)valueSetValidatorWithValidValues:(NSSet *)validValues allowsNil:(BOOL)allowsNil;
+
 @end
