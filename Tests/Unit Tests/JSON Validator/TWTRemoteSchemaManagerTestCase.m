@@ -5,11 +5,31 @@
 //  Created by Jill Cohen on 10/19/15.
 //  Copyright © 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 #import "TWTRandomizedTestCase.h"
 
 #import <TWTValidation/TWTJSONRemoteSchemaManager.h>
 #import <TWTValidation/TWTJSONSchemaReferenceASTNode.h>
+
+#import "TWTJSONSchemaTestDirectories.h"
 
 
 @interface TWTRemoteSchemaManagerTestCase : TWTRandomizedTestCase
@@ -21,7 +41,7 @@
 
 - (void)testFilePathToSchema
 {
-    NSString *integerFilePath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaTestSuite/remotes/integer.json";
+    NSString *integerFilePath = [TWTPathForJSONSchemaTestSuite() stringByAppendingString:@"/remotes/integer.json"];
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
     NSString *filePath;
     NSArray *pathComponents;
@@ -43,7 +63,7 @@
 - (void)testFilePathToSubschema
 {
     NSArray *expectedComponents = @[ @"#", @"properties", @"id" ];
-    NSString *subschemasFilePath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json";
+    NSString *subschemasFilePath = [TWTPathForCustomJSONSchemaTests() stringByAppendingString:@"/remotes/objectID.json"];
     NSString *filePathWithComponents = [subschemasFilePath stringByAppendingString:[expectedComponents componentsJoinedByString:@"/"]];
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
     NSString *filePath;
@@ -83,7 +103,7 @@
 
 - (void)testMutlipleFileReferences
 {
-    NSString *baseFilePath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json";
+    NSString *baseFilePath = [TWTPathForCustomJSONSchemaTests() stringByAppendingString:@"/remotes/objectID.json"];
     NSString *components1 = @"#";
     NSString *components2 = @"#/properties/id";
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
@@ -139,10 +159,21 @@
 {
     TWTJSONRemoteSchemaManager *remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
     NSString *invalidPath = UMKRandomAlphanumericString();
-    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:invalidPath filePath:nil pathComponents:nil error:nil]);
+    NSString *filePath;
+    NSArray *pathComponents;
 
-    NSString *validPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaTestSuite/remotes/integer.json";
-    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:nil pathComponents:nil error:nil]);
+    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:invalidPath filePath:&filePath pathComponents:&pathComponents error:nil]);
+
+    NSString *validPath = [TWTPathForJSONSchemaTestSuite() stringByAppendingString:@"/remotes/integer.json"];
+    filePath = nil;
+    pathComponents = nil;
+    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:&filePath pathComponents:&pathComponents error:nil]);
+
+    remoteManager = [[TWTJSONRemoteSchemaManager alloc] init];
+    filePath = nil;
+    XCTAssertNoThrow([remoteManager loadSchemaForReferencePath:validPath filePath:&filePath pathComponents:nil error:nil]);
+
+    XCTAssertNil(filePath, @"File path was set without corresponding components");
 }
 
 @end

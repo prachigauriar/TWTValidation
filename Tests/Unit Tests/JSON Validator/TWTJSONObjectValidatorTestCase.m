@@ -26,6 +26,8 @@
 
 #import "TWTRandomizedTestCase.h"
 
+#import "TWTJSONSchemaTestDirectories.h"
+
 
 static NSString *const TWTTestKeywordSchema = @"schema";
 static NSString *const TWTTestKeywordDescription = @"description";
@@ -43,8 +45,7 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (void)testSuite
 {
-    // TODO: make these relative
-    NSString *directoryPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
+    NSString *directoryPath = TWTPathForDraft4TestSuite();
 
     for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
         if ([[self failingTests] containsObject:test[TWTTestKeywordDescription]]) {
@@ -76,32 +77,11 @@ static NSString *const TWTTestKeywordValid = @"valid";
 }
 
 
-- (void)testKnownFailingTests
-{
-    // TODO: make these relative
-    NSString *directoryPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaTestSuite/tests/draft4/";
-    NSError *error = nil;
-
-    for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
-        TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
-        for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
-            error = nil;
-            if ([[self failingTests] containsObject:testValue[TWTTestKeywordDescription]]) {
-                BOOL shouldPass = ![testValue[TWTTestKeywordValid] boolValue];
-                XCTAssertTrue([validator validateValue:testValue[TWTTestKeywordData] error:&error] == shouldPass, @"\nValue: %@\nSchema: %@\nshould have %@ed because %@. (%@)",
-                              testValue[TWTTestKeywordData], test[TWTTestKeywordSchema], shouldPass ? @"pass" : @"fail", testValue[TWTTestKeywordDescription], test[TWTTestKeywordDescription]);
-                XCTAssertNotNil(error, @"Error not set on failing test");
-            }
-        }
-    }
-}
-
-
-
 - (void)testCustom
 {
-    NSString *directoryPath = @"/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/";
-    for (NSDictionary *test in [self testsInDirectory:directoryPath]) {
+    NSString *directoryPath = TWTPathForCustomJSONSchemaTests();
+
+    for (NSDictionary *test in [self testsInDirectory:directoryPath replaceCustom:YES]) {
         TWTJSONObjectValidator *validator = [TWTJSONObjectValidator validatorWithJSONSchema:test[TWTTestKeywordSchema] error:nil warnings:nil];
 
         for (NSDictionary *testValue in test[TWTTestKeywordTests]) {
@@ -112,6 +92,8 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
             if (!shouldPass) {
                 XCTAssertNotNil(error, @"error was not set for a failing value");
+            } else {
+                XCTAssertNil(error, @"error is non-nil for a passing value");
             }
         }
     }
@@ -131,6 +113,12 @@ static NSString *const TWTTestKeywordValid = @"valid";
 
 - (NSArray *)testsInDirectory:(NSString *)directoryPath
 {
+    return [self testsInDirectory:directoryPath replaceCustom:NO];
+}
+
+
+- (NSArray *)testsInDirectory:(NSString *)directoryPath replaceCustom:(BOOL)replace
+{
     NSArray *testFilenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:nil];
     NSMutableArray *tests = [[NSMutableArray alloc] init];
 
@@ -142,6 +130,15 @@ static NSString *const TWTTestKeywordValid = @"valid";
                 NSLog(@"%@", error.description);
                 return nil;
             }
+
+            // Any paths to the local directory are marked with {CUSTOM} in the json file, instead of hardcoding the absolute path
+            // Replace this occurance with the path to the custom test directory
+            if (replace) {
+                NSString *original = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+                NSString *replaced = [original stringByReplacingOccurrencesOfString:@"{CUSTOM}" withString:TWTPathForCustomJSONSchemaTests()];
+                fileData = [replaced dataUsingEncoding:NSUTF8StringEncoding];
+            }
+
             id JSONObject = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:&error];
 
             if (error) {
@@ -176,7 +173,9 @@ static NSString *const TWTTestKeywordValid = @"valid";
 - (NSSet *)failingTests
 {
     // Not currently supporting http URLs
-    return [NSSet setWithObject:@"remote ref, containing refs itself"];
+    // or references to fields that aren't keywords or properties
+    return [NSSet setWithObjects:@"remote ref, containing refs itself", @"escaped pointer ref",
+            @"remote ref", @"fragment within remote ref", @"ref within remote ref", @"change resolution scope", nil];
 }
 
 @end

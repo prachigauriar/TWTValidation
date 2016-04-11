@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaParser.h
+//  TWTJSONSchemaTestDirectories.m
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
+//  Created by Jill Cohen on 3/30/16.
+//  Copyright © 2016 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,24 @@
 //  THE SOFTWARE.
 //
 
-@import Foundation;
+#import "TWTJSONSchemaTestDirectories.h"
 
 
-@class TWTJSONSchemaTopLevelASTNode;
+NSString *TWTPathForJSONSchemaTestSuite()
+{
+    // To change the directory of the test suite, edit the value for JSON_SCHEMA_VALIDATOR_TEST_SUITE in Build Settings
+    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_TEST_SUITE)];
+}
 
 
-@interface TWTJSONSchemaParser : NSObject
+NSString *TWTPathForDraft4TestSuite()
+{
+    return [TWTPathForJSONSchemaTestSuite() stringByAppendingString:@"/tests/draft4"];
+}
 
-/*!
- @param topLevelSchema The schema to be parsed. Throws an exception if this parameter is nil.
- */
-- (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSArray **)outWarnings;
-
-@end
+NSString *TWTPathForCustomJSONSchemaTests()
+{
+    // To change the directory of the custom tests, edit the value for JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS in Build Settings
+    return [NSString stringWithUTF8String:STRING_FROM_MACRO(JSON_SCHEMA_VALIDATOR_CUSTOM_TESTS)];
+}

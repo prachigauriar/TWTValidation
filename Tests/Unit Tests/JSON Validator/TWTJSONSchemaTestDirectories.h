@@ -1,9 +1,9 @@
 //
-//  TWTJSONSchemaParser.h
+//  TWTJSONSchemaTestDirectories.h
 //  TWTValidation
 //
-//  Created by Jill Cohen on 12/16/14.
-//  Copyright (c) 2015 Ticketmaster Entertainment, Inc. All rights reserved.
+//  Created by Jill Cohen on 12/14/15.
+//  Copyright © 2015 Ticketmaster Entertainment, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,15 @@
 @import Foundation;
 
 
-@class TWTJSONSchemaTopLevelASTNode;
+// Converts the preprocessor macros for test directory paths into strings
+#define STRING_FROM_SYMBOL(x) #x
+#define STRING_FROM_MACRO(x) STRING_FROM_SYMBOL(x)
 
 
-@interface TWTJSONSchemaParser : NSObject
+extern NSString *TWTPathForJSONSchemaTestSuite();
 
-/*!
- @param topLevelSchema The schema to be parsed. Throws an exception if this parameter is nil.
- */
-- (instancetype)initWithJSONSchema:(NSDictionary *)topLevelSchema;
 
-- (TWTJSONSchemaTopLevelASTNode *)parseWithError:(NSError **)outError warnings:(NSArray **)outWarnings;
+extern NSString *TWTPathForDraft4TestSuite();
 
-@end
+
+extern NSString *TWTPathForCustomJSONSchemaTests();

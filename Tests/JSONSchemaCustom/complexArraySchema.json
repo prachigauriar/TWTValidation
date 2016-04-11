@@ -123,5 +123,78 @@
                 "valid": false
             }
         ]
+    },
+    {
+        "description": "multiple item schemas with no additional items",
+        "schema": {
+            "additionalItems": false,
+            "items": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ],
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "tests": [
+            {
+                "data": [
+                    1,
+                    2,
+                    "hello"
+                ],
+                "description": "valid against all item schemas",
+                "valid": true
+            },
+            {
+                "data": [
+                    1,
+                    2
+                ],
+                "description": "fewer items are valid",
+                "valid": true
+            },
+            {
+                "data": "hello",
+                "description": "non-array is valid",
+                "valid": true
+            },
+            {
+                "data": [
+                    1.2
+                ],
+                "description": "invalid against first item schema",
+                "valid": false
+            },
+            {
+                "data": [],
+                "description": "not enough items",
+                "valid": false
+            },
+            {
+                "data": [
+                    1,
+                    2,
+                    "hello",
+                    4
+                ],
+                "description": "additional items invalid",
+                "valid": false
+            },
+            {
+                "data": [
+                    2,
+                    2
+                ],
+                "description": "requires unique items",
+                "valid": false
+            }
+        ]
     }
 ]

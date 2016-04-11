@@ -2,7 +2,7 @@
     {
         "description": "schemas can be remote files",
         "schema": {
-            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json"
+            "$ref": "{CUSTOM}/remotes/objectID.json"
         },
         "tests": [
             {
@@ -29,7 +29,7 @@
     {
         "description": "schemas can be subschemas in remote files",
         "schema": {
-            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/objectID.json#/properties/id"
+            "$ref": "{CUSTOM}/remotes/objectID.json#/properties/id"
         },
         "tests": [
             {
@@ -52,7 +52,7 @@
     {
         "description": "schemas can be remote files with encoded spaces & percent fields",
         "schema": {
-            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/schema%20with%20spaces.json#/definitions/percent%25field"
+            "$ref": "{CUSTOM}/remotes/schema%20with%20spaces.json#/definitions/percent%25field"
         },
         "tests": [
             {
@@ -72,7 +72,7 @@
     {
         "description": "schemas can be remote files with encoded spaces & slash fields",
         "schema": {
-            "$ref": "/Users/jillcohen/Developer/Two-Toasters-GitHub/TWTValidation/Tests/JSONSchemaCustom/remotes/schema%20with%20spaces.json#/definitions/slash~1field"
+            "$ref": "{CUSTOM}/remotes/schema%20with%20spaces.json#/definitions/slash~1field"
         },
         "tests": [
             {

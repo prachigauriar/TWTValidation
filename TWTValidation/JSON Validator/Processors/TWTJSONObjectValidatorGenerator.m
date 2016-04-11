@@ -252,7 +252,7 @@
         if (!validates && outError) {
             // If in the future a booleanValue node is used for any node properties other than additional items/properties,
             // the error code must be updated
-            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeAdditionalElementsNotAllowed
+            *outError = [NSError twt_validationErrorWithCode:TWTValidationErrorCodeJSONSchemaAdditionalElementsNotAllowed
                                             failingValidator:nil
                                                        value:nil
                                         localizedDescription:TWTLocalizedString(@"TWTJSONObjectValidator.validationError")];
